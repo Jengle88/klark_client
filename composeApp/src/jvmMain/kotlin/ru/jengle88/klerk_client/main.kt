@@ -7,10 +7,8 @@ import cafe.adriel.voyager.navigator.Navigator
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        title = "klerk_client",
+        title = "Klerk",
     ) {
-        Navigator(App()) {
-
-        }
+        Navigator(App())
     }
 }

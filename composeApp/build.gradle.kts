@@ -23,6 +23,11 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.transitions)
+            // DI
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            // Dates
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -30,6 +35,8 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            // Excel (JVM only)
+            implementation(libs.apache.poi.ooxml)
         }
     }
 }
