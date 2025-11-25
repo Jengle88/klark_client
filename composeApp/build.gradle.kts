@@ -18,11 +18,17 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.materialIconsExtended)
+            implementation(libs.kotlinx.immutableList)
+
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            // Navigation
             implementation(libs.voyager.navigator)
+            implementation(libs.voyager.tab.navigator)
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.transitions)
+            implementation(libs.voyager.koin)
             // DI
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
