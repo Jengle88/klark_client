@@ -36,6 +36,6 @@ object MainTab : Tab {
         val screenModel = koinScreenModel<MainTabScreenModel>()
         val features by screenModel.state.collectAsStateWithLifecycle()
 
-        MainTabContent(features)
+        MainTabContent(features, { TODO() })
     }
 }

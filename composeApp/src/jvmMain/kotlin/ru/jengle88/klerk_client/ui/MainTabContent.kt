@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,7 +41,7 @@ import ru.jengle88.klerk_client.ui.datamodels.AppFeatureVO
 import ru.jengle88.klerk_client.ui.datamodels.AppScreenDestination
 
 @Composable
-fun MainTabContent(features: ImmutableList<AppFeatureVO>) {
+fun MainTabContent(features: ImmutableList<AppFeatureVO>, onNavigate: (AppScreenDestination) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 160.dp),
         contentPadding = PaddingValues(16.dp),
@@ -49,24 +50,19 @@ fun MainTabContent(features: ImmutableList<AppFeatureVO>) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+        item(span = { GridItemSpan(maxLineSpan) }) {
             WelcomeCard()
         }
 
-        // Список фич
+        // Список действий приложения
         items(features) { feature ->
             FeatureCard(
                 feature = feature,
-                onClick = {
-                    // Логика перехода на другие экраны
-                    // navigator.push(GetScreen(feature.route))
-                    // Здесь пока заглушка, так как сами экраны еще не созданы
-                }
+                onClick = { onNavigate(feature.route) }
             )
         }
     }
 }
-
 
 // --- Components ---
 
@@ -109,14 +105,15 @@ fun FeatureCard(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp) // Фиксированная высота для симметрии
-            .clickable { onClick() }
+            .height(200.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick)
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Иконка в кружочке
             Box(
@@ -136,9 +133,9 @@ fun FeatureCard(
             Column {
                 Text(
                     text = feature.title,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -179,5 +176,5 @@ fun PreviewMainTabContent() {
         )
     ).toImmutableList()
 
-    MainTabContent(features = sampleFeatures)
+    MainTabContent(features = sampleFeatures, onNavigate = {})
 }
