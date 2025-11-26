@@ -21,6 +21,10 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun TableView(data: ImmutableList<ImmutableList<String>>) {
+    if (data.isEmpty()) return
+    if (data.all { it.isEmpty() }) return
+    val maxColumns = data.maxOf { it.size }
+
     val horizontalScrollState = rememberScrollState()
 
     Box(modifier = Modifier.fillMaxSize().horizontalScroll(horizontalScrollState)) {
@@ -32,8 +36,8 @@ fun TableView(data: ImmutableList<ImmutableList<String>>) {
                     modifier = Modifier.height(IntrinsicSize.Min),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TableLayoutEmptyCell()
-                    data.first().indices.forEach { i ->
+                    TableEmptyCell(background = MaterialTheme.colorScheme.secondaryContainer)
+                    repeat(maxColumns) { i ->
                         TableLayoutCell(getColumnName(i))
                     }
                 }
@@ -46,7 +50,14 @@ fun TableView(data: ImmutableList<ImmutableList<String>>) {
                 ) {
                     TableLayoutCell((index + 1).toString())
                     row.forEach { cellText ->
-                        TableCell(text = cellText)
+                        if (cellText.isNotEmpty()) {
+                            TableCell(text = cellText)
+                        } else {
+                            TableEmptyCell()
+                        }
+                    }
+                    repeat(maxColumns - row.size) {
+                        TableEmptyCell()
                     }
                 }
             }
@@ -84,12 +95,12 @@ private fun TableLayoutCell(text: String) {
 
 
 @Composable
-private fun TableLayoutEmptyCell() {
+private fun TableEmptyCell(background: Color = Color.Transparent) {
     Box(
         modifier = Modifier
             .width(100.dp)
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(background)
             .border(1.dp, Color.LightGray)
             .padding(8.dp)
     )
@@ -114,9 +125,9 @@ private fun getColumnName(index: Int): String {
 fun PreviewTableView() {
     val data = persistentListOf(
         persistentListOf("Заголовок 1", "Заголовок 2", "Заголовок 3", "Заголовок 4"),
-        persistentListOf("Данные 1.1", "Данные 1.2", "Данные 1.3", "Данные 1.4"),
+        persistentListOf("Данные 1.1", "Данные 1.2", "Данные 1.3", ""),
         persistentListOf("Данные 2.1", "Данные 2.2", "Данные 2.3", "Данные 2.4"),
-        persistentListOf("Данные 3.1", "Данные 3.2", "Данные 3.3", "Данные 3.4"),
+        persistentListOf("Данные 3.1", "", "Данные 3.3", "Данные 3.4"),
         persistentListOf("Данные 4.1", "Данные 4.2", "Данные 4.3", "dghskadfjlkjassbkhasd fasdkg asdg askhdg namsdg a"),
     )
 
