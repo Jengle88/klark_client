@@ -6,8 +6,11 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import ru.jengle88.klerk_client.data.XlsxDataProvider
 
-class GenerateDocsStateModel : ScreenModel {
+class GenerateDocsStateModel(
+    private val xlsxDataProvider: XlsxDataProvider,
+) : ScreenModel {
 
     private val _state = MutableStateFlow(GenerateDocsParamsState.EMPTY)
     val state = _state.asStateFlow()
@@ -31,15 +34,31 @@ class GenerateDocsStateModel : ScreenModel {
     fun onIntent(intent: GenerateDocsIntent) {
         when (intent) {
             is GenerateDocsIntent.StartGenerating -> generate()
-            is GenerateDocsIntent.ReceiveTableData -> onReceiveTableData(intent.data)
+            is GenerateDocsIntent.ReceiveTableData -> {
+                _state.update { prevState ->
+                    prevState.copy(tableData = intent.data.map { row -> row.toPersistentList() }.toPersistentList())
+                }
+            }
+
+            is GenerateDocsIntent.UpdatePathToTable -> loadingTable(intent.path)
+
+            is GenerateDocsIntent.UpdatePathToTemplate -> {
+                _state.update { it.copy(pathToTemplate = intent.path) }
+            }
+
+            is GenerateDocsIntent.UpdatePathToDestination -> {
+                _state.update { it.copy(pathToDestination = intent.path) }
+            }
+
             else -> TODO()
         }
     }
 
-    fun onReceiveTableData(data: List<List<String>>) {
-        _state.update {
-            it.copy(tableData = data.map { it.toPersistentList() }.toPersistentList())
+    fun onEffect(effect: GenerateDocsEffect) {
+        screenModelScope.launch {
+            _effect.emit(effect)
         }
+
     }
 
     private fun generate() {
@@ -48,6 +67,14 @@ class GenerateDocsStateModel : ScreenModel {
             // Simulate generation
             delay(3000)
             _state.update { it.copy(isGenerating = false) }
+        }
+    }
+
+    private fun loadingTable(path: String) {
+        screenModelScope.launch {
+            _state.update { it.copy(pathToTable = path, isTableLoading = true) }
+            val data = xlsxDataProvider.readData(path).map { it.toPersistentList() }.toPersistentList()
+            _state.update { it.copy(tableData = data, isTableLoading = false) }
         }
     }
 }

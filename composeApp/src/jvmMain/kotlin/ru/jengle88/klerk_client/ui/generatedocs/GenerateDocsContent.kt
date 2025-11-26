@@ -21,6 +21,7 @@ import ru.jengle88.klerk_client.ui.components.TableView
 fun GenerateDocsContent(
     state: GenerateDocsParamsState,
     onIntent: (GenerateDocsIntent) -> Unit,
+    onEffect: (GenerateDocsEffect) -> Unit,
     onBack: () -> Unit,
 ) {
     Scaffold(
@@ -28,7 +29,7 @@ fun GenerateDocsContent(
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
                 title = {
-                    if (state.isGenerating) {
+                    if (state.isGenerating || state.isTableLoading) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 },
@@ -59,21 +60,21 @@ fun GenerateDocsContent(
                     label = "Путь к таблице с данными",
                     path = state.pathToTable,
                     onPathChange = { onIntent(GenerateDocsIntent.UpdatePathToTable(it)) },
-                    onBrowseClick = { onIntent(GenerateDocsIntent.ShowPathToTablePicker) }
+                    onBrowseClick = { onEffect(GenerateDocsEffect.ShowTablePicker) }
                 )
 
                 PathInputField(
                     label = "Путь к файлу шаблона",
                     path = state.pathToTemplate,
                     onPathChange = { onIntent(GenerateDocsIntent.UpdatePathToTemplate(it)) },
-                    onBrowseClick = { onIntent(GenerateDocsIntent.ShowPathToTemplatePicker) }
+                    onBrowseClick = { onEffect(GenerateDocsEffect.ShowTemplatePicker) }
                 )
 
                 PathInputField(
                     label = "Путь для сохранения документов",
                     path = state.pathToDestination,
                     onPathChange = { onIntent(GenerateDocsIntent.UpdatePathToDestination(it)) },
-                    onBrowseClick = { onIntent(GenerateDocsIntent.ShowPathToDestinationPicker) }
+                    onBrowseClick = { onEffect(GenerateDocsEffect.ShowDestinationPicker) }
                 )
 
                 NumberInputField(
@@ -127,7 +128,8 @@ fun PreviewGenerateDocsScreen() {
             pathToDestination = "C:/Users/user/Documents/output",
             ignoreLastNColumn = 1,
             unionLastNColumn = 2,
-            isGenerating = true,
+            isGenerating = false,
+            isTableLoading = false,
             tableData = persistentListOf(
                 persistentListOf("Заголовок 1", "Заголовок 2", "Заголовок 3", "Заголовок 4"),
                 persistentListOf("Данные 1.1", "Данные 1.2", "Данные 1.3", "Данные 1.4"),
@@ -142,6 +144,7 @@ fun PreviewGenerateDocsScreen() {
             )
         ),
         onIntent = {},
+        onEffect = {},
         onBack = {}
     )
 }

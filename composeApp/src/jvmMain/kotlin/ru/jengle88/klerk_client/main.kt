@@ -13,11 +13,12 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import org.koin.core.context.startKoin
 import ru.jengle88.klerk_client.di.appModule
+import ru.jengle88.klerk_client.di.screenModelModule
 import ru.jengle88.klerk_client.ui.MainTab
 
 fun main() = application {
     startKoin {
-        modules(appModule)
+        modules(appModule, screenModelModule)
     }
 
     Window(

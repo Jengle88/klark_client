@@ -34,6 +34,8 @@ kotlin {
             implementation(libs.koin.compose)
             // Dates
             implementation(libs.kotlinx.datetime)
+            // FilePicker
+            implementation(libs.filekit.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
