@@ -10,6 +10,7 @@ data class GenerateDocsParamsState(
     val ignoreLastNColumn: Int,
     val unionLastNColumn: Int,
     val isGenerating: Boolean,
+    val isTableLoading: Boolean,
     val tableData: ImmutableList<ImmutableList<String>>
 ) {
 
@@ -21,6 +22,7 @@ data class GenerateDocsParamsState(
             ignoreLastNColumn = 0,
             unionLastNColumn = 0,
             isGenerating = false,
+            isTableLoading = false,
             tableData = persistentListOf()
         )
     }

@@ -1,4 +1,4 @@
-package ru.jengle88.klerk_client.ui
+package ru.jengle88.klerk_client.ui.maintab
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background

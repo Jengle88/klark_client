@@ -1,4 +1,4 @@
-package ru.jengle88.klerk_client.ui.statemodels
+package ru.jengle88.klerk_client.ui.maintab
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
