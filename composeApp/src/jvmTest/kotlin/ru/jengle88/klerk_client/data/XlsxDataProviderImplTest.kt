@@ -1,5 +1,6 @@
 package ru.jengle88.klerk_client.data
 
+import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
@@ -130,7 +131,7 @@ class XlsxDataProviderImplTest {
             val sheet = workbook.createSheet("Test")
             val row = sheet.createRow(0)
             row.createCell(0).setCellValue("First")
-            row.createCell(1).setBlank()
+            row.createCell(1).setCellType(CellType.BLANK)
             row.createCell(2).setCellValue("Third")
         }
 
