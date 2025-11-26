@@ -18,23 +18,27 @@ class XlsxDataProviderImpl : XlsxDataProvider {
         if (!file.exists() || file.extension != "xlsx") {
             return emptyList()
         }
-        return buildList {
-            FileInputStream(file).use { fis ->
-                XSSFWorkbook(fis).use { workbook ->
-                    workbook.sheetIterator().forEach { sheet ->
-                        for (row in sheet) {
-                            add(parseRow(row))
+        return try {
+            buildList {
+                FileInputStream(file).use { fis ->
+                    XSSFWorkbook(fis).use { workbook ->
+                        workbook.sheetIterator().forEach { sheet ->
+                            for (row in sheet) {
+                                add(parseRow(row))
+                            }
                         }
                     }
                 }
             }
+        } catch (e: Exception) {
+            throw e
         }
     }
 
     private fun parseRow(row: Row?): List<String> {
         val rowData = mutableListOf<String>()
 
-        for (cell in row?.take(100) ?: return rowData) {
+        for (cell in row?.take(COLUMNS_LIMIT) ?: return rowData) {
             val cellValue = cell?.let { parseCell(cell) } ?: continue
 
             if (cellValue.isEmpty()) continue
@@ -81,5 +85,9 @@ class XlsxDataProviderImpl : XlsxDataProvider {
             else -> ""
         }
         return cellValue ?: ""
+    }
+
+    private companion object {
+        private const val COLUMNS_LIMIT = 100
     }
 }

@@ -81,26 +81,26 @@ class GenerateDocsScreen : Screen {
         val tablePickerLauncher = rememberFilePickerLauncher(
             type = PickerType.File(extensions = listOf("xlsx", "xls")),
             mode = PickerMode.Single,
-            title = "Выберите таблицу с данными"
+            title = "Выберите таблицу с данными для генерации"
         ) { file ->
-            if (file != null) {
-                screenModel.onIntent(GenerateDocsIntent.UpdatePathToTable(file.path ?: ""))
+            file?.path?.let { path ->
+                screenModel.onIntent(GenerateDocsIntent.UpdatePathToTable(path))
             }
         }
 
         val templatePickerLauncher = rememberDirectoryPickerLauncher(
-            title = "Выберите папку с шаблонами"
+            title = "Выберите папку с шаблонами для использования"
         ) { directory ->
-            if (directory != null) {
-                screenModel.onIntent(GenerateDocsIntent.UpdatePathToTemplate(directory.path ?: ""))
+            directory?.path?.let { path ->
+                screenModel.onIntent(GenerateDocsIntent.UpdatePathToTemplate(path))
             }
         }
 
         val destinationPickerLauncher = rememberDirectoryPickerLauncher(
-            title = "Выберите для вывода ответа"
+            title = "Выберите папку для сохранения результатов"
         ) { directory ->
-            if (directory != null) {
-                screenModel.onIntent(GenerateDocsIntent.UpdatePathToDestination(directory.path ?: ""))
+            directory?.path?.let { path ->
+                screenModel.onIntent(GenerateDocsIntent.UpdatePathToDestination(path))
             }
         }
 
@@ -114,6 +114,5 @@ class GenerateDocsScreen : Screen {
                 }
             }
         }
-
     }
 }

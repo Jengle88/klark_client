@@ -40,7 +40,7 @@ class GenerateDocsStateModel(
                 }
             }
 
-            is GenerateDocsIntent.UpdatePathToTable -> { loadingTable(intent.path) }
+            is GenerateDocsIntent.UpdatePathToTable -> loadingTable(intent.path)
 
             is GenerateDocsIntent.UpdatePathToTemplate -> {
                 _state.update { it.copy(pathToTemplate = intent.path) }
