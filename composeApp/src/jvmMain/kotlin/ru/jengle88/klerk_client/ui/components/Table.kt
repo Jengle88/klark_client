@@ -63,7 +63,8 @@ private fun TableCell(text: String) {
             .fillMaxSize()
             .border(1.dp, Color.LightGray)
             .padding(8.dp),
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Start,
+        maxLines = 3,
     )
 }
 
