@@ -52,7 +52,7 @@ class XlsxDataProviderImpl : XlsxDataProvider {
     }
 
     private fun parseRow(row: Row?): List<String> {
-        var rowData = mutableListOf<String>()
+        val rowData = mutableListOf<String>()
 
         for (cell in row?.take(COLUMNS_LIMIT) ?: return rowData) {
             val cellValue = cell?.let { parseCell(cell) } ?: continue

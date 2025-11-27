@@ -41,7 +41,7 @@ fun NumberInputField(
     onValueChange: (Int?) -> Unit
 ) {
     OutlinedTextField(
-        value = (value ?: "").toString(),
+        value = value?.toString() ?: "",
         onValueChange = { text ->
             onValueChange(text.toIntOrNull())
         },

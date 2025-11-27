@@ -26,19 +26,19 @@ class GenerateWordFromTableUseCase {
             for ((index, row) in tableData.withIndex()) {
                 val templateFolder = getFolder(pathToTemplate, row)
                 if (templateFolder == null) {
-                    emit(WorkStatus.Step("Ошибка: Папка \"$templateFolder\" не найдена"))
+                    emit(WorkStatus.Step("Ошибка: Папка \"${row.first()}\" не найдена"))
                     continue
                 }
 
                 val templateFile = getFile(templateFolder, "шаблон.docx")
                 if (templateFile == null) {
-                    emit(WorkStatus.Step("Ошибка: \"${templateFile}\" не найден в папке \"${templateFolder}\" или недоступен!"))
+                    emit(WorkStatus.Step("Ошибка: \"шаблон.docx\" не найден в папке \"${templateFolder}\" или недоступен!"))
                     continue
                 }
 
                 val masksFile = getFile(templateFolder, "маски.txt")
                 if (masksFile == null) {
-                    emit(WorkStatus.Step("Ошибка: \"${masksFile}\" не найден в папке \"${templateFolder}\" или недоступен!"))
+                    emit(WorkStatus.Step("Ошибка: \"маски.txt\" не найден в папке \"${templateFolder}\" или недоступен!"))
                     continue
                 }
 
