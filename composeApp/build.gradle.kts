@@ -48,6 +48,8 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
             // Excel (JVM only)
             implementation(libs.apache.poi.ooxml)
+            implementation(libs.apache.logging.api)
+            runtimeOnly(libs.apache.logging.core)
         }
     }
 }
