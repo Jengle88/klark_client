@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.DateUtil
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import ru.jengle88.klerk_client.common.padLast
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
@@ -13,13 +14,16 @@ class XlsxDataProviderImpl : XlsxDataProvider {
 
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy")
 
-    override fun readData(path: String): List<List<String>> {
+    override fun readData(path: String, ignoreLastNColumn: Int, unionLastNColumn: Int): List<List<String>> {
+        check(ignoreLastNColumn >= 0)
+        check(unionLastNColumn >= 0)
+
         val file = File(path)
         if (!file.exists() || file.extension != "xlsx") {
             return emptyList()
         }
         return try {
-            buildList {
+            var resultList = buildList {
                 FileInputStream(file).use { fis ->
                     XSSFWorkbook(fis).use { workbook ->
                         workbook.sheetIterator().forEach { sheet ->
@@ -30,13 +34,25 @@ class XlsxDataProviderImpl : XlsxDataProvider {
                     }
                 }
             }
+
+            val maxRowLength = resultList.maxOf { it.size }
+            resultList = resultList.map {
+                // pad + drop
+                val padAndDrop = it.padLast(maxRowLength, "").dropLast(ignoreLastNColumn)
+                // union
+                val lastValues = padAndDrop.takeLast(unionLastNColumn).joinToString(" ")
+                padAndDrop.dropLast(unionLastNColumn).toMutableList().apply { add(lastValues) }
+                    .dropLastWhile { data -> data.isEmpty() }
+            }
+
+            resultList
         } catch (e: Exception) {
             throw e
         }
     }
 
     private fun parseRow(row: Row?): List<String> {
-        val rowData = mutableListOf<String>()
+        var rowData = mutableListOf<String>()
 
         for (cell in row?.take(COLUMNS_LIMIT) ?: return rowData) {
             val cellValue = cell?.let { parseCell(cell) } ?: continue
@@ -44,6 +60,7 @@ class XlsxDataProviderImpl : XlsxDataProvider {
             if (cellValue.isEmpty()) continue
             rowData.add(cellValue)
         }
+
         return rowData
     }
 

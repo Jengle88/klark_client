@@ -7,5 +7,10 @@ import ru.jengle88.klerk_client.ui.maintab.MainTabScreenModel
 
 val screenModelModule = module {
     factoryOf(::MainTabScreenModel)
-    factory<GenerateDocsStateModel> { GenerateDocsStateModel(xlsxDataProvider = get()) }
+    factory<GenerateDocsStateModel> {
+        GenerateDocsStateModel(
+            xlsxDataProvider = get(),
+            generateWordFromTableUseCase = get()
+        )
+    }
 }

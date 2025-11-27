@@ -3,13 +3,15 @@ package ru.jengle88.klerk_client.ui.generatedocs
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.jengle88.klerk_client.data.XlsxDataProvider
+import ru.jengle88.klerk_client.domain.GenerateWordFromTableUseCase
 
 class GenerateDocsStateModel(
     private val xlsxDataProvider: XlsxDataProvider,
+    private val generateWordFromTableUseCase: GenerateWordFromTableUseCase,
 ) : ScreenModel {
 
     private val _state = MutableStateFlow(GenerateDocsParamsState.EMPTY)
@@ -18,19 +20,6 @@ class GenerateDocsStateModel(
     private val _effect = MutableSharedFlow<GenerateDocsEffect>()
     val effect = _effect.asSharedFlow()
 
-    init {
-        onIntent(
-            GenerateDocsIntent.ReceiveTableData(
-                listOf(
-                    listOf("Заголовок 1", "Заголовок 2", "Заголовок 3", "Заголовок 4"),
-                    listOf("Данные 1.1", "Данные 1.2", "Данные 1.3", "Данные 1.4"),
-                    listOf("Данные 2.1", "Данные 2.2", "Данные 2.3", "Данные 2.4"),
-                    listOf("Данные 3.1", "Данные 3.2", "Данные 3.3", "Данные 3.4"),
-                    listOf("Данные 4.1", "Данные 4.2", "Данные 4.3", "Данные 4.4"),
-                )
-            )
-        )
-    }
     fun onIntent(intent: GenerateDocsIntent) {
         when (intent) {
             is GenerateDocsIntent.StartGenerating -> generate()
@@ -40,7 +29,10 @@ class GenerateDocsStateModel(
                 }
             }
 
-            is GenerateDocsIntent.UpdatePathToTable -> loadingTable(intent.path)
+            is GenerateDocsIntent.UpdatePathToTable -> {
+                _state.update { it.copy(pathToTable = intent.path) }
+                updateTableData()
+            }
 
             is GenerateDocsIntent.UpdatePathToTemplate -> {
                 _state.update { it.copy(pathToTemplate = intent.path) }
@@ -50,7 +42,17 @@ class GenerateDocsStateModel(
                 _state.update { it.copy(pathToDestination = intent.path) }
             }
 
-            else -> TODO()
+            is GenerateDocsIntent.UpdateIgnoreLastNColumn -> {
+                val coerceValue = intent.value?.coerceAtMost(100)
+                _state.update { it.copy(ignoreLastNColumn = coerceValue) }
+                updateTableData()
+            }
+
+            is GenerateDocsIntent.UpdateUnionLastNColumn -> {
+                val coerceValue = intent.value?.coerceAtMost(100)
+                _state.update { it.copy(unionLastNColumn = coerceValue) }
+                updateTableData()
+            }
         }
     }
 
@@ -62,19 +64,32 @@ class GenerateDocsStateModel(
     }
 
     private fun generate() {
+        _state.update { it.copy(isGenerating = true) }
         screenModelScope.launch {
-            _state.update { it.copy(isGenerating = true) }
-            // Simulate generation
-            delay(3000)
+            val snapshotOfState = _state.value
+            generateWordFromTableUseCase.invoke(
+                snapshotOfState.tableData,
+                snapshotOfState.pathToTemplate,
+                snapshotOfState.pathToDestination,
+                snapshotOfState.ignoreLastNColumn ?: 0,
+                snapshotOfState.unionLastNColumn ?: 0
+            ).collect {
+                // handle
+            }
             _state.update { it.copy(isGenerating = false) }
         }
     }
 
-    private fun loadingTable(path: String) {
-        screenModelScope.launch {
-            _state.update { it.copy(pathToTable = path, isTableLoading = true) }
-            val data = xlsxDataProvider.readData(path).map { it.toPersistentList() }.toPersistentList()
-            _state.update { it.copy(tableData = data, isTableLoading = false) }
+    private fun updateTableData() {
+        val currentState = _state.value
+        _state.update { it.copy(isTableLoading = true) }
+        screenModelScope.launch(Dispatchers.IO) {
+            val data = xlsxDataProvider.readData(
+                currentState.pathToTable,
+                currentState.ignoreLastNColumn ?: 0,
+                currentState.unionLastNColumn ?: 0
+            ).map { it.toPersistentList() }.toPersistentList()
+            _state.update { it.copy(isTableLoading = false, tableData = data) }
         }
     }
 }

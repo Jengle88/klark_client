@@ -37,13 +37,13 @@ fun PathInputField(
 @Composable
 fun NumberInputField(
     label: String,
-    value: Int,
-    onValueChange: (Int) -> Unit
+    value: Int?,
+    onValueChange: (Int?) -> Unit
 ) {
     OutlinedTextField(
-        value = value.toString(),
+        value = (value ?: "").toString(),
         onValueChange = { text ->
-            onValueChange(text.toIntOrNull() ?: 0)
+            onValueChange(text.toIntOrNull())
         },
         label = { Text(label) },
         modifier = Modifier.fillMaxWidth(),
