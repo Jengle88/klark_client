@@ -7,8 +7,8 @@ data class GenerateDocsParamsState(
     val pathToTable: String,
     val pathToTemplate: String,
     val pathToDestination: String,
-    val ignoreLastNColumn: Int,
-    val unionLastNColumn: Int,
+    val ignoreLastNColumn: Int?,
+    val unionLastNColumn: Int?,
     val isGenerating: Boolean,
     val isTableLoading: Boolean,
     val tableData: ImmutableList<ImmutableList<String>>
@@ -19,8 +19,8 @@ data class GenerateDocsParamsState(
             pathToTable = "",
             pathToTemplate = "",
             pathToDestination = "",
-            ignoreLastNColumn = 0,
-            unionLastNColumn = 0,
+            ignoreLastNColumn = null,
+            unionLastNColumn = null,
             isGenerating = false,
             isTableLoading = false,
             tableData = persistentListOf()
