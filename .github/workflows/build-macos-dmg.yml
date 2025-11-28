@@ -27,5 +27,5 @@ jobs:
     - name: Upload DMG
       uses: actions/upload-artifact@v4
       with:
-        name: debug-dmg
-        path: app/build/outputs/dmg/debug-dmg.dmg
+        name: release-dmg
+        path: composeApp/build/compose/binaries/main/dmg/ru.jengle88.klerk_client-1.0.0.dmg
