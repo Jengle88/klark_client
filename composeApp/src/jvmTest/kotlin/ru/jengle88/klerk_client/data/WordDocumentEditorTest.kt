@@ -172,7 +172,7 @@ class WordDocumentEditorTest {
             // Add a paragraph with text to the cell
             cell.paragraphs[0].createRun().setText("Outer: {{VALUE}}")
             // Create a nested table
-            val innerTable = cell.insertNewTbl(cell.ctTc.addNewTbl())
+            val innerTable = cell.insertNewTbl(cell.ctTc.addNewTbl().newCursor())
             val innerRow = innerTable.createRow()
             innerRow.addNewTableCell().setText("Inner: {{VALUE}}")
         }
