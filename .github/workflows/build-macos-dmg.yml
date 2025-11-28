@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build debug APK
+    name: Build debug DMG
     runs-on: ubuntu-latest
 
     steps:
