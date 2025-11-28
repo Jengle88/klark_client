@@ -1,5 +1,6 @@
 package ru.jengle88.klerk_client.ui
 
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.*
@@ -10,6 +11,8 @@ import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
+import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -23,6 +26,7 @@ import ru.jengle88.klerk_client.ui.generatedocs.GenerateDocsContent
 import ru.jengle88.klerk_client.ui.generatedocs.GenerateDocsEffect
 import ru.jengle88.klerk_client.ui.generatedocs.GenerateDocsIntent
 import ru.jengle88.klerk_client.ui.generatedocs.GenerateDocsStateModel
+import ru.jengle88.klerk_client.ui.generatedocs.generationdialog.GenerateDocsGenerationDialogScreen
 import ru.jengle88.klerk_client.ui.maintab.MainTabContent
 import ru.jengle88.klerk_client.ui.maintab.MainTabScreenModel
 
@@ -43,10 +47,13 @@ object MainTab : Tab {
             }
         }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        Navigator(MainTabScreen()) {
-            CurrentScreen()
+        BottomSheetNavigator {
+            Navigator(MainTabScreen()) {
+                CurrentScreen()
+            }
         }
     }
 }
@@ -75,6 +82,7 @@ class GenerateDocsScreen : Screen {
         val screenModel = koinScreenModel<GenerateDocsStateModel>()
         val state by screenModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
+        val bottomSheetNavigator = LocalBottomSheetNavigator.current
 
         GenerateDocsContent(state, onIntent = screenModel::onIntent, onEffect = screenModel::onEffect, onBack = { navigator.pop() })
 
@@ -104,13 +112,21 @@ class GenerateDocsScreen : Screen {
             }
         }
 
-        LaunchedEffect(Unit) {
+        LaunchedEffect(screenModel) {
             screenModel.effect.collectLatest { effect ->
                 when (effect) {
                     GenerateDocsEffect.ShowTablePicker -> tablePickerLauncher.launch()
                     GenerateDocsEffect.ShowTemplatePicker -> templatePickerLauncher.launch()
                     GenerateDocsEffect.ShowDestinationPicker -> destinationPickerLauncher.launch()
-                    else -> TODO()
+                    is GenerateDocsEffect.ShowProcessingBottomSheet -> bottomSheetNavigator.show(
+                        GenerateDocsGenerationDialogScreen(
+                            effect.tableData,
+                            effect.pathToTemplate,
+                            effect.pathToDestination,
+                            effect.ignoreLastNColumn,
+                            effect.unionLastNColumn
+                        )
+                    )
                 }
             }
         }

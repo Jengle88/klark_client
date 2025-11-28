@@ -7,11 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.jengle88.klerk_client.data.XlsxDataProvider
-import ru.jengle88.klerk_client.domain.GenerateWordFromTableUseCase
 
 class GenerateDocsStateModel(
     private val xlsxDataProvider: XlsxDataProvider,
-    private val generateWordFromTableUseCase: GenerateWordFromTableUseCase,
 ) : ScreenModel {
 
     private val _state = MutableStateFlow(GenerateDocsParamsState.EMPTY)
@@ -60,23 +58,19 @@ class GenerateDocsStateModel(
         screenModelScope.launch {
             _effect.emit(effect)
         }
-
     }
 
     private fun generate() {
-        _state.update { it.copy(isGenerating = true) }
         screenModelScope.launch {
             val snapshotOfState = _state.value
-            generateWordFromTableUseCase.invoke(
+
+            _effect.emit(GenerateDocsEffect.ShowProcessingBottomSheet(
                 snapshotOfState.tableData,
                 snapshotOfState.pathToTemplate,
                 snapshotOfState.pathToDestination,
                 snapshotOfState.ignoreLastNColumn ?: 0,
                 snapshotOfState.unionLastNColumn ?: 0
-            ).collect {
-                // handle
-            }
-            _state.update { it.copy(isGenerating = false) }
+            ))
         }
     }
 

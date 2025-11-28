@@ -37,7 +37,11 @@ fun App() {
                 modifier = Modifier.fillMaxHeight(),
                 elevation = 2.dp,
                 header = {
-                    Text("Klerk")
+                    Text(
+                        text = "Klerk",
+                        style = MaterialTheme.typography.h5,
+                        color = MaterialTheme.colors.primary
+                    )
                 }
             ) {
                 TabNavigationRailItem(MainTab)
