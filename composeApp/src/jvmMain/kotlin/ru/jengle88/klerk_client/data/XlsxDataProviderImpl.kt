@@ -35,7 +35,7 @@ class XlsxDataProviderImpl : XlsxDataProvider {
                 }
             }
 
-            val maxRowLength = resultList.maxOf { it.size }
+            val maxRowLength = resultList.maxOfOrNull { it.size } ?: 0
             resultList = resultList.map {
                 // pad + drop
                 val padAndDrop = it.padLast(maxRowLength, "").dropLast(ignoreLastNColumn)
