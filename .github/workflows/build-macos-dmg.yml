@@ -21,7 +21,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build dmg package
+    - name: Build DMG package
       run: ./gradlew :composeApp:packageDmg
         
     - name: Upload dmg
