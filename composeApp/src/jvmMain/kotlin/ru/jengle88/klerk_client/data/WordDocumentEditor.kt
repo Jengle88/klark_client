@@ -45,7 +45,6 @@ class WordDocumentEditor private constructor(private val document: XWPFDocument)
         for (cell in cells) {
             if (cell.tables.isNotEmpty()) {
                 diveToTablesAndReplace(cell.tables, oldText, newText)
-                continue
             }
             if (cell.paragraphs.isNotEmpty()) {
                 replaceInParagraphs(cell.paragraphs, oldText, newText)
