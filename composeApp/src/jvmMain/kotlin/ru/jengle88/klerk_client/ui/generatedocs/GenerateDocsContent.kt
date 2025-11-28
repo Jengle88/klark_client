@@ -64,7 +64,7 @@ fun GenerateDocsContent(
                 )
 
                 PathInputField(
-                    label = "Путь к файлу шаблона",
+                    label = "Путь к папке с шаблоном",
                     path = state.pathToTemplate,
                     onPathChange = { onIntent(GenerateDocsIntent.UpdatePathToTemplate(it)) },
                     onBrowseClick = { onEffect(GenerateDocsEffect.ShowTemplatePicker) }
