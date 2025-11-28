@@ -28,7 +28,7 @@ class GenerateDocsGenerationDialogStateModel(
     private val _effect = MutableSharedFlow<GenerateDocsGenerationDialogEffect>()
     val effect = _effect.asSharedFlow()
 
-    var generationJob: Job? = null
+    private var generationJob: Job? = null
 
     fun onIntent(intent: GenerateDocsGenerationDialogIntent) {
         when (intent) {
@@ -62,10 +62,14 @@ class GenerateDocsGenerationDialogStateModel(
                         _state.update { prevState -> prevState.copy(steps = (prevState.steps + listOf(newState.message)).toImmutableList()) }
                     }
                     is GenerateWordFromTableUseCase.WorkStatus.Finish -> {
-                        _state.update { it.copy(isGenerating = false, error = newState.cause?.message) }}
+                        _state.update { it.copy(isGenerating = false, error = newState.cause?.message) } }
                 }
             }
             .launchIn(screenModelScope)
     }
 
+    override fun onDispose() {
+        generationJob?.cancel()
+        generationJob = null
+    }
 }

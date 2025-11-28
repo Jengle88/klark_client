@@ -29,7 +29,9 @@ class GenerateDocsGenerationDialogScreen(
                 ignoreLastNColumn,
                 unionLastNColumn
             ))
+        }
 
+        LaunchedEffect(screenModel) {
             screenModel.effect.collect {
                 when (it) {
                     GenerateDocsGenerationDialogEffect.DismissDialog -> bottomSheetNavigator.hide()

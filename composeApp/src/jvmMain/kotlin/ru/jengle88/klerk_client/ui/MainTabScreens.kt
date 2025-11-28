@@ -112,7 +112,7 @@ class GenerateDocsScreen : Screen {
             }
         }
 
-        LaunchedEffect(Unit) {
+        LaunchedEffect(screenModel) {
             screenModel.effect.collectLatest { effect ->
                 when (effect) {
                     GenerateDocsEffect.ShowTablePicker -> tablePickerLauncher.launch()

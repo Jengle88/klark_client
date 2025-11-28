@@ -8,7 +8,7 @@ data class GenerateDocsGenerationDialogState(
     val steps: ImmutableList<String>,
     val error: String? = null
 ) {
-    companion object Companion {
+    companion object {
         val EMPTY = GenerateDocsGenerationDialogState(
             isGenerating = false,
             steps = persistentListOf(),

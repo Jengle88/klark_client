@@ -18,19 +18,6 @@ class GenerateDocsStateModel(
     private val _effect = MutableSharedFlow<GenerateDocsEffect>()
     val effect = _effect.asSharedFlow()
 
-    init {
-        _state.update {
-            GenerateDocsParamsState.EMPTY.copy(
-                pathToTable = "/Users/zhshkvir/subfolder/values.xlsx",
-                pathToTemplate = "/Users/zhshkvir/subfolder",
-                pathToDestination = "/Users/zhshkvir/subfolder",
-                ignoreLastNColumn = null,
-                unionLastNColumn = 3,
-            )
-        }
-        updateTableData()
-    }
-
     fun onIntent(intent: GenerateDocsIntent) {
         when (intent) {
             is GenerateDocsIntent.StartGenerating -> generate()
