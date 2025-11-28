@@ -9,7 +9,7 @@ class GenerateWordFromTableUseCase {
     sealed interface WorkStatus {
         data object Start : WorkStatus
         data class Step(val message: String) : WorkStatus
-        data class Finish(val cause: Throwable? = null) : WorkStatus
+        data class Finish(val message: String? = null, val cause: Throwable? = null) : WorkStatus
     }
 
     operator fun invoke(
@@ -20,7 +20,8 @@ class GenerateWordFromTableUseCase {
         unionLastNColumn: Int
     ): Flow<WorkStatus> = flow {
         emit(WorkStatus.Start)
-
+        val mapOfSuccessFilesInFolders = mutableMapOf<String, Int>()
+        val generatedFolderName = "generated"
         try {
             for ((index, row) in tableData.withIndex()) {
                 val templateFolder = getFolder(pathToTemplate, row)
@@ -55,15 +56,28 @@ class GenerateWordFromTableUseCase {
                         docxEditor.replaceTextInDocument(mask, value)
                     }
                 }
-                val destinationFolder = File(pathToDestination, "generated")
+                val destinationFolder = File(File(pathToDestination, generatedFolderName), templateFolder.name)
                 if (!destinationFolder.exists()) {
                     destinationFolder.mkdirs()
                 }
                 val destinationFile = File(destinationFolder, filename)
                 docxEditor.saveToFile(destinationFile)
+                mapOfSuccessFilesInFolders[templateFolder.name] = (mapOfSuccessFilesInFolders[templateFolder.name] ?: 0) + 1
                 emit(WorkStatus.Step("Готово: \"${destinationFile.name}\" в папке \"${destinationFolder.name}\""))
             }
-            emit(WorkStatus.Finish())
+
+            val amountOfGeneratedFilesInFolder = mutableMapOf<String, Int>()
+            File(pathToDestination, generatedFolderName).listFiles()?.forEach { file ->
+                amountOfGeneratedFilesInFolder[file.name] = (file.listFiles()?.filter { it.extension == "docx" }?.size ?: 0)
+            }
+            val finishResult = buildString {
+                appendLine("Всего файлов в папке \"${generatedFolderName}\" = ${amountOfGeneratedFilesInFolder.values.sum()}")
+                amountOfGeneratedFilesInFolder.forEach { (folderName, amount) ->
+                    appendLine("В папке \"$folderName\" сгенерировано файлов: $amount, успешных строк: ${mapOfSuccessFilesInFolders[folderName] ?: 0}")
+                }
+            }
+
+            emit(WorkStatus.Finish(message = finishResult))
         } catch (e: Exception) {
             emit(WorkStatus.Finish(cause = e))
         }

@@ -58,11 +58,19 @@ class GenerateDocsGenerationDialogStateModel(
                     GenerateWordFromTableUseCase.WorkStatus.Start -> {
                         _state.update { it.copy(isGenerating = true, steps = persistentListOf()) }
                     }
+
                     is GenerateWordFromTableUseCase.WorkStatus.Step -> {
                         _state.update { prevState -> prevState.copy(steps = (prevState.steps + listOf(newState.message)).toImmutableList()) }
                     }
+
                     is GenerateWordFromTableUseCase.WorkStatus.Finish -> {
-                        _state.update { it.copy(isGenerating = false, error = newState.cause?.message) } }
+                        _state.update { prevState ->
+                            val steps = if (newState.message != null) {
+                                (prevState.steps + listOf(newState.message)).toImmutableList()
+                            } else prevState.steps
+                            prevState.copy(isGenerating = false, steps = steps, error = newState.cause?.message)
+                        }
+                    }
                 }
             }
             .launchIn(screenModelScope)
