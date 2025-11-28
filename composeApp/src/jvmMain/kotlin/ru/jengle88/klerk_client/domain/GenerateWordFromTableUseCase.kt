@@ -20,7 +20,7 @@ class GenerateWordFromTableUseCase {
         unionLastNColumn: Int
     ): Flow<WorkStatus> = flow {
         emit(WorkStatus.Start)
-        val mapOfSuccessFilesInFolders = mutableMapOf<String, Int>()
+        val mapOfSuccessRowForTemplate = mutableMapOf<String, Int>()
         val generatedFolderName = "generated"
         try {
             for ((index, row) in tableData.withIndex()) {
@@ -62,7 +62,7 @@ class GenerateWordFromTableUseCase {
                 }
                 val destinationFile = File(destinationFolder, filename)
                 docxEditor.saveToFile(destinationFile)
-                mapOfSuccessFilesInFolders[templateFolder.name] = (mapOfSuccessFilesInFolders[templateFolder.name] ?: 0) + 1
+                mapOfSuccessRowForTemplate[templateFolder.name] = (mapOfSuccessRowForTemplate[templateFolder.name] ?: 0) + 1
                 emit(WorkStatus.Step("Готово: \"${destinationFile.name}\" в папке \"${destinationFolder.name}\""))
             }
 
@@ -73,7 +73,7 @@ class GenerateWordFromTableUseCase {
             val finishResult = buildString {
                 appendLine("Всего файлов в папке \"${generatedFolderName}\" = ${amountOfGeneratedFilesInFolder.values.sum()}")
                 amountOfGeneratedFilesInFolder.forEach { (folderName, amount) ->
-                    appendLine("В папке \"$folderName\" сгенерировано файлов: $amount, успешных строк: ${mapOfSuccessFilesInFolders[folderName] ?: 0}")
+                    appendLine("В папке \"$folderName\" сгенерировано файлов: $amount, успешных строк: ${mapOfSuccessRowForTemplate[folderName] ?: 0}")
                 }
             }
 
