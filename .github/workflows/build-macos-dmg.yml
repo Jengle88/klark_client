@@ -1,4 +1,4 @@
-name: Android CI
+name: macOS DMG Build
 
 on:
   push:
