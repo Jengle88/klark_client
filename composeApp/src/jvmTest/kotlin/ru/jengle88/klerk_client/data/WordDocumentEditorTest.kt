@@ -6,6 +6,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class WordDocumentEditorTest {
@@ -37,7 +38,7 @@ class WordDocumentEditorTest {
         val resultDoc = XWPFDocument(outputFile.inputStream())
         val text = resultDoc.paragraphs.joinToString { it.text }
         assertTrue(text.contains("Universe"))
-        assertTrue(!text.contains("World"))
+        assertFalse(text.contains("World"))
         resultDoc.close()
     }
 
@@ -56,7 +57,7 @@ class WordDocumentEditorTest {
         val resultDoc = XWPFDocument(outputFile.inputStream())
         val cellText = resultDoc.tables[0].getRow(0).getCell(0).text
         assertTrue(cellText.contains("that"))
-        assertTrue(!cellText.contains("this"))
+        assertFalse(cellText.contains("this"))
         resultDoc.close()
     }
 
@@ -81,8 +82,8 @@ class WordDocumentEditorTest {
         assertTrue(table.getRow(0).getCell(0).text.contains("John"))
         assertTrue(table.getRow(0).getCell(1).text.contains("25"))
         assertTrue(table.getRow(1).getCell(0).text.contains("John"))
-        assertTrue(!table.text.contains("{{NAME}}"))
-        assertTrue(!table.text.contains("{{AGE}}"))
+        assertFalse(table.text.contains("{{NAME}}"))
+        assertFalse(table.text.contains("{{AGE}}"))
         resultDoc.close()
     }
 
@@ -158,8 +159,8 @@ class WordDocumentEditorTest {
         assertTrue(paragraphTexts.any { it.contains("Header: Document Title") })
         assertTrue(paragraphTexts.any { it.contains("Footer: Document Title") })
         assertTrue(tableText.contains("Cell: Document Title"))
-        assertTrue(!resultDoc.paragraphs.any { it.text.contains("{{TITLE}}") })
-        assertTrue(!tableText.contains("{{TITLE}}"))
+        assertFalse(resultDoc.paragraphs.any { it.text.contains("{{TITLE}}") })
+        assertFalse(tableText.contains("{{TITLE}}"))
         resultDoc.close()
     }
 
@@ -187,7 +188,7 @@ class WordDocumentEditorTest {
         // Check outer text and nested table text
         val allText = outerCell.text
         assertTrue(allText.contains("Test"))
-        assertTrue(!allText.contains("{{VALUE}}"))
+        assertFalse(allText.contains("{{VALUE}}"))
         resultDoc.close()
     }
 
@@ -210,7 +211,7 @@ class WordDocumentEditorTest {
         for (i in 0..2) {
             val cellText = table.getRow(i).getCell(0).text
             assertTrue(cellText.contains("Data"))
-            assertTrue(!cellText.contains("{{PLACEHOLDER}}"))
+            assertFalse(cellText.contains("{{PLACEHOLDER}}"))
         }
         resultDoc.close()
     }
