@@ -9,8 +9,7 @@ class GenerateWordFromTableUseCase {
     sealed interface WorkStatus {
         data object Start : WorkStatus
         data class Step(val message: String) : WorkStatus
-        data object Finish : WorkStatus
-        data class Error(val cause: Throwable) : WorkStatus
+        data class Finish(val cause: Throwable? = null) : WorkStatus
     }
 
     operator fun invoke(
@@ -64,11 +63,9 @@ class GenerateWordFromTableUseCase {
                 docxEditor.saveToFile(destinationFile)
                 emit(WorkStatus.Step("Готово: \"${destinationFile.name}\" в папке \"${destinationFolder.name}\""))
             }
-
+            emit(WorkStatus.Finish())
         } catch (e: Exception) {
-            emit(WorkStatus.Error(e))
-        } finally {
-            emit(WorkStatus.Finish)
+            emit(WorkStatus.Finish(cause = e))
         }
 
     }

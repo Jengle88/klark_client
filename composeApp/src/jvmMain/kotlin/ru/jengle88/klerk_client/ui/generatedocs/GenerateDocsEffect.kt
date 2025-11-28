@@ -4,6 +4,11 @@ sealed class GenerateDocsEffect {
     data object ShowTablePicker : GenerateDocsEffect()
     data object ShowTemplatePicker : GenerateDocsEffect()
     data object ShowDestinationPicker : GenerateDocsEffect()
-    data object ShowSuccessToast : GenerateDocsEffect()
-    data class ShowErrorToast(val cause: String) : GenerateDocsEffect()
+    data class ShowProcessingBottomSheet(
+        val tableData: List<List<String>>,
+        val pathToTemplate: String,
+        val pathToDestination: String,
+        val ignoreLastNColumn: Int,
+        val unionLastNColumn: Int,
+    ) : GenerateDocsEffect()
 }
