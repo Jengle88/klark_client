@@ -87,7 +87,7 @@ class XlsxDataProviderImplTest {
         val result = provider.readData(xlsxFile.absolutePath, ignoreLastNColumn = 0, unionLastNColumn = 0)
 
         assertEquals(1, result.size)
-        assertEquals(listOf("3,14", "2,50"), result[0])
+        assertEquals(listOf("3.14", "2.50"), result[0])
     }
 
     @Test
@@ -277,7 +277,7 @@ class XlsxDataProviderImplTest {
 
         assertEquals(1, result.size)
         assertEquals("-42", result[0][0])
-        assertEquals("-3,14", result[0][1])
+        assertEquals("-3.14", result[0][1])
     }
 
     @Test
