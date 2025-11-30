@@ -1,0 +1,20 @@
+package ru.jengle88.klarkclient.di
+
+import org.koin.core.module.dsl.factoryOf
+import org.koin.dsl.module
+import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsStateModel
+import ru.jengle88.klarkclient.ui.generatedocs.generationdialog.GenerateDocsGenerationDialogStateModel
+import ru.jengle88.klarkclient.ui.maintab.MainTabScreenModel
+
+val screenModelModule =
+    module {
+        factoryOf(::MainTabScreenModel)
+        factory<GenerateDocsStateModel> {
+            GenerateDocsStateModel(
+                xlsxDataProvider = get(),
+            )
+        }
+        factory<GenerateDocsGenerationDialogStateModel> {
+            GenerateDocsGenerationDialogStateModel(generateWordFromTableUseCase = get())
+        }
+    }

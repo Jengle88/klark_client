@@ -1,4 +1,4 @@
-rootProject.name = "klerk_client"
+rootProject.name = "klarkclient"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

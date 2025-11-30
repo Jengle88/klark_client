@@ -55,14 +55,13 @@ kotlin {
     }
 }
 
-
 compose.desktop {
     application {
-        mainClass = "ru.jengle88.klerk_client.MainKt"
+        mainClass = "ru.jengle88.klarkclient.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "ru.jengle88.klerk_client"
+            packageName = "ru.jengle88.klarkclient"
             packageVersion = "1.0.0"
         }
     }
