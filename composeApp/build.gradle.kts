@@ -87,8 +87,11 @@ detekt {
     buildUponDefaultConfig = true
     // Enable all rules by default
     allRules = false
-    // Path to custom config file (optional)
-    config.setFrom(files("$rootDir/detekt-config.yml"))
+    // Path to custom config file (optional) - only set if file exists
+    val configFile = file("$rootDir/detekt-config.yml")
+    if (configFile.exists()) {
+        config.setFrom(files(configFile))
+    }
     // Fail build on any findings
     ignoreFailures = false
 }
