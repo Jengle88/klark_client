@@ -9,8 +9,10 @@ import ru.jengle88.klarkclient.common.padLast
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
+import java.util.Locale
+import kotlin.math.min
 
-class XlsxDataProviderImpl : XlsxDataProvider {
+class XlsxDataProviderImpl(private val locale: Locale = Locale.getDefault()) : XlsxDataProvider {
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy")
 
     override fun readData(
@@ -49,7 +51,11 @@ class XlsxDataProviderImpl : XlsxDataProvider {
                     padAndDrop
                         .dropLast(unionLastNColumn)
                         .toMutableList()
-                        .apply { add(lastValues) }
+                        .apply {
+                            if (unionLastNColumn > 0) {
+                                add(lastValues)
+                            }
+                        }
                         .dropLastWhile { data -> data.isEmpty() }
                 }
 
@@ -61,11 +67,14 @@ class XlsxDataProviderImpl : XlsxDataProvider {
 
     private fun parseRow(row: Row?): List<String> {
         val rowData = mutableListOf<String>()
+        if (row == null) return rowData
 
-        for (cell in row?.take(COLUMNS_LIMIT) ?: return rowData) {
-            val cellValue = cell?.let { parseCell(cell) } ?: continue
+        val lastCellNum = row.lastCellNum
+        val columnsToRead = min(lastCellNum.toInt(), COLUMNS_LIMIT)
 
-            if (cellValue.isEmpty()) continue
+        for (i in 0 until columnsToRead) {
+            val cell = row.getCell(i, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)
+            val cellValue = cell?.let { parseCell(it) } ?: ""
             rowData.add(cellValue)
         }
 
@@ -84,7 +93,7 @@ class XlsxDataProviderImpl : XlsxDataProvider {
                         if (numericValue % 1 == 0.0) {
                             numericValue.toBigDecimal().toBigInteger().toString()
                         } else {
-                            String.format("%.2f", numericValue)
+                            String.format(locale, "%.2f", numericValue)
                         }
                     }
                 }
@@ -99,7 +108,7 @@ class XlsxDataProviderImpl : XlsxDataProvider {
                             if (numericValue % 1 == 0.0) {
                                 numericValue.toBigDecimal().toBigInteger().toString()
                             } else {
-                                String.format("%.2f", numericValue)
+                                String.format(locale, "%.2f", numericValue)
                             }
                         } catch (_: Exception) {
                             cell.cellFormula

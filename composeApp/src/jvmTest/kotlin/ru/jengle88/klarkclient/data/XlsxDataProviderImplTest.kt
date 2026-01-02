@@ -6,6 +6,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -19,7 +20,7 @@ class XlsxDataProviderImplTest {
 
     @BeforeTest
     fun setUp() {
-        provider = XlsxDataProviderImpl()
+        provider = XlsxDataProviderImpl(Locale.US)
         tempDir = File(System.getProperty("java.io.tmpdir"), "xlsx_test_${System.currentTimeMillis()}")
         tempDir.mkdirs()
     }
@@ -130,7 +131,7 @@ class XlsxDataProviderImplTest {
     }
 
     @Test
-    fun `readData skips blank cells`() {
+    fun `readData preserves blank cells`() {
         val xlsxFile =
             createTestXlsx("blank_test.xlsx") { workbook ->
                 val sheet = workbook.createSheet("Test")
@@ -143,7 +144,51 @@ class XlsxDataProviderImplTest {
         val result = provider.readData(xlsxFile.absolutePath, ignoreLastNColumn = 0, unionLastNColumn = 0)
 
         assertEquals(1, result.size)
-        assertEquals(listOf("First", "Third"), result[0])
+        assertEquals(listOf("First", "", "Third"), result[0])
+    }
+
+    @Test
+    fun `readData preserves empty cells and alignment`() {
+        val xlsxFile =
+            createTestXlsx("alignment_test.xlsx") { workbook ->
+                val sheet = workbook.createSheet("Test")
+                val row = sheet.createRow(0)
+                row.createCell(0).setCellValue("A")
+                // Cell 1 is missing/null
+                row.createCell(2).setCellValue("C")
+                row.createCell(3).setCellType(CellType.BLANK) // Explicitly blank
+                row.createCell(4).setCellValue("E")
+            }
+
+        val result = provider.readData(xlsxFile.absolutePath, ignoreLastNColumn = 0, unionLastNColumn = 0)
+
+        assertEquals(1, result.size)
+        // Expectation: "A", "", "C", "", "E"
+        val rowData = result[0]
+        assertEquals(5, rowData.size)
+        assertEquals("A", rowData[0])
+        assertEquals("", rowData[1])
+        assertEquals("C", rowData[2])
+        assertEquals("", rowData[3])
+        assertEquals("E", rowData[4])
+    }
+
+    @Test
+    fun `readData remove trailing empty cells`() {
+        val xlsxFile =
+            createTestXlsx("trailing_empty_test.xlsx") { workbook ->
+                val sheet = workbook.createSheet("Test")
+                val row = sheet.createRow(0)
+                row.createCell(0).setCellValue("A")
+                row.createCell(1).setCellType(CellType.BLANK)
+                row.createCell(2).setCellType(CellType.BLANK)
+            }
+
+        val result = provider.readData(xlsxFile.absolutePath, ignoreLastNColumn = 0, unionLastNColumn = 0)
+
+        assertEquals(1, result.size)
+        assertEquals(1, result[0].size)
+        assertEquals("A", result[0][0])
     }
 
     @Test
