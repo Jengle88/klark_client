@@ -1,0 +1,80 @@
+name: Code Coverage with Jacoco
+
+# Trigger workflow on push or pull request to main/master branches
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+
+jobs:
+  code-coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Set up JDK 17 for building and running tests
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      
+      # Setup Gradle with caching for faster builds
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      
+      # Run JVM tests to generate coverage data
+      - name: Run tests with coverage
+        run: ./gradlew composeApp:jvmTest
+      
+      # Generate Jacoco coverage report
+      # This creates both XML (for Codecov) and HTML (for manual review) reports
+      - name: Generate Jacoco coverage report
+        run: ./gradlew composeApp:jacocoTestReport
+      
+      # Upload coverage reports to Codecov
+      # Codecov provides detailed coverage insights and trends
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          # Path to the XML coverage report
+          files: ./composeApp/build/reports/jacoco/test/jacocoTestReport.xml
+          # Flags to identify this upload in Codecov dashboard
+          flags: unittests
+          # Name for this upload
+          name: codecov-klark-client
+          # Fail the workflow if upload fails
+          fail_ci_if_error: false
+          # Verbose output for debugging
+          verbose: true
+        env:
+          # Codecov token from repository secrets
+          # Add CODECOV_TOKEN to your repository secrets for private repos
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      
+      # Upload Jacoco HTML reports as artifacts for manual review
+      - name: Upload Jacoco HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-coverage-report
+          path: |
+            composeApp/build/reports/jacoco/test/html/
+          retention-days: 14
+      
+      # Upload Jacoco XML report as artifact
+      - name: Upload Jacoco XML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-coverage-xml
+          path: |
+            composeApp/build/reports/jacoco/test/jacocoTestReport.xml
+          retention-days: 14

@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ktlint)
+    jacoco
 }
 
 kotlin {
@@ -77,4 +78,46 @@ ktlint {
     filter {
         exclude("**/generated/**") // исключить сгенерированный код
     }
+}
+
+// Jacoco configuration for code coverage
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+// Configure Jacoco test report for JVM tests
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn(tasks.named("jvmTest"))
+
+    reports {
+        // Generate XML report for Codecov
+        xml.required.set(true)
+        xml.outputLocation.set(file("${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml"))
+
+        // Generate HTML report for manual review
+        html.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/test/html"))
+    }
+
+    // Configure source and class directories for multiplatform project
+    val coverageSourceDirs = listOf(
+        "src/commonMain/kotlin",
+        "src/jvmMain/kotlin"
+    )
+
+    sourceDirectories.setFrom(files(coverageSourceDirs))
+    classDirectories.setFrom(
+        fileTree(layout.buildDirectory.dir("classes/kotlin/jvm/main")) {
+            exclude(
+                // Exclude generated files if needed
+                "**/BuildConfig.*"
+            )
+        }
+    )
+
+    executionData.setFrom(
+        fileTree(layout.buildDirectory) {
+            include("jacoco/jvmTest.exec")
+        }
+    )
 }
