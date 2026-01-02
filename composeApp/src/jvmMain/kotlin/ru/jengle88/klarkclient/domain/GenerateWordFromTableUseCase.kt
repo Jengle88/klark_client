@@ -54,7 +54,7 @@ class GenerateWordFromTableUseCase {
 
                     val masks = getMasks(masksFile)
                     var filename = "dstFile${index + 1}.docx"
-                    masks.zip(row.drop(1)).forEach { (mask, value) ->
+                    masks.zip(row.filter { it.isNotEmpty() }.drop(1)).forEach { (mask, value) ->
                         if (mask == "\$filename\$") {
                             val fixedFilename =
                                 value

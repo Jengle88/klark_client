@@ -6,6 +6,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -19,7 +20,7 @@ class XlsxDataProviderImplTest {
 
     @BeforeTest
     fun setUp() {
-        provider = XlsxDataProviderImpl()
+        provider = XlsxDataProviderImpl(Locale.US)
         tempDir = File(System.getProperty("java.io.tmpdir"), "xlsx_test_${System.currentTimeMillis()}")
         tempDir.mkdirs()
     }
@@ -173,7 +174,7 @@ class XlsxDataProviderImplTest {
     }
 
     @Test
-    fun `readData preserves trailing empty cells`() {
+    fun `readData remove trailing empty cells`() {
         val xlsxFile =
             createTestXlsx("trailing_empty_test.xlsx") { workbook ->
                 val sheet = workbook.createSheet("Test")
@@ -185,13 +186,9 @@ class XlsxDataProviderImplTest {
 
         val result = provider.readData(xlsxFile.absolutePath, ignoreLastNColumn = 0, unionLastNColumn = 0)
 
-        // If the row has physical cells up to index 2, lastCellNum is 3.
-        // We expect ["A", "", ""]
         assertEquals(1, result.size)
-        assertEquals(3, result[0].size)
+        assertEquals(1, result[0].size)
         assertEquals("A", result[0][0])
-        assertEquals("", result[0][1])
-        assertEquals("", result[0][2])
     }
 
     @Test

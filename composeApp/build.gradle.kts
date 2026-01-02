@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {
@@ -64,5 +65,16 @@ compose.desktop {
             packageName = "ru.jengle88.klarkclient"
             packageVersion = "1.0.0"
         }
+    }
+}
+
+ktlint {
+    debug.set(false)
+    verbose.set(true)
+    android.set(false) // установите true, если проект под Android
+    outputToConsole.set(true)
+    ignoreFailures.set(false) // если true, проект соберется даже с ошибками стиля
+    filter {
+        exclude("**/generated/**") // исключить сгенерированный код
     }
 }

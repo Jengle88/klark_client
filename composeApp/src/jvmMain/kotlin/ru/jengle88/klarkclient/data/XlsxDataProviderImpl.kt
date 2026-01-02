@@ -9,9 +9,10 @@ import ru.jengle88.klarkclient.common.padLast
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlin.math.min
 
-class XlsxDataProviderImpl : XlsxDataProvider {
+class XlsxDataProviderImpl(private val locale: Locale = Locale.getDefault()) : XlsxDataProvider {
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy")
 
     override fun readData(
@@ -55,6 +56,7 @@ class XlsxDataProviderImpl : XlsxDataProvider {
                                 add(lastValues)
                             }
                         }
+                        .dropLastWhile { data -> data.isEmpty() }
                 }
 
             resultList
@@ -91,7 +93,7 @@ class XlsxDataProviderImpl : XlsxDataProvider {
                         if (numericValue % 1 == 0.0) {
                             numericValue.toBigDecimal().toBigInteger().toString()
                         } else {
-                            String.format("%.2f", numericValue)
+                            String.format(locale, "%.2f", numericValue)
                         }
                     }
                 }
@@ -106,7 +108,7 @@ class XlsxDataProviderImpl : XlsxDataProvider {
                             if (numericValue % 1 == 0.0) {
                                 numericValue.toBigDecimal().toBigInteger().toString()
                             } else {
-                                String.format("%.2f", numericValue)
+                                String.format(locale, "%.2f", numericValue)
                             }
                         } catch (_: Exception) {
                             cell.cellFormula
