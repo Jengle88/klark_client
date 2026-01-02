@@ -16,21 +16,20 @@ class XlsxDataProviderImpl(private val locale: Locale = Locale.getDefault()) : X
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy")
 
     override fun readData(
-        path: String,
+        table: File,
         ignoreLastNColumn: Int,
         unionLastNColumn: Int,
     ): List<List<String>> {
         check(ignoreLastNColumn >= 0)
         check(unionLastNColumn >= 0)
 
-        val file = File(path)
-        if (!file.exists() || file.extension != "xlsx") {
+        if (!table.exists() || table.extension != "xlsx") {
             return emptyList()
         }
         return try {
             var resultList =
                 buildList {
-                    FileInputStream(file).use { fis ->
+                    FileInputStream(table).use { fis ->
                         XSSFWorkbook(fis).use { workbook ->
                             workbook.sheetIterator().forEach { sheet ->
                                 for (row in sheet) {

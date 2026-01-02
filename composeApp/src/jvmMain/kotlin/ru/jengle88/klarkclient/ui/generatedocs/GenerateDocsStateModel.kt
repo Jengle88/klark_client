@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.jengle88.klarkclient.data.XlsxDataProvider
+import java.io.File
 
 class GenerateDocsStateModel(
     private val xlsxDataProvider: XlsxDataProvider,
@@ -82,7 +83,7 @@ class GenerateDocsStateModel(
             val data =
                 xlsxDataProvider
                     .readData(
-                        currentState.pathToTable,
+                        File(currentState.pathToTable),
                         currentState.ignoreLastNColumn ?: 0,
                         currentState.unionLastNColumn ?: 0,
                     ).map { it.toPersistentList() }
