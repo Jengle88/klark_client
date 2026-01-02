@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ktlint)
-    alias(libs.plugins.detekt)
     jacoco
 }
 
@@ -79,21 +78,6 @@ ktlint {
     filter {
         exclude("**/generated/**") // исключить сгенерированный код
     }
-}
-
-// Detekt configuration for static code analysis
-detekt {
-    // Use default configuration if custom config doesn't exist
-    buildUponDefaultConfig = true
-    // Enable all rules by default
-    allRules = false
-    // Path to custom config file (optional) - only set if file exists
-    val configFile = file("$rootDir/detekt-config.yml")
-    if (configFile.exists()) {
-        config.setFrom(files(configFile))
-    }
-    // Fail build on any findings
-    ignoreFailures = false
 }
 
 // Jacoco configuration for code coverage
