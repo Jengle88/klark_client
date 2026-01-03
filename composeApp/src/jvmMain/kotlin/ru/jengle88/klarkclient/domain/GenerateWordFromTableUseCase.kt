@@ -1,6 +1,7 @@
 package ru.jengle88.klarkclient.domain
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import ru.jengle88.klarkclient.data.WordDocumentEditor
 import java.io.File
@@ -32,68 +33,90 @@ class GenerateWordFromTableUseCase {
             val generatedFolderName = "generated"
             try {
                 for ((index, row) in tableData.withIndex()) {
-                    val templateFolder = getFolder(pathToTemplate, row)
-                    if (templateFolder == null) {
-                        emit(WorkStatus.Step("Ошибка: Папка \"${row.first()}\" не найдена"))
-                        continue
-                    }
+                    val parseResult = parseRowAndGetResult(
+                        row,
+                        pathToTemplate,
+                        fallbackFileName = "dstFile${index + 1}.docx",
+                        pathToDestination,
+                        generatedFolderName
+                    )
 
-                    val templateFile = getFile(templateFolder, "шаблон.docx")
-                    if (templateFile == null) {
-                        emit(WorkStatus.Step("Ошибка: \"шаблон.docx\" не найден в папке \"${templateFolder}\" или недоступен!"))
-                        continue
+                    if (parseResult.isSuccess) {
+                        val result = parseResult.getOrThrow()
+                        emit(WorkStatus.Step("Готово: \"${result.destinationFileName}\" в папке \"${result.destinationFolderName}\""))
+                        mapOfSuccessRowForTemplate[result.templateFolder] =
+                            (mapOfSuccessRowForTemplate[result.templateFolder] ?: 0) + 1
+                    } else {
+                        val exception = parseResult.exceptionOrNull()?.message ?: "Ошибка"
+                        emit(WorkStatus.Step(exception))
                     }
-
-                    val masksFile = getFile(templateFolder, "маски.txt")
-                    if (masksFile == null) {
-                        emit(WorkStatus.Step("Ошибка: \"маски.txt\" не найден в папке \"${templateFolder}\" или недоступен!"))
-                        continue
-                    }
-
-                    val docxEditor = WordDocumentEditor.createEditor(templateFile)
-
-                    val masks = getMasks(masksFile)
-                    var filename = "dstFile${index + 1}.docx"
-                    masks.zip(row.filter { it.isNotEmpty() }.drop(1)).forEach { (mask, value) ->
-                        if (mask == "\$filename\$") {
-                            val fixedFilename =
-                                value
-                                    .replace("\\", "_")
-                                    .replace("/", "_")
-                            filename = "$fixedFilename.docx"
-                        } else if (mask != "") {
-                            docxEditor.replaceTextInDocument(mask, value)
-                        }
-                    }
-                    val destinationFolder = File(File(pathToDestination, generatedFolderName), templateFolder.name)
-                    if (!destinationFolder.exists()) {
-                        destinationFolder.mkdirs()
-                    }
-                    val destinationFile = File(destinationFolder, filename)
-                    docxEditor.saveToFile(destinationFile)
-                    mapOfSuccessRowForTemplate[templateFolder.name] = (mapOfSuccessRowForTemplate[templateFolder.name] ?: 0) + 1
-                    emit(WorkStatus.Step("Готово: \"${destinationFile.name}\" в папке \"${destinationFolder.name}\""))
                 }
 
                 val amountOfGeneratedFilesInFolder = mutableMapOf<String, Int>()
                 File(pathToDestination, generatedFolderName).listFiles()?.forEach { file ->
-                    amountOfGeneratedFilesInFolder[file.name] = (file.listFiles()?.filter { it.extension == "docx" }?.size ?: 0)
+                    amountOfGeneratedFilesInFolder[file.name] =
+                        (file.listFiles()?.filter { it.extension == "docx" }?.size ?: 0)
                 }
-                val finishResult =
-                    buildString {
-                        appendLine("Всего файлов в папке \"${generatedFolderName}\" = ${amountOfGeneratedFilesInFolder.values.sum()}")
-                        amountOfGeneratedFilesInFolder.forEach { (folderName, amount) ->
-                            appendLine(
-                                "В папке \"$folderName\" сгенерировано файлов: $amount, успешных строк: ${mapOfSuccessRowForTemplate[folderName] ?: 0}",
-                            )
-                        }
+                val finishResult = buildString {
+                    appendLine("Всего файлов в папке \"${generatedFolderName}\" = ${amountOfGeneratedFilesInFolder.values.sum()}")
+                    amountOfGeneratedFilesInFolder.forEach { (folderName, amount) ->
+                        appendLine(
+                            "В папке \"$folderName\" сгенерировано файлов: $amount, успешных строк: ${mapOfSuccessRowForTemplate[folderName] ?: 0}",
+                        )
                     }
+                }
 
                 emit(WorkStatus.Finish(message = finishResult))
             } catch (e: Exception) {
                 emit(WorkStatus.Finish(cause = e))
             }
         }
+
+    private suspend fun FlowCollector<WorkStatus>.parseRowAndGetResult(
+        row: List<String>,
+        pathToTemplate: String,
+        fallbackFileName: String,
+        pathToDestination: String,
+        generatedFolderName: String
+    ): Result<ParseRowResult> {
+        val templateFolder = getFolder(pathToTemplate, row)
+            ?: return Result.failure(Exception("Ошибка: Папка \"${row.first()}\" не найдена"))
+
+        val templateFile = getFile(templateFolder, "шаблон.docx")
+            ?: return Result.failure(Exception("Ошибка: \"шаблон.docx\" не найден в папке \"${templateFolder}\" или недоступен!"))
+
+        val masksFile = getFile(templateFolder, "маски.txt")
+            ?: return Result.failure(Exception("Ошибка: \"маски.txt\" не найден в папке \"${templateFolder}\" или недоступен!"))
+
+        val docxEditor = WordDocumentEditor.createEditor(templateFile)
+
+        val masks = getMasks(masksFile)
+        var filename = fallbackFileName
+        val rowWithRemovedEmptyCell = row.filter { it.isNotEmpty() }.drop(1)
+        masks.zip(rowWithRemovedEmptyCell).forEach { (mask, value) ->
+            if (mask == "\$filename\$") {
+                filename = parseFileName(value)
+            } else if (mask != "") {
+                docxEditor.replaceTextInDocument(mask, value)
+            }
+        }
+        val destinationFolder = File(File(pathToDestination, generatedFolderName), templateFolder.name)
+        if (!destinationFolder.exists()) {
+            destinationFolder.mkdirs()
+        }
+        val destinationFile = File(destinationFolder, filename)
+        docxEditor.saveToFile(destinationFile)
+        emit(WorkStatus.Step("Готово: \"${destinationFile.name}\" в папке \"${destinationFolder.name}\""))
+        return Result.success(ParseRowResult(destinationFile.name, destinationFolder.name, templateFolder.name))
+    }
+
+    private fun parseFileName(value: String): String {
+        val fixedFilename =
+            value
+                .replace("\\", "_")
+                .replace("/", "_")
+        return "$fixedFilename.docx"
+    }
 
     private fun getMasks(masksFile: File): List<String> =
         masksFile
@@ -129,4 +152,10 @@ class GenerateWordFromTableUseCase {
         }
         return file
     }
+
+    private data class ParseRowResult(
+        val destinationFileName: String,
+        val destinationFolderName: String,
+        val templateFolder: String,
+    )
 }

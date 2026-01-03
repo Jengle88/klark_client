@@ -84,7 +84,12 @@ class GenerateDocsScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
 
-        GenerateDocsContent(state, onIntent = screenModel::onIntent, onEffect = screenModel::onEffect, onBack = { navigator.pop() })
+        GenerateDocsContent(
+            state,
+            onIntent = screenModel::onIntent,
+            onEffect = screenModel::onEffect,
+            onBack = { navigator.pop() }
+        )
 
         val tablePickerLauncher =
             rememberFilePickerLauncher(
