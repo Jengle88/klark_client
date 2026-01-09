@@ -33,11 +33,11 @@ class YandexAuthProviderTest {
 
     @Test
     fun `getAuthorizeUrl returns correct URL`() {
-        val uid = UUID.randomUUID().toString()
+        val state = UUID.randomUUID().toString()
         val expectedUrl =
-            "https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&uid=$uid"
+            "https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&state=$state"
 
-        val result = authProvider.getAuthorizeUrl(redirectUri, state = uid)
+        val result = authProvider.getAuthorizeUrl(redirectUri, state = state)
 
         assertEquals(expectedUrl, result)
     }
