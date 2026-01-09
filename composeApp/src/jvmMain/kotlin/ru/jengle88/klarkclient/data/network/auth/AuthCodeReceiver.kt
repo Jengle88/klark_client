@@ -10,6 +10,7 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.withTimeoutOrNull
 
 interface AuthCodeReceiver {
     suspend fun awaitAuthCode(port: Int, expectedState: String, onServerReady: () -> Unit): String?
@@ -44,7 +45,9 @@ class KtorAuthCodeReceiver : AuthCodeReceiver {
         server.start(wait = false)
 
         return try {
-            val code = codeDeferred.await()
+            val code = withTimeoutOrNull(120_000L) {
+                codeDeferred.await()
+            }
             code
         } finally {
             server.stop(gracePeriodMillis = 1000, timeoutMillis = 2000)
