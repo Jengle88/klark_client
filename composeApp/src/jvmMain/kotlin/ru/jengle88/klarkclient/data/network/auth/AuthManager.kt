@@ -8,22 +8,23 @@ import ru.jengle88.klarkclient.di.AuthHttpClient
 import java.util.UUID
 import kotlin.jvm.Throws
 
-private const val DEFAULT_AUTH_SERVER_PORT = 2538
-
 class AuthManager(
     private val authHttpClient: AuthHttpClient,
     private val uriLauncher: UrlLauncher,
     private val authCodeReceiver: AuthCodeReceiver,
-    private val port: Int = DEFAULT_AUTH_SERVER_PORT,
+    private val port: Int,
     private val ioDispatcher: CoroutineDispatcher,
 ) {
     @Throws(IllegalStateException::class)
     suspend fun login(provider: AuthProvider): AuthTokens = withContext(ioDispatcher) {
-        val redirectUri = "http://localhost:$port"
-
         val state = UUID.randomUUID().toString() // генерируем для безопасности, чтобы сравнивать при возвращении запроса
-        val url = provider.getAuthorizeUrl(redirectUri, state)
-        val code = authCodeReceiver.awaitAuthCode(port, expectedState = state, onServerReady = {
+
+        // redirectUri is constructed after we know the actual port
+        var redirectUri = ""
+
+        val code = authCodeReceiver.awaitAuthCode(port, expectedState = state, onServerReady = { actualPort ->
+            redirectUri = "http://localhost:$actualPort"
+            val url = provider.getAuthorizeUrl(redirectUri, state)
             openBrowser(url)
         })
         checkNotNull(code) { "Auth code is null" }

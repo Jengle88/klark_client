@@ -33,10 +33,12 @@ val appModule =
         single<UrlLauncher> { DesktopUrlLauncherImpl() }
         single<AuthCodeReceiver> { KtorAuthCodeReceiver() }
         single {
+            val appConfig: AppConfig = get()
             AuthManager(
                 authHttpClient = get(),
                 uriLauncher = get(),
                 authCodeReceiver = get(),
+                port = appConfig.authPort,
                 ioDispatcher = get<CoroutineDispatchers>().io,
             )
         }
