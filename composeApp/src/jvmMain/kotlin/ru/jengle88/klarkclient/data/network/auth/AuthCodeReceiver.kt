@@ -15,11 +15,11 @@ import kotlinx.coroutines.withTimeoutOrNull
 private const val AUTH_TIMEOUT_MS = 120_000L
 
 interface AuthCodeReceiver {
-    suspend fun awaitAuthCode(port: Int, expectedState: String, onServerReady: (Int) -> Unit): String?
+    suspend fun awaitAuthCode(port: Int, expectedState: String, onServerReady: (port: Int) -> Unit): String?
 }
 
 class KtorAuthCodeReceiver : AuthCodeReceiver {
-    override suspend fun awaitAuthCode(port: Int, expectedState: String, onServerReady: (Int) -> Unit): String? {
+    override suspend fun awaitAuthCode(port: Int, expectedState: String, onServerReady: (port: Int) -> Unit): String? {
         val codeDeferred = CompletableDeferred<String>()
         val server = embeddedServer(CIO, port) {
             routing {
