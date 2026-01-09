@@ -18,8 +18,8 @@ class YandexAuthProvider(
     private val clientSecret: String,
 ) : AuthProvider {
 
-    override fun getAuthorizeUrl(redirectUri: String): String {
-        return "https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri"
+    override fun getAuthorizeUrl(redirectUri: String, state: String): String {
+        return "https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&state=$state"
     }
 
     @Throws(DoubleReceiveException::class, NoTransformationFoundException::class)

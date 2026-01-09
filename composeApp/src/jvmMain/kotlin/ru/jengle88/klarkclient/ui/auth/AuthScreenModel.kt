@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ru.jengle88.klarkclient.common.CoroutineDispatchers
 import ru.jengle88.klarkclient.data.network.auth.AuthManager
 import ru.jengle88.klarkclient.data.network.auth.AuthProvider
 import ru.jengle88.klarkclient.data.network.auth.AuthStore
@@ -19,6 +21,7 @@ class AuthScreenModel(
     private val authManager: AuthManager,
     private val authProvider: AuthProvider,
     private val authStore: AuthStore,
+    private val coroutineDispatcher: CoroutineDispatchers,
 ) : ScreenModel {
     private val _state = MutableStateFlow(
         AuthState(
@@ -43,7 +46,9 @@ class AuthScreenModel(
             _state.update { it.copy(isLoading = true, error = null) }
             try {
                 val tokens = authManager.login(authProvider)
-                val userProfile = authManager.getUserProfile(tokens.accessToken, authProvider)
+                val userProfile = withContext(coroutineDispatcher.io) {
+                    authManager.getUserProfile(tokens.accessToken, authProvider)
+                }
                 authStore.saveAuth(tokens.accessToken, userProfile)
                 _state.update {
                     it.copy(
@@ -54,13 +59,14 @@ class AuthScreenModel(
                     )
                 }
             } catch (e: Exception) {
+                val errorMessage = "Authentication with $authProvider failed: ${e.message ?: "Unknown error"}"
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        error = e.message ?: "Unknown error",
+                        error = errorMessage,
                     )
                 }
-                _effects.tryEmit(AuthEffect.Error(e.message ?: "Unknown error"))
+                _effects.tryEmit(AuthEffect.Error(errorMessage))
             }
         }
     }
@@ -70,6 +76,13 @@ class AuthScreenModel(
         _state.update { AuthState() }
     }
 
-    private fun getUserNameInitials(profile: UserProfile): String =
-        "${profile.firstName.first()}${profile.lastName.first()}".uppercase()
+    private fun getUserNameInitials(profile: UserProfile): String {
+        val firstInitial = profile.firstName.firstOrNull()
+        val lastInitial = profile.lastName.firstOrNull()
+        val initials = buildString {
+            if (firstInitial != null) append(firstInitial)
+            if (lastInitial != null) append(lastInitial)
+        }
+        return initials.uppercase().takeIf { it.isNotEmpty() } ?: "??"
+    }
 }

@@ -6,14 +6,16 @@ class AppConfig {
     private val properties = Properties()
 
     init {
-        val inputStream = object {}.javaClass.classLoader.getResourceAsStream("config.properties")
-        if (inputStream != null) {
-            properties.load(inputStream)
+        AppConfig::class.java.classLoader.getResourceAsStream("config.properties")?.use {
+            properties.load(it)
         }
     }
 
-    fun getProperty(key: String): String? = properties.getProperty(key)
+    fun getProperty(key: String): String =
+        properties.getProperty(key)?.takeIf { it.isNotEmpty() } ?: throw IllegalStateException("$key is not set")
 
-    val clientId: String get() = getProperty("clientId") ?: ""
-    val clientSecret: String get() = getProperty("clientSecret") ?: ""
+    val clientId: String
+        get() = getProperty("clientId")
+    val clientSecret: String
+        get() = getProperty("clientSecret")
 }

@@ -8,6 +8,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -32,10 +33,11 @@ class YandexAuthProviderTest {
 
     @Test
     fun `getAuthorizeUrl returns correct URL`() {
+        val uid = UUID.randomUUID().toString()
         val expectedUrl =
-            "https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri"
+            "https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&uid=$uid"
 
-        val result = authProvider.getAuthorizeUrl(redirectUri)
+        val result = authProvider.getAuthorizeUrl(redirectUri, state = uid)
 
         assertEquals(expectedUrl, result)
     }

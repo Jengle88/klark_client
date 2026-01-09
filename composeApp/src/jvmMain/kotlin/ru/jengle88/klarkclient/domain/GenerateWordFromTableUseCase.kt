@@ -1,7 +1,6 @@
 package ru.jengle88.klarkclient.domain
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import ru.jengle88.klarkclient.data.WordDocumentEditor
 import java.io.File
@@ -33,7 +32,7 @@ class GenerateWordFromTableUseCase {
             val generatedFolderName = "generated"
             try {
                 for ((index, row) in tableData.withIndex()) {
-                    val parseResult = parseRowAndGetResult(
+                    val parseResult = processRow(
                         row,
                         pathToTemplate,
                         fallbackFileName = "dstFile${index + 1}.docx",
@@ -72,7 +71,7 @@ class GenerateWordFromTableUseCase {
             }
         }
 
-    private suspend fun FlowCollector<WorkStatus>.parseRowAndGetResult(
+    private fun processRow(
         row: List<String>,
         pathToTemplate: String,
         fallbackFileName: String,
@@ -106,7 +105,6 @@ class GenerateWordFromTableUseCase {
         }
         val destinationFile = File(destinationFolder, filename)
         docxEditor.saveToFile(destinationFile)
-        emit(WorkStatus.Step("Готово: \"${destinationFile.name}\" в папке \"${destinationFolder.name}\""))
         return Result.success(ParseRowResult(destinationFile.name, destinationFolder.name, templateFolder.name))
     }
 
