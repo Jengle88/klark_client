@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.kotlin.serialization)
     jacoco
 }
 
@@ -42,6 +43,11 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.mockito.core)
+            implementation(libs.mockito.inline)
+            implementation(libs.mockito.kotlin)
         }
         jvmTest.dependencies {
             implementation(libs.apache.poi.ooxml)
@@ -53,6 +59,13 @@ kotlin {
             implementation(libs.apache.poi.ooxml)
             implementation(libs.apache.logging.api)
             runtimeOnly(libs.apache.logging.core)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.contentnegotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.server.core)
+            implementation(libs.ktor.server.cio)
         }
     }
 }
@@ -92,7 +105,9 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     reports {
         // Generate XML report for Codecov
         xml.required.set(true)
-        xml.outputLocation.set(file("${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml"))
+        xml.outputLocation.set(
+            file("${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml"),
+        )
 
         // Generate HTML report for manual review
         html.required.set(true)
@@ -102,7 +117,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     // Configure source and class directories for multiplatform project
     val coverageSourceDirs = listOf(
         "src/commonMain/kotlin",
-        "src/jvmMain/kotlin"
+        "src/jvmMain/kotlin",
     )
 
     sourceDirectories.setFrom(files(coverageSourceDirs))
@@ -110,14 +125,14 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         fileTree(layout.buildDirectory.dir("classes/kotlin/jvm/main")) {
             exclude(
                 // Exclude generated files if needed
-                "**/BuildConfig.*"
+                "**/BuildConfig.*",
             )
-        }
+        },
     )
 
     executionData.setFrom(
         fileTree(layout.buildDirectory) {
             include("jacoco/jvmTest.exec")
-        }
+        },
     )
 }

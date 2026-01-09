@@ -23,6 +23,16 @@ in your IDE’s toolbar or run it directly from the terminal:
   .\gradlew.bat :composeApp:run
   ```
 
+### Конфигурация
+Для работы приложения необходимо создать файл `config.properties` в директории `composeApp/src/jvmMain/resources/` со следующим содержимым:
+
+```properties
+clientId=ВАШ_CLIENT_ID
+clientSecret=ВАШ_CLIENT_SECRET
+```
+
+Эти данные используются для авторизации через Yandex (в классе `AppConfig`).
+
 ---
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
