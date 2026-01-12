@@ -79,6 +79,8 @@ class AuthStoreImpl : AuthStore {
         preferences.put(KEY_ACCESS_TOKEN, token)
         if (refreshToken != null) {
             preferences.put(KEY_REFRESH_TOKEN, refreshToken)
+        } else {
+            preferences.remove(KEY_REFRESH_TOKEN)
         }
         if (userProfile != null) {
             try {
@@ -87,6 +89,8 @@ class AuthStoreImpl : AuthStore {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        } else {
+            preferences.remove(KEY_USER_PROFILE)
         }
     }
 
@@ -111,7 +115,7 @@ class AuthStoreImpl : AuthStore {
 
     private companion object {
         private const val KEY_ACCESS_TOKEN = "auth_access_token"
-        const val KEY_REFRESH_TOKEN = "auth_refresh_token"
+        private const val KEY_REFRESH_TOKEN = "auth_refresh_token"
         private const val KEY_USER_PROFILE = "auth_user_profile"
     }
 }

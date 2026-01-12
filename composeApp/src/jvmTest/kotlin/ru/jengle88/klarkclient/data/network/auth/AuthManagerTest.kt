@@ -123,7 +123,7 @@ class AuthManagerTest {
         val authCodeReceiver = mock<AuthCodeReceiver>()
         val authProvider = mock<AuthProvider>()
 
-        val expectedTokens = AuthTokens(accessToken = "token", refreshToken = null, expiresIn = 3600)
+        val expectedTokens = AuthTokens(accessToken = "token", refreshToken = "", expiresIn = 3600)
 
         whenever(authCodeReceiver.awaitAuthCode(any(), any(), any())).thenAnswer { invocation ->
             val onServerReady = invocation.getArgument<() -> Unit>(2)
@@ -187,7 +187,7 @@ class AuthManagerTest {
         val authProvider = mock<AuthProvider>()
 
         val customPort = 2032
-        val expectedTokens = AuthTokens(accessToken = "token", refreshToken = null, expiresIn = 3600)
+        val expectedTokens = AuthTokens(accessToken = "token", refreshToken = "", expiresIn = 3600)
 
         whenever(authCodeReceiver.awaitAuthCode(eq(customPort), any(), any())).thenAnswer { invocation ->
             val onServerReady = invocation.getArgument<() -> Unit>(2)

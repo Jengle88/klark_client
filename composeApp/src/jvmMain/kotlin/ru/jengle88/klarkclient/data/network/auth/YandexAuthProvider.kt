@@ -85,7 +85,7 @@ class YandexAuthProvider(
     @Serializable
     private data class YandexOAuthResponse(
         @SerialName("access_token") val accessToken: String,
-        @SerialName("refresh_token") val refreshToken: String? = null,
+        @SerialName("refresh_token") val refreshToken: String,
         @SerialName("expires_in") val expiresIn: Long
     )
 
