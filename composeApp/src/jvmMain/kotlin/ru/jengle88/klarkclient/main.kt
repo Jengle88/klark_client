@@ -18,9 +18,9 @@ import org.koin.core.context.startKoin
 import ru.jengle88.klarkclient.di.appModule
 import ru.jengle88.klarkclient.di.screenModelModule
 import ru.jengle88.klarkclient.ui.MainTab
+import ru.jengle88.klarkclient.ui.auth.AuthIntent
 import ru.jengle88.klarkclient.ui.auth.AuthScreenModel
 import ru.jengle88.klarkclient.ui.components.AuthStatusCircleAvatar
-import ru.jengle88.klarkclient.ui.auth.AuthIntent
 
 fun main() =
     application {
@@ -64,7 +64,7 @@ fun App() {
                         } else {
                             authScreenModel.onIntent(AuthIntent.Logout)
                         }
-                    }
+                    },
                 )
                 TabNavigationRailItem(MainTab)
             }

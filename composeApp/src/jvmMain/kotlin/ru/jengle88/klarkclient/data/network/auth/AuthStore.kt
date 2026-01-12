@@ -5,7 +5,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.util.prefs.Preferences
+import ru.jengle88.klarkclient.data.security.SecureStorage
+import ru.jengle88.klarkclient.data.security.SecureStorageFactory
 
 /**
  * Abstraction for managing authentication state within the application.
@@ -27,7 +28,6 @@ interface AuthStore {
      */
     val accessToken: StateFlow<String?>
 
-
     /**
      * A reactive stream of the current refresh token.
      *
@@ -35,6 +35,7 @@ interface AuthStore {
      * The value is `null` when no user is authenticated or when the refresh token is unavailable.
      */
     val refreshToken: StateFlow<String?>
+
     /**
      * A reactive stream of the current authenticated user's profile.
      *
@@ -49,7 +50,11 @@ interface AuthStore {
      * @param refreshToken the refresh token used to get new access tokens.
      * @param userProfile optional profile information for the authenticated user.
      */
-    fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?)
+    fun saveAuth(
+        token: String,
+        refreshToken: String?,
+        userProfile: UserProfile?,
+    )
 
     /**
      * Clear all stored authentication data, effectively logging out the user.
@@ -59,31 +64,35 @@ interface AuthStore {
     fun clearAuth()
 }
 
-class AuthStoreImpl : AuthStore {
-    private val preferences = Preferences.userNodeForPackage(AuthStoreImpl::class.java)
-
-    private val _accessToken = MutableStateFlow<String?>(preferences.get(KEY_ACCESS_TOKEN, null))
+class AuthStoreImpl(
+    private val secureStorage: SecureStorage = SecureStorageFactory.create(),
+) : AuthStore {
+    private val _accessToken = MutableStateFlow<String?>(secureStorage.retrieve(KEY_ACCESS_TOKEN))
     override val accessToken: StateFlow<String?> = _accessToken.asStateFlow()
 
-    private val _refreshToken = MutableStateFlow<String?>(preferences.get(KEY_REFRESH_TOKEN, null))
+    private val _refreshToken = MutableStateFlow<String?>(secureStorage.retrieve(KEY_REFRESH_TOKEN))
     override val refreshToken: StateFlow<String?> = _refreshToken.asStateFlow()
 
     private val _userProfile = MutableStateFlow(loadUserProfile())
     override val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
 
-    override fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?) {
+    override fun saveAuth(
+        token: String,
+        refreshToken: String?,
+        userProfile: UserProfile?,
+    ) {
         _accessToken.value = token
         _refreshToken.value = refreshToken
         _userProfile.value = userProfile
 
-        preferences.put(KEY_ACCESS_TOKEN, token)
+        secureStorage.store(KEY_ACCESS_TOKEN, token)
         if (refreshToken != null) {
-            preferences.put(KEY_REFRESH_TOKEN, refreshToken)
+            secureStorage.store(KEY_REFRESH_TOKEN, refreshToken)
         }
         if (userProfile != null) {
             try {
                 val profileJson = Json.encodeToString(userProfile)
-                preferences.put(KEY_USER_PROFILE, profileJson)
+                secureStorage.store(KEY_USER_PROFILE, profileJson)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -95,13 +104,13 @@ class AuthStoreImpl : AuthStore {
         _refreshToken.value = null
         _userProfile.value = null
 
-        preferences.remove(KEY_ACCESS_TOKEN)
-        preferences.remove(KEY_REFRESH_TOKEN)
-        preferences.remove(KEY_USER_PROFILE)
+        secureStorage.remove(KEY_ACCESS_TOKEN)
+        secureStorage.remove(KEY_REFRESH_TOKEN)
+        secureStorage.remove(KEY_USER_PROFILE)
     }
 
     private fun loadUserProfile(): UserProfile? {
-        val jsonString = preferences.get(KEY_USER_PROFILE, null) ?: return null
+        val jsonString = secureStorage.retrieve(KEY_USER_PROFILE) ?: return null
         return try {
             Json.decodeFromString(jsonString)
         } catch (e: Exception) {

@@ -23,12 +23,13 @@ class AuthScreenModel(
     private val authStore: AuthStore,
     private val coroutineDispatcher: CoroutineDispatchers,
 ) : ScreenModel {
-    private val _state = MutableStateFlow(
-        AuthState(
-            isAuthorized = authStore.accessToken.value != null,
-            userNameInitials = authStore.userProfile.value?.let { getUserNameInitials(it) },
-        ),
-    )
+    private val _state =
+        MutableStateFlow(
+            AuthState(
+                isAuthorized = authStore.accessToken.value != null,
+                userNameInitials = authStore.userProfile.value?.let { getUserNameInitials(it) },
+            ),
+        )
     val state: StateFlow<AuthState> = _state.asStateFlow()
 
     private val _effects = MutableSharedFlow<AuthEffect>(extraBufferCapacity = 1)
@@ -46,9 +47,10 @@ class AuthScreenModel(
             _state.update { it.copy(isLoading = true, error = null) }
             try {
                 val tokens = authManager.login(authProvider)
-                val userProfile = withContext(coroutineDispatcher.io) {
-                    authManager.getUserProfile(tokens.accessToken, authProvider)
-                }
+                val userProfile =
+                    withContext(coroutineDispatcher.io) {
+                        authManager.getUserProfile(tokens.accessToken, authProvider)
+                    }
                 authStore.saveAuth(tokens.accessToken, tokens.refreshToken, userProfile)
                 _state.update {
                     it.copy(
@@ -79,10 +81,11 @@ class AuthScreenModel(
     private fun getUserNameInitials(profile: UserProfile): String {
         val firstInitial = profile.firstName.firstOrNull()
         val lastInitial = profile.lastName.firstOrNull()
-        val initials = buildString {
-            if (firstInitial != null) append(firstInitial)
-            if (lastInitial != null) append(lastInitial)
-        }
+        val initials =
+            buildString {
+                if (firstInitial != null) append(firstInitial)
+                if (lastInitial != null) append(lastInitial)
+            }
         return initials.uppercase().takeIf { it.isNotEmpty() } ?: "??"
     }
 }

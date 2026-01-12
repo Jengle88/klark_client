@@ -27,7 +27,7 @@ val appModule =
             val appConfig: AppConfig = get()
             YandexAuthProvider(
                 clientId = appConfig.clientId,
-                clientSecret = appConfig.clientSecret
+                clientSecret = appConfig.clientSecret,
             )
         }
         single<AuthStore> { AuthStoreImpl() }
