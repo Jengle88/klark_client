@@ -116,11 +116,10 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     }
 
     // Configure source and class directories for multiplatform project
-    val coverageSourceDirs =
-        listOf(
-            "src/commonMain/kotlin",
-            "src/jvmMain/kotlin",
-        )
+    val coverageSourceDirs = listOf(
+        "src/commonMain/kotlin",
+        "src/jvmMain/kotlin",
+    )
 
     sourceDirectories.setFrom(files(coverageSourceDirs))
     classDirectories.setFrom(

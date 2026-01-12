@@ -28,6 +28,7 @@ interface AuthStore {
      */
     val accessToken: StateFlow<String?>
 
+
     /**
      * A reactive stream of the current refresh token.
      *
@@ -35,7 +36,6 @@ interface AuthStore {
      * The value is `null` when no user is authenticated or when the refresh token is unavailable.
      */
     val refreshToken: StateFlow<String?>
-
     /**
      * A reactive stream of the current authenticated user's profile.
      *
@@ -50,11 +50,7 @@ interface AuthStore {
      * @param refreshToken the refresh token used to get new access tokens.
      * @param userProfile optional profile information for the authenticated user.
      */
-    fun saveAuth(
-        token: String,
-        refreshToken: String?,
-        userProfile: UserProfile?,
-    )
+    fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?)
 
     /**
      * Clear all stored authentication data, effectively logging out the user.
@@ -65,8 +61,9 @@ interface AuthStore {
 }
 
 class AuthStoreImpl(
-    private val secureStorage: SecureStorage = SecureStorageFactory.create(),
+    private val secureStorage: SecureStorage = SecureStorageFactory.create()
 ) : AuthStore {
+
     private val _accessToken = MutableStateFlow<String?>(secureStorage.retrieve(KEY_ACCESS_TOKEN))
     override val accessToken: StateFlow<String?> = _accessToken.asStateFlow()
 
@@ -76,11 +73,7 @@ class AuthStoreImpl(
     private val _userProfile = MutableStateFlow(loadUserProfile())
     override val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
 
-    override fun saveAuth(
-        token: String,
-        refreshToken: String?,
-        userProfile: UserProfile?,
-    ) {
+    override fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?) {
         _accessToken.value = token
         _refreshToken.value = refreshToken
         _userProfile.value = userProfile

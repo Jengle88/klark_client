@@ -32,14 +32,13 @@ class GenerateWordFromTableUseCase {
             val generatedFolderName = "generated"
             try {
                 for ((index, row) in tableData.withIndex()) {
-                    val parseResult =
-                        processRow(
-                            row,
-                            pathToTemplate,
-                            fallbackFileName = "dstFile${index + 1}.docx",
-                            pathToDestination,
-                            generatedFolderName,
-                        )
+                    val parseResult = processRow(
+                        row,
+                        pathToTemplate,
+                        fallbackFileName = "dstFile${index + 1}.docx",
+                        pathToDestination,
+                        generatedFolderName
+                    )
 
                     if (parseResult.isSuccess) {
                         val result = parseResult.getOrThrow()
@@ -57,15 +56,14 @@ class GenerateWordFromTableUseCase {
                     amountOfGeneratedFilesInFolder[file.name] =
                         (file.listFiles()?.filter { it.extension == "docx" }?.size ?: 0)
                 }
-                val finishResult =
-                    buildString {
-                        appendLine("Всего файлов в папке \"${generatedFolderName}\" = ${amountOfGeneratedFilesInFolder.values.sum()}")
-                        amountOfGeneratedFilesInFolder.forEach { (folderName, amount) ->
-                            appendLine(
-                                "В папке \"$folderName\" сгенерировано файлов: $amount, успешных строк: ${mapOfSuccessRowForTemplate[folderName] ?: 0}",
-                            )
-                        }
+                val finishResult = buildString {
+                    appendLine("Всего файлов в папке \"${generatedFolderName}\" = ${amountOfGeneratedFilesInFolder.values.sum()}")
+                    amountOfGeneratedFilesInFolder.forEach { (folderName, amount) ->
+                        appendLine(
+                            "В папке \"$folderName\" сгенерировано файлов: $amount, успешных строк: ${mapOfSuccessRowForTemplate[folderName] ?: 0}",
+                        )
                     }
+                }
 
                 emit(WorkStatus.Finish(message = finishResult))
             } catch (e: Exception) {
@@ -78,19 +76,16 @@ class GenerateWordFromTableUseCase {
         pathToTemplate: String,
         fallbackFileName: String,
         pathToDestination: String,
-        generatedFolderName: String,
+        generatedFolderName: String
     ): Result<ParseRowResult> {
-        val templateFolder =
-            getFolder(pathToTemplate, row)
-                ?: return Result.failure(Exception("Ошибка: Папка \"${row.first()}\" не найдена"))
+        val templateFolder = getFolder(pathToTemplate, row)
+            ?: return Result.failure(Exception("Ошибка: Папка \"${row.first()}\" не найдена"))
 
-        val templateFile =
-            getFile(templateFolder, "шаблон.docx")
-                ?: return Result.failure(Exception("Ошибка: \"шаблон.docx\" не найден в папке \"${templateFolder}\" или недоступен!"))
+        val templateFile = getFile(templateFolder, "шаблон.docx")
+            ?: return Result.failure(Exception("Ошибка: \"шаблон.docx\" не найден в папке \"${templateFolder}\" или недоступен!"))
 
-        val masksFile =
-            getFile(templateFolder, "маски.txt")
-                ?: return Result.failure(Exception("Ошибка: \"маски.txt\" не найден в папке \"${templateFolder}\" или недоступен!"))
+        val masksFile = getFile(templateFolder, "маски.txt")
+            ?: return Result.failure(Exception("Ошибка: \"маски.txt\" не найден в папке \"${templateFolder}\" или недоступен!"))
 
         val docxEditor = WordDocumentEditor.createEditor(templateFile)
 

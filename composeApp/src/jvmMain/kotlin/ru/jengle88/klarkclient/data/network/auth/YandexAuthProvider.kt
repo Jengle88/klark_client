@@ -17,10 +17,8 @@ class YandexAuthProvider(
     private val clientId: String,
     private val clientSecret: String,
 ) : AuthProvider {
-    override fun getAuthorizeUrl(
-        redirectUri: String,
-        state: String,
-    ): String {
+
+    override fun getAuthorizeUrl(redirectUri: String, state: String): String {
         return "https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&state=$state"
     }
 
@@ -28,66 +26,58 @@ class YandexAuthProvider(
     override suspend fun exchangeCodeForToken(
         httpClient: HttpClient,
         code: String,
-        redirectUri: String,
+        redirectUri: String
     ): AuthTokens {
-        val response: YandexOAuthResponse =
-            httpClient.submitForm(
-                url = "https://oauth.yandex.ru/token",
-                formParameters =
-                    parameters {
-                        append("grant_type", "authorization_code")
-                        append("code", code)
-                        append("client_id", clientId)
-                        append("client_secret", clientSecret)
-                        append("redirect_uri", redirectUri)
-                    },
-            ).body()
+        val response: YandexOAuthResponse = httpClient.submitForm(
+            url = "https://oauth.yandex.ru/token",
+            formParameters = parameters {
+                append("grant_type", "authorization_code")
+                append("code", code)
+                append("client_id", clientId)
+                append("client_secret", clientSecret)
+                append("redirect_uri", redirectUri)
+            }
+        ).body()
 
         return AuthTokens(
             accessToken = response.accessToken,
             refreshToken = response.refreshToken,
-            expiresIn = response.expiresIn,
+            expiresIn = response.expiresIn
         )
     }
 
     // Метод для обновления токена
-    override suspend fun refreshToken(
-        httpClient: HttpClient,
-        refreshToken: String,
-    ): AuthTokens {
-        val response: YandexOAuthResponse =
-            httpClient.submitForm(
-                url = "https://oauth.yandex.ru/token",
-                formParameters =
-                    parameters {
-                        append("grant_type", "refresh_token")
-                        append("refresh_token", refreshToken)
-                        append("client_id", clientId)
-                        append("client_secret", clientSecret)
-                    },
-            ).body()
+    override suspend fun refreshToken(httpClient: HttpClient, refreshToken: String): AuthTokens {
+        val response: YandexOAuthResponse = httpClient.submitForm(
+            url = "https://oauth.yandex.ru/token",
+            formParameters = parameters {
+                append("grant_type", "refresh_token")
+                append("refresh_token", refreshToken)
+                append("client_id", clientId)
+                append("client_secret", clientSecret)
+            }
+        ).body()
 
         return AuthTokens(
             accessToken = response.accessToken,
             refreshToken = response.refreshToken,
-            expiresIn = response.expiresIn,
+            expiresIn = response.expiresIn
         )
     }
 
     @Throws(DoubleReceiveException::class, NoTransformationFoundException::class)
     override suspend fun getUserProfile(
         httpClient: HttpClient,
-        accessToken: String,
+        accessToken: String
     ): UserProfile {
-        val rawProfile: YandexUserProfile =
-            httpClient.get("https://login.yandex.ru/info") {
-                header("Authorization", "OAuth $accessToken")
-                parameter("format", "json")
-            }.body()
+        val rawProfile: YandexUserProfile = httpClient.get("https://login.yandex.ru/info") {
+            header("Authorization", "OAuth $accessToken")
+            parameter("format", "json")
+        }.body()
 
         return UserProfile(
             firstName = rawProfile.firstName ?: "",
-            lastName = rawProfile.lastName ?: "",
+            lastName = rawProfile.lastName ?: ""
         )
     }
 
@@ -96,7 +86,7 @@ class YandexAuthProvider(
     private data class YandexOAuthResponse(
         @SerialName("access_token") val accessToken: String,
         @SerialName("refresh_token") val refreshToken: String? = null,
-        @SerialName("expires_in") val expiresIn: Long,
+        @SerialName("expires_in") val expiresIn: Long
     )
 
     @Serializable

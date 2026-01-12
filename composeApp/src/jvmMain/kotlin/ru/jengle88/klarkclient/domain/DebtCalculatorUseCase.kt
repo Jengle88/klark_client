@@ -7,13 +7,15 @@ import java.io.File
 
 class DebtCalculatorUseCase(
     private val xlsxDataProvider: XlsxDataProvider,
+
 ) {
+
     sealed interface WorkStatus {
         data object Start : WorkStatus
 
         data class TableDataReceived(
             val amountOfAllFiles: Int,
-        ) : WorkStatus
+        ): WorkStatus
 
         data class ProcessingStep(
             val amountOfProcessedFiles: Int,
@@ -44,12 +46,12 @@ class DebtCalculatorUseCase(
             }
             emit(WorkStatus.TableDataReceived(tablesPath.size))
             for (tablePath in tablesPath) {
-                val table =
-                    xlsxDataProvider.readData(
-                        tablePath,
-                        0,
-                        0,
-                    )
+                val table = xlsxDataProvider.readData(
+                    tablePath,
+                    0,
+                    0,
+                )
+
             }
         }
 

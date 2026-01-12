@@ -34,63 +34,60 @@ fun AuthStatusCircleAvatar(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
     size: Dp = 48.dp,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     val shape = CircleShape
 
     Box(
-        modifier =
-            modifier
-                .size(size)
-                .clip(shape)
-                .clickable(enabled = !isLoading, onClick = onClick),
-        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(size)
+            .clip(shape)
+            .clickable(enabled = !isLoading, onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(size * 0.7f),
                 strokeWidth = 2.dp,
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colors.primary
             )
         } else if (isAuthorized) {
             Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colors.primary)
-                        .border(2.dp, MaterialTheme.colors.primaryVariant, shape),
-                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colors.primary)
+                    .border(2.dp, MaterialTheme.colors.primaryVariant, shape),
+                contentAlignment = Alignment.Center
             ) {
                 if (userName != null) {
                     Text(
                         text = userName,
                         color = MaterialTheme.colors.onPrimary,
                         fontWeight = FontWeight.Bold,
-                        fontSize = (size.value / 2.5).sp,
+                        fontSize = (size.value / 2.5).sp
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Rounded.Person,
                         tint = MaterialTheme.colors.onPrimary,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize(0.5f),
+                        modifier = Modifier.fillMaxSize(0.5f)
                     )
                 }
             }
         } else {
             Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.LightGray)
-                        .border(1.dp, Color.Gray, shape),
-                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+                    .border(1.dp, Color.Gray, shape),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Person,
                     contentDescription = "Login",
                     tint = Color.DarkGray,
-                    modifier = Modifier.fillMaxSize(0.5f),
+                    modifier = Modifier.fillMaxSize(0.5f)
                 )
             }
         }

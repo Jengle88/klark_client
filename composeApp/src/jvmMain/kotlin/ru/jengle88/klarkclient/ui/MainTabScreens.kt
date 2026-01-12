@@ -88,7 +88,7 @@ class GenerateDocsScreen : Screen {
             state,
             onIntent = screenModel::onIntent,
             onEffect = screenModel::onEffect,
-            onBack = { navigator.pop() },
+            onBack = { navigator.pop() }
         )
 
         val tablePickerLauncher =

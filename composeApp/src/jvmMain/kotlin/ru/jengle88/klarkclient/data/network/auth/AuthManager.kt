@@ -17,28 +17,24 @@ class AuthManager(
     private val ioDispatcher: CoroutineDispatcher,
 ) {
     @Throws(IllegalStateException::class)
-    suspend fun login(provider: AuthProvider): AuthTokens =
-        withContext(ioDispatcher) {
-            val redirectUri = "http://localhost:$port"
+    suspend fun login(provider: AuthProvider): AuthTokens = withContext(ioDispatcher) {
+        val redirectUri = "http://localhost:$port"
 
-            val state = UUID.randomUUID().toString() // генерируем для безопасности, чтобы сравнивать при возвращении запроса
-            val url = provider.getAuthorizeUrl(redirectUri, state)
-            val code =
-                authCodeReceiver.awaitAuthCode(port, expectedState = state, onServerReady = {
-                    openBrowser(url)
-                })
-            checkNotNull(code) { "Auth code is null" }
-            return@withContext provider.exchangeCodeForToken(authHttpClient.httpClient, code, redirectUri)
-        }
+        val state = UUID.randomUUID().toString() // генерируем для безопасности, чтобы сравнивать при возвращении запроса
+        val url = provider.getAuthorizeUrl(redirectUri, state)
+        val code = authCodeReceiver.awaitAuthCode(port, expectedState = state, onServerReady = {
+            openBrowser(url)
+        })
+        checkNotNull(code) { "Auth code is null" }
+        return@withContext provider.exchangeCodeForToken(authHttpClient.httpClient, code, redirectUri)
+    }
 
     @WorkerThread
-    suspend fun getUserProfile(
-        accessToken: String,
-        provider: AuthProvider,
-    ): UserProfile {
+    suspend fun getUserProfile(accessToken: String, provider: AuthProvider): UserProfile {
         val userProfile = provider.getUserProfile(authHttpClient.httpClient, accessToken)
         return userProfile
     }
+
 
     private fun openBrowser(url: String) {
         uriLauncher.open(url)

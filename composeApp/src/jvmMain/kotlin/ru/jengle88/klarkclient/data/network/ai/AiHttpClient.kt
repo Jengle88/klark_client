@@ -20,13 +20,11 @@ class AiHttpClient(
     val httpClient by lazy {
         HttpClient(CIO) {
             install(ContentNegotiation) {
-                json(
-                    Json {
-                        prettyPrint = true
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                    },
-                )
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
             }
 
             install(Auth) {
@@ -55,7 +53,7 @@ class AiHttpClient(
                             authStore.saveAuth(
                                 newTokens.accessToken,
                                 newTokens.refreshToken,
-                                authStore.userProfile.value,
+                                authStore.userProfile.value
                             )
 
                             // Возвращаем их плагину, чтобы он повторил упавший запрос
