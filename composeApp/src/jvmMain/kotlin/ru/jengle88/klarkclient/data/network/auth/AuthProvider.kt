@@ -49,6 +49,17 @@ interface AuthProvider {
     suspend fun exchangeCodeForToken(httpClient: HttpClient, code: String, redirectUri: String): AuthTokens
 
     /**
+     * Refreshes the OAuth tokens using the provided refresh token.
+     *
+     * This method is used to get a new access token when the current one expires,
+     * by making a request to the OAuth provider's token endpoint.
+     *
+     * @param httpClient The HttpClient instance used to perform the network request.
+     * @param refreshToken The refresh token used to obtain a new access token.
+     * @return An AuthTokens instance containing the new access token, and optionally a new refresh token and expiration time.
+     */
+    suspend fun refreshToken(httpClient: HttpClient, refreshToken: String): AuthTokens
+    /**
      * Retrieves the authenticated user's profile using a valid access token.
      *
      * Implementations should call the provider's user info endpoint (or equivalent),

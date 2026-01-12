@@ -3,6 +3,9 @@ package ru.jengle88.klarkclient.data.network.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.util.prefs.Preferences
 
 /**
  * Abstraction for managing authentication state within the application.
@@ -24,6 +27,14 @@ interface AuthStore {
      */
     val accessToken: StateFlow<String?>
 
+
+    /**
+     * A reactive stream of the current refresh token.
+     *
+     * The refresh token is used to get a new access token when the existing one expires.
+     * The value is `null` when no user is authenticated or when the refresh token is unavailable.
+     */
+    val refreshToken: StateFlow<String?>
     /**
      * A reactive stream of the current authenticated user's profile.
      *
@@ -35,9 +46,10 @@ interface AuthStore {
      * Persist the provided authentication data.
      *
      * @param token the access token associated with the authenticated session.
+     * @param refreshToken the refresh token used to get new access tokens.
      * @param userProfile optional profile information for the authenticated user.
      */
-    fun saveAuth(token: String, userProfile: UserProfile?)
+    fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?)
 
     /**
      * Clear all stored authentication data, effectively logging out the user.
@@ -48,19 +60,58 @@ interface AuthStore {
 }
 
 class AuthStoreImpl : AuthStore {
-    private val _accessToken = MutableStateFlow<String?>(null)
+    private val preferences = Preferences.userNodeForPackage(AuthStoreImpl::class.java)
+
+    private val _accessToken = MutableStateFlow<String?>(preferences.get(KEY_ACCESS_TOKEN, null))
     override val accessToken: StateFlow<String?> = _accessToken.asStateFlow()
 
-    private val _userProfile = MutableStateFlow<UserProfile?>(null)
+    private val _refreshToken = MutableStateFlow<String?>(preferences.get(KEY_REFRESH_TOKEN, null))
+    override val refreshToken: StateFlow<String?> = _refreshToken.asStateFlow()
+
+    private val _userProfile = MutableStateFlow(loadUserProfile())
     override val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
 
-    override fun saveAuth(token: String, userProfile: UserProfile?) {
+    override fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?) {
         _accessToken.value = token
+        _refreshToken.value = refreshToken
         _userProfile.value = userProfile
+
+        preferences.put(KEY_ACCESS_TOKEN, token)
+        if (refreshToken != null) {
+            preferences.put(KEY_REFRESH_TOKEN, refreshToken)
+        }
+        if (userProfile != null) {
+            try {
+                val profileJson = Json.encodeToString(userProfile)
+                preferences.put(KEY_USER_PROFILE, profileJson)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun clearAuth() {
         _accessToken.value = null
+        _refreshToken.value = null
         _userProfile.value = null
+
+        preferences.remove(KEY_ACCESS_TOKEN)
+        preferences.remove(KEY_REFRESH_TOKEN)
+        preferences.remove(KEY_USER_PROFILE)
+    }
+
+    private fun loadUserProfile(): UserProfile? {
+        val jsonString = preferences.get(KEY_USER_PROFILE, null) ?: return null
+        return try {
+            Json.decodeFromString(jsonString)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private companion object {
+        private const val KEY_ACCESS_TOKEN = "auth_access_token"
+        const val KEY_REFRESH_TOKEN = "auth_refresh_token"
+        private const val KEY_USER_PROFILE = "auth_user_profile"
     }
 }

@@ -4,7 +4,6 @@ import androidx.annotation.WorkerThread
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import ru.jengle88.klarkclient.common.UrlLauncher
-import ru.jengle88.klarkclient.di.AuthHttpClient
 import java.util.UUID
 import kotlin.jvm.Throws
 

@@ -39,7 +39,30 @@ class YandexAuthProvider(
             }
         ).body()
 
-        return AuthTokens(accessToken = response.accessToken, expiresIn = response.expiresIn)
+        return AuthTokens(
+            accessToken = response.accessToken,
+            refreshToken = response.refreshToken,
+            expiresIn = response.expiresIn
+        )
+    }
+
+    // Метод для обновления токена
+    override suspend fun refreshToken(httpClient: HttpClient, refreshToken: String): AuthTokens {
+        val response: YandexOAuthResponse = httpClient.submitForm(
+            url = "https://oauth.yandex.ru/token",
+            formParameters = parameters {
+                append("grant_type", "refresh_token")
+                append("refresh_token", refreshToken)
+                append("client_id", clientId)
+                append("client_secret", clientSecret)
+            }
+        ).body()
+
+        return AuthTokens(
+            accessToken = response.accessToken,
+            refreshToken = response.refreshToken,
+            expiresIn = response.expiresIn
+        )
     }
 
     @Throws(DoubleReceiveException::class, NoTransformationFoundException::class)
@@ -62,6 +85,7 @@ class YandexAuthProvider(
     @Serializable
     private data class YandexOAuthResponse(
         @SerialName("access_token") val accessToken: String,
+        @SerialName("refresh_token") val refreshToken: String? = null,
         @SerialName("expires_in") val expiresIn: Long
     )
 
