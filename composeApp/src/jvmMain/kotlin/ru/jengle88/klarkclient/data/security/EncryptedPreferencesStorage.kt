@@ -14,9 +14,23 @@ import javax.crypto.spec.SecretKeySpec
  * This implementation encrypts sensitive data before storing it in Java Preferences.
  * The encryption key is generated per-user and stored in a platform-specific location.
  *
- * While this is more secure than plain text storage, platform-specific implementations
- * (Windows Credential Manager, macOS Keychain, Linux Secret Service) would provide
- * better security. This implementation serves as a cross-platform fallback.
+ * ## Security Considerations
+ *
+ * While this provides better security than plain text storage, it has some limitations:
+ * - The master encryption key is stored in the same preferences store as the encrypted data.
+ *   This means an attacker with file system access could potentially extract both the key
+ *   and encrypted data.
+ * - Platform-specific implementations (Windows Credential Manager, macOS Keychain,
+ *   Linux Secret Service) would provide stronger security by using OS-level key protection.
+ * - This implementation serves as a cross-platform fallback that is significantly more
+ *   secure than plain text storage.
+ *
+ * ## Encryption Details
+ *
+ * - Algorithm: AES-GCM (Galois/Counter Mode)
+ * - Key size: 256 bits
+ * - Authentication tag: 128 bits
+ * - IV size: 96 bits (12 bytes)
  */
 class EncryptedPreferencesStorage(
     private val serviceName: String = "KlarkClient",
@@ -60,6 +74,12 @@ class EncryptedPreferencesStorage(
         }
     }
 
+    /**
+     * Checks if secure storage is available.
+     *
+     * Note: This method triggers lazy initialization of the encryption key,
+     * which may involve key generation on first call. Subsequent calls are fast.
+     */
     override fun isAvailable(): Boolean {
         return try {
             // Test if we can access preferences and crypto
@@ -100,6 +120,12 @@ class EncryptedPreferencesStorage(
 
         return if (keyString != null) {
             val keyBytes = Base64.getDecoder().decode(keyString)
+            // Validate key length for AES-256 (32 bytes)
+            if (keyBytes.size != KEY_SIZE / 8) {
+                throw SecureStorageException(
+                    "Invalid key size: expected ${KEY_SIZE / 8} bytes, got ${keyBytes.size} bytes"
+                )
+            }
             SecretKeySpec(keyBytes, ALGORITHM)
         } else {
             // Generate new key
