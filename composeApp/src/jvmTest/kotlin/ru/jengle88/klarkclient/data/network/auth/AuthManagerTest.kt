@@ -71,7 +71,8 @@ class AuthManagerTest {
             authHttpClient = authHttpClient,
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,
-            ioDispatcher = testDispatcher
+            ioDispatcher = testDispatcher,
+            port = DEFAULT_PORT,
         )
 
         val result = authManager.login(authProvider)
@@ -103,7 +104,8 @@ class AuthManagerTest {
             authHttpClient = authHttpClient,
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,
-            ioDispatcher = testDispatcher
+            ioDispatcher = testDispatcher,
+            port = DEFAULT_PORT,
         )
 
         assertFailsWith<IllegalStateException> {
@@ -136,7 +138,8 @@ class AuthManagerTest {
             authHttpClient = authHttpClient,
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,
-            ioDispatcher = testDispatcher
+            ioDispatcher = testDispatcher,
+            port = DEFAULT_PORT,
         )
 
         authManager.login(authProvider)
@@ -162,7 +165,8 @@ class AuthManagerTest {
             authHttpClient = authHttpClient,
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,
-            ioDispatcher = testDispatcher
+            ioDispatcher = testDispatcher,
+            port = DEFAULT_PORT,
         )
 
         val result = authManager.getUserProfile("testToken", authProvider)
@@ -182,7 +186,7 @@ class AuthManagerTest {
         val authCodeReceiver = mock<AuthCodeReceiver>()
         val authProvider = mock<AuthProvider>()
 
-        val customPort = 8080
+        val customPort = 2032
         val expectedTokens = AuthTokens(accessToken = "token", refreshToken = null, expiresIn = 3600)
 
         whenever(authCodeReceiver.awaitAuthCode(eq(customPort), any(), any())).thenAnswer { invocation ->
@@ -199,7 +203,7 @@ class AuthManagerTest {
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,
             port = customPort,
-            ioDispatcher = testDispatcher
+            ioDispatcher = testDispatcher,
         )
 
         authManager.login(authProvider)
