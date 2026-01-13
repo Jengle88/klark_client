@@ -36,7 +36,6 @@ class EncryptedPreferencesStorage(
     private val serviceName: String = "KlarkClient",
 ) : SecureStorage {
     private val preferences = Preferences.userNodeForPackage(EncryptedPreferencesStorage::class.java)
-    private val cipher = Cipher.getInstance(TRANSFORMATION)
 
     // Lazy initialization of the encryption key
     private val encryptionKey: SecretKey by lazy {
@@ -91,6 +90,8 @@ class EncryptedPreferencesStorage(
     }
 
     private fun encrypt(plaintext: String): String {
+        // Create a new Cipher instance for each operation to ensure thread safety
+        val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, encryptionKey)
         val iv = cipher.iv
         val encrypted = cipher.doFinal(plaintext.toByteArray(Charsets.UTF_8))
@@ -107,6 +108,8 @@ class EncryptedPreferencesStorage(
         val iv = combined.copyOfRange(0, GCM_IV_LENGTH)
         val encrypted = combined.copyOfRange(GCM_IV_LENGTH, combined.size)
 
+        // Create a new Cipher instance for each operation to ensure thread safety
+        val cipher = Cipher.getInstance(TRANSFORMATION)
         val spec = GCMParameterSpec(GCM_TAG_LENGTH, iv)
         cipher.init(Cipher.DECRYPT_MODE, encryptionKey, spec)
 

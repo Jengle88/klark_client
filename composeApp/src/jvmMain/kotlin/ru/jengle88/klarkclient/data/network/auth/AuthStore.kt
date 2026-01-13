@@ -63,13 +63,31 @@ class AuthStoreImpl(
     private val secureStorage: SecureStorage
 ) : AuthStore {
 
-    private val _accessToken = MutableStateFlow<String?>(secureStorage.retrieve(KEY_ACCESS_TOKEN))
+    private val _accessToken = MutableStateFlow<String?>(
+        try {
+            secureStorage.retrieve(KEY_ACCESS_TOKEN)
+        } catch (e: Exception) {
+            null
+        }
+    )
     override val accessToken: StateFlow<String?> = _accessToken.asStateFlow()
 
-    private val _refreshToken = MutableStateFlow<String?>(secureStorage.retrieve(KEY_REFRESH_TOKEN))
+    private val _refreshToken = MutableStateFlow<String?>(
+        try {
+            secureStorage.retrieve(KEY_REFRESH_TOKEN)
+        } catch (e: Exception) {
+            null
+        }
+    )
     override val refreshToken: StateFlow<String?> = _refreshToken.asStateFlow()
 
-    private val _userProfile = MutableStateFlow(loadUserProfile())
+    private val _userProfile = MutableStateFlow(
+        try {
+            loadUserProfile()
+        } catch (e: Exception) {
+            null
+        }
+    )
     override val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
 
     override fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?) {
