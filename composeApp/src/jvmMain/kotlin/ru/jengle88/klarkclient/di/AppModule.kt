@@ -16,6 +16,8 @@ import ru.jengle88.klarkclient.data.network.auth.AuthStore
 import ru.jengle88.klarkclient.data.network.auth.AuthStoreImpl
 import ru.jengle88.klarkclient.data.network.auth.KtorAuthCodeReceiver
 import ru.jengle88.klarkclient.data.network.auth.YandexAuthProvider
+import ru.jengle88.klarkclient.data.security.SecureStorage
+import ru.jengle88.klarkclient.data.security.SecureStorageFactory
 import ru.jengle88.klarkclient.domain.GenerateWordFromTableUseCase
 
 val appModule =
@@ -30,7 +32,8 @@ val appModule =
                 clientSecret = appConfig.clientSecret
             )
         }
-        single<AuthStore> { AuthStoreImpl() }
+        single<SecureStorage> { SecureStorageFactory.create() }
+        single<AuthStore> { AuthStoreImpl(secureStorage = get()) }
         single<UrlLauncher> { DesktopUrlLauncherImpl() }
         single<AuthCodeReceiver> { KtorAuthCodeReceiver() }
         single {

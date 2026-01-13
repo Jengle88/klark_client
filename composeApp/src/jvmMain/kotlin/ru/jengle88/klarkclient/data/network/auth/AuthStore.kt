@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import ru.jengle88.klarkclient.data.security.SecureStorage
-import ru.jengle88.klarkclient.data.security.SecureStorageFactory
 
 /**
  * Abstraction for managing authentication state within the application.
@@ -61,7 +60,7 @@ interface AuthStore {
 }
 
 class AuthStoreImpl(
-    private val secureStorage: SecureStorage = SecureStorageFactory.create()
+    private val secureStorage: SecureStorage
 ) : AuthStore {
 
     private val _accessToken = MutableStateFlow<String?>(secureStorage.retrieve(KEY_ACCESS_TOKEN))
