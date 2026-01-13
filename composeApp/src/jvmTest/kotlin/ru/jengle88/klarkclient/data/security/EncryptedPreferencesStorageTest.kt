@@ -1,11 +1,20 @@
 package ru.jengle88.klarkclient.data.security
 
+import java.util.prefs.Preferences
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class EncryptedPreferencesStorageTest {
+    @AfterTest
+    fun cleanup() {
+        // Clean up the shared encryption key to prevent test pollution
+        val preferences = Preferences.userNodeForPackage(EncryptedPreferencesStorage::class.java)
+        preferences.remove("_secure_storage_master_key")
+        preferences.flush()
+    }
     @Test
     fun `storage is available`() {
         val storage = EncryptedPreferencesStorage("TestService")
