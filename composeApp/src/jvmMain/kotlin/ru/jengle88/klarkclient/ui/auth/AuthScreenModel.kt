@@ -49,7 +49,7 @@ class AuthScreenModel(
                 val userProfile = withContext(coroutineDispatcher.io) {
                     authManager.getUserProfile(tokens.accessToken, authProvider)
                 }
-                authStore.saveAuth(tokens.accessToken, userProfile)
+                authStore.saveAuth(tokens.accessToken, tokens.refreshToken, userProfile)
                 _state.update {
                     it.copy(
                         isAuthorized = true,

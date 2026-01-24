@@ -9,6 +9,7 @@ import ru.jengle88.klarkclient.data.AppConfig
 import ru.jengle88.klarkclient.data.XlsxDataProvider
 import ru.jengle88.klarkclient.data.XlsxDataProviderImpl
 import ru.jengle88.klarkclient.data.network.auth.AuthCodeReceiver
+import ru.jengle88.klarkclient.data.network.auth.AuthHttpClient
 import ru.jengle88.klarkclient.data.network.auth.AuthManager
 import ru.jengle88.klarkclient.data.network.auth.AuthProvider
 import ru.jengle88.klarkclient.data.network.auth.AuthStore

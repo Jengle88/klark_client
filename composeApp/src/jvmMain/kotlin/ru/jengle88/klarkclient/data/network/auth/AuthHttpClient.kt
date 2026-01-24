@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.di
+package ru.jengle88.klarkclient.data.network.auth
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO

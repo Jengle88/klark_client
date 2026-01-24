@@ -48,6 +48,7 @@ class YandexAuthProviderTest {
         val mockResponse = """
             {
                 "access_token": "testAccessToken",
+                "refresh_token": "testRefreshToken",
                 "expires_in": 3600
             }
         """
@@ -133,5 +134,46 @@ class YandexAuthProviderTest {
 
         assertEquals("", result.firstName)
         assertEquals("", result.lastName)
+    }
+
+    @Test
+    fun `refreshToken returns valid AuthTokens on success`() = runBlocking {
+        val refreshTokenValue = "testRefreshToken"
+        val mockResponse = """
+            {
+                "access_token": "newAccessToken",
+                "refresh_token": "newRefreshToken",
+                "expires_in": 7200
+            }
+        """
+        val mockEngine = MockEngine { request ->
+            assertEquals("https://oauth.yandex.ru/token", request.url.toString())
+            assertEquals(HttpMethod.Post, request.method)
+            respond(
+                mockResponse,
+                HttpStatusCode.OK,
+                headers = headersOf("Content-Type" to listOf(ContentType.Application.Json.toString()))
+            )
+        }
+        val httpClient = createHttpClient(mockEngine)
+
+        val result = authProvider.refreshToken(httpClient, refreshTokenValue)
+
+        assertEquals("newAccessToken", result.accessToken)
+        assertEquals("newRefreshToken", result.refreshToken)
+        assertEquals(7200, result.expiresIn)
+    }
+
+    @Test
+    fun `refreshToken throws exception on error response`() = runBlocking<Unit> {
+        val refreshTokenValue = "invalidRefreshToken"
+        val mockEngine = MockEngine {
+            respond("", HttpStatusCode.BadRequest)
+        }
+        val httpClient = createHttpClient(mockEngine)
+
+        assertFailsWith<Exception> {
+            authProvider.refreshToken(httpClient, refreshTokenValue)
+        }
     }
 }
