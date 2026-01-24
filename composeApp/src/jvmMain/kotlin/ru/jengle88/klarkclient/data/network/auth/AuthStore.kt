@@ -98,7 +98,9 @@ class AuthStoreImpl(
         secureStorage.store(KEY_ACCESS_TOKEN, token)
         if (refreshToken != null) {
             secureStorage.store(KEY_REFRESH_TOKEN, refreshToken)
-        }
+            secureStorage.store(KEY_REFRESH_TOKEN, refreshToken)
+        } else {
+            secureStorage.remove(KEY_REFRESH_TOKEN)
         if (userProfile != null) {
             try {
                 val profileJson = Json.encodeToString(userProfile)
