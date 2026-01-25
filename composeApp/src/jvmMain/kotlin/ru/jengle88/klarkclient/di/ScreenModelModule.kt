@@ -14,7 +14,7 @@ val screenModelModule =
         factoryOf(::MainTabScreenModel)
         factory<GenerateDocsStateModel> {
             GenerateDocsStateModel(
-                xlsxDataProvider = get(),
+                excelDocumentDataProvider = get(),
             )
         }
         factory<GenerateDocsGenerationDialogStateModel> {

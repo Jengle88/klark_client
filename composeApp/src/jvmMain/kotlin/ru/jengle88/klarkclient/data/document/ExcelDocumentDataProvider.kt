@@ -1,8 +1,8 @@
-package ru.jengle88.klarkclient.data
+package ru.jengle88.klarkclient.data.document
 
 import java.io.File
 
-interface XlsxDataProvider {
+interface ExcelDocumentDataProvider {
     fun readData(
         table: File,
         ignoreLastNColumn: Int,

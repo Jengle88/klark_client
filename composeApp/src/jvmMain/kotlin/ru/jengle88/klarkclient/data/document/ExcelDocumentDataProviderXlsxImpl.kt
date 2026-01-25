@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.data
+package ru.jengle88.klarkclient.data.document
 
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.math.min
 
-class XlsxDataProviderImpl(private val locale: Locale = Locale.getDefault()) : XlsxDataProvider {
+class ExcelDocumentDataProviderXlsxImpl(private val locale: Locale = Locale.getDefault()) : ExcelDocumentDataProvider {
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy")
 
     override fun readData(
@@ -121,7 +121,7 @@ class XlsxDataProviderImpl(private val locale: Locale = Locale.getDefault()) : X
         return cellValue ?: ""
     }
 
-    private companion object {
+    private companion object Companion {
         private const val COLUMNS_LIMIT = 100
     }
 }

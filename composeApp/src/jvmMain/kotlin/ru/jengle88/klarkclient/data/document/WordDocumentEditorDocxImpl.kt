@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.data
+package ru.jengle88.klarkclient.data.document
 
 import org.apache.poi.xwpf.usermodel.PositionInParagraph
 import org.apache.poi.xwpf.usermodel.TextSegment
@@ -9,22 +9,22 @@ import org.apache.poi.xwpf.usermodel.XWPFTableCell
 import org.apache.poi.xwpf.usermodel.XWPFTableRow
 import java.io.File
 
-class WordDocumentEditor private constructor(
+class WordDocumentEditorDocxImpl private constructor(
     private val document: XWPFDocument,
-) {
-    fun saveToFile(file: File) {
+): WordDocumentEditor {
+    override fun saveToFile(file: File) {
         document.write(file.outputStream())
     }
 
-    fun replaceTextInDocument(
+    override fun replaceTextInDocument(
         oldText: String,
         newText: String,
     ) {
-        diveToTablesAndReplace(document.tables, oldText, newText)
-        replaceInParagraphs(document.paragraphs, oldText, newText)
+        diveToTablesAndReplaceText(document.tables, oldText, newText)
+        replaceTextInParagraphs(document.paragraphs, oldText, newText)
     }
 
-    private fun diveToTablesAndReplace(
+    private fun diveToTablesAndReplaceText(
         tables: List<XWPFTable>,
         oldText: String,
         newText: String,
@@ -60,15 +60,15 @@ class WordDocumentEditor private constructor(
         }
         for (cell in cells) {
             if (cell.tables.isNotEmpty()) {
-                diveToTablesAndReplace(cell.tables, oldText, newText)
+                diveToTablesAndReplaceText(cell.tables, oldText, newText)
             }
             if (cell.paragraphs.isNotEmpty()) {
-                replaceInParagraphs(cell.paragraphs, oldText, newText)
+                replaceTextInParagraphs(cell.paragraphs, oldText, newText)
             }
         }
     }
 
-    private fun replaceInParagraphs(
+    private fun replaceTextInParagraphs(
         paragraphs: List<XWPFParagraph>,
         oldText: String,
         newText: String,
@@ -104,10 +104,10 @@ class WordDocumentEditor private constructor(
         }
     }
 
-    companion object {
-        fun createEditor(file: File): WordDocumentEditor {
+    companion object Companion {
+        fun createEditor(file: File): WordDocumentEditorDocxImpl {
             val document = XWPFDocument(file.inputStream())
-            return WordDocumentEditor(document)
+            return WordDocumentEditorDocxImpl(document)
         }
     }
 }

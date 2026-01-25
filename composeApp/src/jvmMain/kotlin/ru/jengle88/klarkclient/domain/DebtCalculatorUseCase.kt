@@ -2,13 +2,13 @@ package ru.jengle88.klarkclient.domain
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.jengle88.klarkclient.data.XlsxDataProvider
+import ru.jengle88.klarkclient.data.document.ExcelDocumentDataProvider
 import java.io.File
 
 class DebtCalculatorUseCase(
-    private val xlsxDataProvider: XlsxDataProvider,
+    private val excelDocumentDataProvider: ExcelDocumentDataProvider,
 
-) {
+    ) {
 
     sealed interface WorkStatus {
         data object Start : WorkStatus
@@ -46,7 +46,7 @@ class DebtCalculatorUseCase(
             }
             emit(WorkStatus.TableDataReceived(tablesPath.size))
             for (tablePath in tablesPath) {
-                val table = xlsxDataProvider.readData(
+                val table = excelDocumentDataProvider.readData(
                     tablePath,
                     0,
                     0,

@@ -1,6 +1,7 @@
 package ru.jengle88.klarkclient.data
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument
+import ru.jengle88.klarkclient.data.document.WordDocumentEditorDocxImpl
 import java.io.File
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -30,7 +31,7 @@ class WordDocumentEditorTest {
                 document.createParagraph().createRun().setText("Hello World")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("World", "Universe")
         val outputFile = File(tempDir, "output_simple.docx")
         editor.saveToFile(outputFile)
@@ -50,7 +51,7 @@ class WordDocumentEditorTest {
                 table.getRow(0).getCell(0).setText("Replace this text")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("this", "that")
         val outputFile = File(tempDir, "output_table.docx")
         editor.saveToFile(outputFile)
@@ -77,7 +78,7 @@ class WordDocumentEditorTest {
                 table.getRow(1).getCell(1).setText("Country: Unknown")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("{{NAME}}", "John")
         editor.replaceTextInDocument("{{AGE}}", "25")
         val outputFile = File(tempDir, "output_multiple_cells.docx")
@@ -118,7 +119,7 @@ class WordDocumentEditorTest {
                 document.createParagraph().createRun().setText("Hello World")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("NotFound", "Replacement")
         val outputFile = File(tempDir, "output_no_match.docx")
         editor.saveToFile(outputFile)
@@ -136,7 +137,7 @@ class WordDocumentEditorTest {
                 document.createParagraph().createRun().setText("cat and cat and cat")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("cat", "dog")
         val outputFile = File(tempDir, "output_multiple_occurrences.docx")
         editor.saveToFile(outputFile)
@@ -154,7 +155,7 @@ class WordDocumentEditorTest {
                 document.createParagraph().createRun().setText("Hello World")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("World", "")
         val outputFile = File(tempDir, "output_empty_replacement.docx")
         editor.saveToFile(outputFile)
@@ -175,7 +176,7 @@ class WordDocumentEditorTest {
                 document.createParagraph().createRun().setText("Footer: {{TITLE}}")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("{{TITLE}}", "Document Title")
         val outputFile = File(tempDir, "output_mixed.docx")
         editor.saveToFile(outputFile)
@@ -210,7 +211,7 @@ class WordDocumentEditorTest {
                 innerRow.addNewTableCell().setText("Inner: {{VALUE}}")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("{{VALUE}}", "Test")
         val outputFile = File(tempDir, "output_nested.docx")
         editor.saveToFile(outputFile)
@@ -235,7 +236,7 @@ class WordDocumentEditorTest {
                 table.getRow(2).getCell(0).setText("Row 3: {{PLACEHOLDER}}")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("{{PLACEHOLDER}}", "Data")
         val outputFile = File(tempDir, "output_rows.docx")
         editor.saveToFile(outputFile)
@@ -257,7 +258,7 @@ class WordDocumentEditorTest {
                 document.createParagraph().createRun().setText("Price: {{PRICE}}")
             }
 
-        val editor = WordDocumentEditor.createEditor(docFile)
+        val editor = WordDocumentEditorDocxImpl.createEditor(docFile)
         editor.replaceTextInDocument("{{PRICE}}", "$100.00 (USD)")
         val outputFile = File(tempDir, "output_special.docx")
         editor.saveToFile(outputFile)

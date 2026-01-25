@@ -6,11 +6,11 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import ru.jengle88.klarkclient.data.XlsxDataProvider
+import ru.jengle88.klarkclient.data.document.ExcelDocumentDataProvider
 import java.io.File
 
 class GenerateDocsStateModel(
-    private val xlsxDataProvider: XlsxDataProvider,
+    private val excelDocumentDataProvider: ExcelDocumentDataProvider,
 ) : ScreenModel {
     private val _state = MutableStateFlow(GenerateDocsParamsState.EMPTY)
     val state = _state.asStateFlow()
@@ -81,7 +81,7 @@ class GenerateDocsStateModel(
         _state.update { it.copy(isTableLoading = true) }
         screenModelScope.launch(Dispatchers.IO) {
             val data =
-                xlsxDataProvider
+                excelDocumentDataProvider
                     .readData(
                         File(currentState.pathToTable),
                         currentState.ignoreLastNColumn ?: 0,

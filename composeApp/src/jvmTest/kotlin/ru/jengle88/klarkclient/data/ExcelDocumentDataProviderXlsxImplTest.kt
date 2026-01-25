@@ -2,6 +2,7 @@ package ru.jengle88.klarkclient.data
 
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import ru.jengle88.klarkclient.data.document.ExcelDocumentDataProviderXlsxImpl
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -13,14 +14,14 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class XlsxDataProviderImplTest {
-    private lateinit var provider: XlsxDataProviderImpl
+class ExcelDocumentDataProviderXlsxImplTest {
+    private lateinit var provider: ExcelDocumentDataProviderXlsxImpl
     private lateinit var tempDir: File
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy")
 
     @BeforeTest
     fun setUp() {
-        provider = XlsxDataProviderImpl(Locale.US)
+        provider = ExcelDocumentDataProviderXlsxImpl(Locale.US)
         tempDir = File(System.getProperty("java.io.tmpdir"), "xlsx_test_${System.currentTimeMillis()}")
         tempDir.mkdirs()
     }
