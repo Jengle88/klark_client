@@ -1,0 +1,14 @@
+name: jules-code-ai-review.yml
+on: [pull_request]
+
+jobs:
+  jules_job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Jules AI Agent
+        uses: google-labs-code/jules-action@v1
+        with:
+          # GitHub сам найдет секрет по имени, которое вы указали в настройках
+          api-key: ${{ secrets.JULES_API_KEY }}
+          command: "review"
