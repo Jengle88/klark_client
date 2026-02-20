@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.Composable
@@ -49,27 +49,27 @@ fun AuthStatusCircleAvatar(
             CircularProgressIndicator(
                 modifier = Modifier.size(size * 0.7f),
                 strokeWidth = 2.dp,
-                color = MaterialTheme.colors.primary
+                color = MaterialTheme.colorScheme.primary
             )
         } else if (isAuthorized) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.primary)
-                    .border(2.dp, MaterialTheme.colors.primaryVariant, shape),
+                    .background(MaterialTheme.colorScheme.primary)
+                    .border(2.dp, MaterialTheme.colorScheme.primaryContainer, shape),
                 contentAlignment = Alignment.Center
             ) {
                 if (userName != null) {
                     Text(
                         text = userName,
-                        color = MaterialTheme.colors.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
                         fontSize = (size.value / 2.5).sp
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Rounded.Person,
-                        tint = MaterialTheme.colors.onPrimary,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(0.5f)
                     )

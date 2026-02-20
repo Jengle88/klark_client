@@ -17,7 +17,7 @@ import ru.jengle88.klarkclient.data.network.auth.AuthProvider
 import ru.jengle88.klarkclient.data.network.auth.AuthStore
 import ru.jengle88.klarkclient.data.network.auth.UserProfile
 
-class AuthScreenModel(
+class AuthViewScreenModel(
     private val authManager: AuthManager,
     private val authProvider: AuthProvider,
     private val authStore: AuthStore,

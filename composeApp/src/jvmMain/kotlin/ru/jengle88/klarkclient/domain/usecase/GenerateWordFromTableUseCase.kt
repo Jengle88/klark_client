@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.domain
+package ru.jengle88.klarkclient.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
