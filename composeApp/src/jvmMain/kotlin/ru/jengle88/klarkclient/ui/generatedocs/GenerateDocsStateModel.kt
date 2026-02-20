@@ -6,17 +6,18 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import ru.jengle88.klarkclient.data.document.ExcelDocumentDataProvider
-import java.io.File
+import ru.jengle88.klarkclient.domain.usecase.ReadTableDataUseCase
 
 class GenerateDocsStateModel(
-    private val excelDocumentDataProvider: ExcelDocumentDataProvider,
+    private val readTableDataUseCase: ReadTableDataUseCase,
 ) : ScreenModel {
     private val _state = MutableStateFlow(GenerateDocsParamsState.EMPTY)
     val state = _state.asStateFlow()
 
     private val _effect = MutableSharedFlow<GenerateDocsEffect>()
     val effect = _effect.asSharedFlow()
+
+    val supportedTableFormat = listOf("xlsx", "xls")
 
     fun onIntent(intent: GenerateDocsIntent) {
         when (intent) {
@@ -81,11 +82,10 @@ class GenerateDocsStateModel(
         _state.update { it.copy(isTableLoading = true) }
         screenModelScope.launch(Dispatchers.IO) {
             val data =
-                excelDocumentDataProvider
-                    .readData(
-                        File(currentState.pathToTable),
-                        currentState.ignoreLastNColumn ?: 0,
-                        currentState.unionLastNColumn ?: 0,
+                readTableDataUseCase(
+                        currentState.pathToTable,
+                        currentState.ignoreLastNColumn,
+                        currentState.unionLastNColumn,
                     ).map { it.toPersistentList() }
                     .toPersistentList()
             _state.update { it.copy(isTableLoading = false, tableData = data) }
