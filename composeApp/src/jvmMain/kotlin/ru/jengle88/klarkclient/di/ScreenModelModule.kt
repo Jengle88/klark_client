@@ -12,13 +12,7 @@ val screenModelModule =
     module {
         includes(useCaseModule)
         singleOf(::AuthViewScreenModel)
-        factoryOf(::MainTabScreenModel)
-        factory<GenerateDocsStateModel> {
-            GenerateDocsStateModel(
-                readTableDataUseCase = get(),
-            )
-        }
-        factory<GenerateDocsGenerationDialogStateModel> {
-            GenerateDocsGenerationDialogStateModel(generateWordFromTableUseCase = get())
-        }
+        singleOf(::MainTabScreenModel)
+        factoryOf(::GenerateDocsStateModel)
+        factoryOf(::GenerateDocsGenerationDialogStateModel)
     }

@@ -31,7 +31,7 @@ val appModule =
             )
         }
         single<AuthStore> { AuthStoreImpl() }
-        single<UrlLauncher> { DesktopUrlLauncherImpl() }
+        factory<UrlLauncher> { DesktopUrlLauncherImpl() }
         single<AuthCodeReceiver> { KtorAuthCodeReceiver() }
         single<AuthManager> {
             val appConfig: AppConfig = get()
@@ -43,6 +43,6 @@ val appModule =
                 ioDispatcher = get<CoroutineDispatchers>().io,
             )
         }
-        factory<WordDocumentEditorFactory> { WordDocumentEditorFactoryImpl() }
+        single<WordDocumentEditorFactory> { WordDocumentEditorFactoryImpl() }
         factory<ExcelDocumentDataProvider> { ExcelDocumentDataProviderXlsxImpl() }
     }
