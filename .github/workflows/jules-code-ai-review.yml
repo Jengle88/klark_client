@@ -7,8 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Jules AI Agent
-        uses: google-labs-code/jules-action@v1
+        uses: google-labs-code/jules-invoke@v1
         with:
-          # GitHub сам найдет секрет по имени, которое вы указали в настройках
           api-key: ${{ secrets.JULES_API_KEY }}
-          command: "review"
+          prompt: "Review this pull request for logic errors and performance bottlenecks."
