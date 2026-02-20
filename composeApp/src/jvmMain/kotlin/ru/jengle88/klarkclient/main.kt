@@ -1,5 +1,6 @@
 package ru.jengle88.klarkclient
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import org.koin.core.context.startKoin
@@ -12,10 +13,12 @@ fun main() =
             modules(allModules)
         }
 
-        Window(
-            onCloseRequest = ::exitApplication,
-            title = "Klark",
-        ) {
-            App()
+        MaterialTheme {
+            Window(
+                onCloseRequest = ::exitApplication,
+                title = "Klark",
+            ) {
+                App()
+            }
         }
     }
