@@ -1,26 +1,19 @@
-package ru.jengle88.klarkclient.ui.components
+package ru.jengle88.klarkclient.ui.auth
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -28,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AuthStatusCircleAvatar(
+fun AuthStatusRectangleAvatar(
     isAuthorized: Boolean,
     userName: String?,
     isLoading: Boolean,
@@ -36,13 +29,12 @@ fun AuthStatusCircleAvatar(
     size: Dp = 48.dp,
     onClick: () -> Unit = {}
 ) {
-    val shape = CircleShape
+    val shape = RoundedCornerShape(16.dp)
 
     Box(
         modifier = modifier
             .size(size)
-            .clip(shape)
-            .clickable(enabled = !isLoading, onClick = onClick),
+            .clickable(enabled = !isLoading, onClick = onClick, indication = null, interactionSource = null),
         contentAlignment = Alignment.Center
     ) {
         if (isLoading) {
@@ -55,8 +47,7 @@ fun AuthStatusCircleAvatar(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.primary)
-                    .border(2.dp, MaterialTheme.colorScheme.primaryContainer, shape),
+                    .background(MaterialTheme.colorScheme.primary, shape),
                 contentAlignment = Alignment.Center
             ) {
                 if (userName != null) {
@@ -79,8 +70,7 @@ fun AuthStatusCircleAvatar(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)
-                    .border(1.dp, Color.Gray, shape),
+                    .background(Color.LightGray, shape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -100,19 +90,19 @@ private fun PreviewAuthStatusCircleAvatar() {
     MaterialTheme {
         Row {
             // Состояние: не авторизован
-            AuthStatusCircleAvatar(isAuthorized = false, isLoading = false, userName = null)
+            AuthStatusRectangleAvatar(isAuthorized = false, isLoading = false, userName = null)
             Spacer(Modifier.width(8.dp))
 
             // Состояние: загрузка
-            AuthStatusCircleAvatar(isAuthorized = false, isLoading = true, userName = null)
+            AuthStatusRectangleAvatar(isAuthorized = false, isLoading = true, userName = null)
             Spacer(Modifier.width(8.dp))
 
             // Состояние: авторизован с именем
-            AuthStatusCircleAvatar(isAuthorized = true, isLoading = false, userName = "UN")
+            AuthStatusRectangleAvatar(isAuthorized = true, isLoading = false, userName = "UN")
             Spacer(Modifier.width(8.dp))
 
             // Состояние: авторизован без имени
-            AuthStatusCircleAvatar(isAuthorized = true, isLoading = false, userName = null)
+            AuthStatusRectangleAvatar(isAuthorized = true, isLoading = false, userName = null)
         }
     }
 }
