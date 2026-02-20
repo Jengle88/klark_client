@@ -1,11 +1,13 @@
-package ru.jengle88.klarkclient.domain
+package ru.jengle88.klarkclient.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.jengle88.klarkclient.data.document.WordDocumentEditorDocxImpl
+import ru.jengle88.klarkclient.domain.data.document.WordDocumentEditorFactory
 import java.io.File
 
-class GenerateWordFromTableUseCase {
+class GenerateWordFromTableUseCase(
+    private val wordDocumentEditorFactory: WordDocumentEditorFactory,
+) {
     sealed interface WorkStatus {
         data object Start : WorkStatus
 
@@ -87,7 +89,8 @@ class GenerateWordFromTableUseCase {
         val masksFile = getFile(templateFolder, "маски.txt")
             ?: return Result.failure(Exception("Ошибка: \"маски.txt\" не найден в папке \"${templateFolder}\" или недоступен!"))
 
-        val docxEditor = WordDocumentEditorDocxImpl.createEditor(templateFile)
+        val docxEditor = wordDocumentEditorFactory.create(templateFile)
+            ?: return Result.failure(Exception("Ошибка: Не удалось создать редактор документа"))
 
         val masks = getMasks(masksFile)
         var filename = fallbackFileName

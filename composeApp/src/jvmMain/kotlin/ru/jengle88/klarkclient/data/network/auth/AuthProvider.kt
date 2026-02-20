@@ -6,7 +6,7 @@ import io.ktor.client.HttpClient
  * Abstraction over an OAuth authentication provider.
  *
  * Implementations of this interface encapsulate provider-specific details such as
- * authorization endpoints, token endpoints, scopes and user info APIs, while exposing
+ * authorization endpoints, token endpoints, scopes, and user info APIs, while exposing
  * a common high-level flow to the rest of the application:
  *
  * 1. Build an authorization URL via [getAuthorizeUrl] and direct the user to it.
@@ -55,7 +55,7 @@ interface AuthProvider {
      * by making a request to the OAuth provider's token endpoint.
      *
      * @param httpClient The HttpClient instance used to perform the network request.
-     * @param refreshToken The refresh token used to obtain a new access token.
+     * @param refreshToken The refresh token used to get a new access token.
      * @return An AuthTokens instance containing the new access token, and optionally a new refresh token and expiration time.
      */
     suspend fun refreshToken(httpClient: HttpClient, refreshToken: String): AuthTokens

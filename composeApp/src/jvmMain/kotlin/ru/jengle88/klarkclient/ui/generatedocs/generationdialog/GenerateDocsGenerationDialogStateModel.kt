@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.jengle88.klarkclient.domain.GenerateWordFromTableUseCase
+import ru.jengle88.klarkclient.domain.usecase.GenerateWordFromTableUseCase
 import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsGenerationDialogState
 
 class GenerateDocsGenerationDialogStateModel(

@@ -7,13 +7,14 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph
 import org.apache.poi.xwpf.usermodel.XWPFTable
 import org.apache.poi.xwpf.usermodel.XWPFTableCell
 import org.apache.poi.xwpf.usermodel.XWPFTableRow
+import ru.jengle88.klarkclient.domain.data.document.WordDocumentEditor
 import java.io.File
 
 class WordDocumentEditorDocxImpl private constructor(
     private val document: XWPFDocument,
 ): WordDocumentEditor {
-    override fun saveToFile(file: File) {
-        document.write(file.outputStream())
+    override fun saveToFile(dstFile: File) {
+        document.write(dstFile.outputStream())
     }
 
     override fun replaceTextInDocument(
