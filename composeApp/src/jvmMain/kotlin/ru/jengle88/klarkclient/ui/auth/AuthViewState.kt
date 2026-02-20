@@ -1,8 +1,8 @@
 package ru.jengle88.klarkclient.ui.auth
 
-data class AuthState(
+data class AuthViewState(
     val isAuthorized: Boolean = false,
-    val userNameInitials: String? = null,
+    val initials: String? = null,
     val isLoading: Boolean = false,
     val error: String? = null
 )
