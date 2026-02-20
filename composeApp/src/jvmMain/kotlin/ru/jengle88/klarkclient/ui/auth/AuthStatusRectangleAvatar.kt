@@ -1,6 +1,6 @@
 package ru.jengle88.klarkclient.ui.auth
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -70,7 +70,7 @@ fun AuthStatusRectangleAvatar(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray, shape),
+                    .background(MaterialTheme.colorScheme.primaryContainer, shape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
