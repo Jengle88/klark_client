@@ -1,7 +1,6 @@
 package ru.jengle88.klarkclient.ui.app
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.Text
@@ -50,9 +49,6 @@ fun App() {
             ) {
                 TabList(Modifier)
             }
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-            )
             Box(modifier = Modifier.weight(1f)) {
                 CurrentTab()
             }
