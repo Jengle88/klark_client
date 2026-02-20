@@ -7,6 +7,7 @@ import ru.jengle88.klarkclient.common.UrlLauncher
 import ru.jengle88.klarkclient.data.AppConfig
 import ru.jengle88.klarkclient.domain.data.document.ExcelDocumentDataProvider
 import ru.jengle88.klarkclient.data.document.ExcelDocumentDataProviderXlsxImpl
+import ru.jengle88.klarkclient.data.document.WordDocumentEditorFactoryImpl
 import ru.jengle88.klarkclient.data.network.auth.AuthCodeReceiver
 import ru.jengle88.klarkclient.data.network.auth.AuthHttpClient
 import ru.jengle88.klarkclient.data.network.auth.AuthManager
@@ -15,6 +16,7 @@ import ru.jengle88.klarkclient.data.network.auth.AuthStore
 import ru.jengle88.klarkclient.data.network.auth.AuthStoreImpl
 import ru.jengle88.klarkclient.data.network.auth.KtorAuthCodeReceiver
 import ru.jengle88.klarkclient.data.network.auth.YandexAuthProvider
+import ru.jengle88.klarkclient.domain.data.document.WordDocumentEditorFactory
 
 val appModule =
     module {
@@ -41,5 +43,6 @@ val appModule =
                 ioDispatcher = get<CoroutineDispatchers>().io,
             )
         }
+        factory<WordDocumentEditorFactory> { WordDocumentEditorFactoryImpl() }
         factory<ExcelDocumentDataProvider> { ExcelDocumentDataProviderXlsxImpl() }
     }
