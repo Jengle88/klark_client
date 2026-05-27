@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.domain.data.document
+package ru.jengle88.klarkclient.domain.api.document
 
 import java.io.File
 

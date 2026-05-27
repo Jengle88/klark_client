@@ -17,6 +17,10 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import ru.jengle88.klarkclient.common.UrlLauncher
+import ru.jengle88.klarkclient.data.network.dto.AuthTokens
+import ru.jengle88.klarkclient.data.network.dto.UserProfile
+import ru.jengle88.klarkclient.domain.api.auth.AuthCodeReceiver
+import ru.jengle88.klarkclient.domain.api.auth.AuthProvider
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -67,7 +71,7 @@ class AuthManagerTest {
         whenever(authProvider.exchangeCodeForToken(any(), eq("testAuthCode"), any()))
             .thenReturn(expectedTokens)
 
-        val authManager = AuthManager(
+        val authManager = AuthManagerImpl(
             authHttpClient = authHttpClient,
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,
@@ -100,7 +104,7 @@ class AuthManagerTest {
         }
         whenever(authProvider.getAuthorizeUrl(any(), any())).thenReturn("https://test.auth.url")
 
-        val authManager = AuthManager(
+        val authManager = AuthManagerImpl(
             authHttpClient = authHttpClient,
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,
@@ -134,7 +138,7 @@ class AuthManagerTest {
             .thenReturn("https://oauth.yandex.ru/authorize?test=true")
         whenever(authProvider.exchangeCodeForToken(any(), any(), any())).thenReturn(expectedTokens)
 
-        val authManager = AuthManager(
+        val authManager = AuthManagerImpl(
             authHttpClient = authHttpClient,
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,
@@ -161,7 +165,7 @@ class AuthManagerTest {
         val expectedProfile = UserProfile(firstName = "John", lastName = "Doe")
         whenever(authProvider.getUserProfile(any(), eq("testToken"))).thenReturn(expectedProfile)
 
-        val authManager = AuthManager(
+        val authManager = AuthManagerImpl(
             authHttpClient = authHttpClient,
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,
@@ -198,7 +202,7 @@ class AuthManagerTest {
             .thenReturn("https://auth.url")
         whenever(authProvider.exchangeCodeForToken(any(), any(), any())).thenReturn(expectedTokens)
 
-        val authManager = AuthManager(
+        val authManager = AuthManagerImpl(
             authHttpClient = authHttpClient,
             uriLauncher = urlLauncher,
             authCodeReceiver = authCodeReceiver,

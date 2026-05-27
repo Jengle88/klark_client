@@ -9,7 +9,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.jengle88.klarkclient.data.network.auth.AuthHttpClient
-import ru.jengle88.klarkclient.data.network.auth.AuthStore
+import ru.jengle88.klarkclient.domain.api.auth.AuthStore
 import ru.jengle88.klarkclient.data.network.auth.YandexAuthProvider
 
 class AiHttpClient(
@@ -29,7 +29,7 @@ class AiHttpClient(
 
             install(Auth) {
                 bearer {
-                    // 1. Откуда брать токен для обычных запросов
+                    // Откуда брать токен для обычных запросов
                     loadTokens {
                         val accessToken = authStore.accessToken.value
                         val refreshToken = authStore.refreshToken.value
@@ -40,27 +40,22 @@ class AiHttpClient(
                         }
                     }
 
-                    // 2. Что делать, если пришел 401 Unauthorized
+                    // Что делать, если пришел 401 Unauthorized
                     refreshTokens {
-                        val oldTokens = oldTokens // Старые токены доступны здесь
+                        val oldTokens = oldTokens
                         val refreshToken = oldTokens?.refreshToken ?: return@refreshTokens null
 
                         try {
-                            // Выполняем запрос на обновление
                             val newTokens = authProvider.refreshToken(authHttpClient.httpClient, refreshToken)
 
-                            // Сохраняем новые токены в Store (чтобы они записались в файл и память)
                             authStore.saveAuth(
                                 newTokens.accessToken,
                                 newTokens.refreshToken,
                                 authStore.userProfile.value
                             )
 
-                            // Возвращаем их плагину, чтобы он повторил упавший запрос
-                            BearerTokens(newTokens.accessToken, newTokens.refreshToken ?: refreshToken)
+                            BearerTokens(newTokens.accessToken, newTokens.refreshToken)
                         } catch (e: Exception) {
-                            // Если обновить не удалось (например, refresh token тоже протух)
-                            // Логируем и разлогиниваем пользователя
                             authStore.clearAuth()
                             null
                         }

@@ -1,5 +1,6 @@
 package ru.jengle88.klarkclient.data.network.auth
 
+import ru.jengle88.klarkclient.data.network.dto.UserProfile
 import java.util.prefs.Preferences
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

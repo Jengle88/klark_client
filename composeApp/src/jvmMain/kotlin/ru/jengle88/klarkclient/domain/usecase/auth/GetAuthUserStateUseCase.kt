@@ -1,7 +1,7 @@
 package ru.jengle88.klarkclient.domain.usecase.auth
 
-import ru.jengle88.klarkclient.data.network.auth.AuthStore
-import ru.jengle88.klarkclient.data.network.auth.UserProfile
+import ru.jengle88.klarkclient.domain.api.auth.AuthStore
+import ru.jengle88.klarkclient.data.network.dto.UserProfile
 import ru.jengle88.klarkclient.ui.auth.AuthUserState
 
 class GetAuthUserStateUseCase(

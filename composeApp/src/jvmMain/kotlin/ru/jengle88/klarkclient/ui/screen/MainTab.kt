@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.ui.screen.main
+package ru.jengle88.klarkclient.ui.screen
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons

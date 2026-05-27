@@ -11,6 +11,9 @@ import io.ktor.client.request.parameter
 import io.ktor.http.parameters
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import ru.jengle88.klarkclient.data.network.dto.AuthTokens
+import ru.jengle88.klarkclient.data.network.dto.UserProfile
+import ru.jengle88.klarkclient.domain.api.auth.AuthProvider
 import kotlin.jvm.Throws
 
 class YandexAuthProvider(

@@ -1,6 +1,8 @@
-package ru.jengle88.klarkclient.data.network.auth
+package ru.jengle88.klarkclient.domain.api.auth
 
 import io.ktor.client.HttpClient
+import ru.jengle88.klarkclient.data.network.dto.AuthTokens
+import ru.jengle88.klarkclient.data.network.dto.UserProfile
 
 /**
  * Abstraction over an OAuth authentication provider.
@@ -41,7 +43,7 @@ interface AuthProvider {
      * This corresponds to the "authorization code" grant step where the backend calls
      * the provider's token endpoint, passing the [code] received at [redirectUri].
      *
-     * @param httpClient The [HttpClient] instance used to perform network requests.
+     * @param httpClient The [io.ktor.client.HttpClient] instance used to perform network requests.
      * @param code The authorization code returned by the provider after user authorization.
      * @param redirectUri The same redirect URI that was used in [getAuthorizeUrl].
      * @return An [AuthTokens] instance containing at least an access token and optionally a refresh token.

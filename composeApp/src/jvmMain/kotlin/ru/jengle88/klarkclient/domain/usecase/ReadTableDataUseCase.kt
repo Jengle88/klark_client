@@ -1,6 +1,6 @@
 package ru.jengle88.klarkclient.domain.usecase
 
-import ru.jengle88.klarkclient.domain.data.document.ExcelDocumentDataProvider
+import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
 import java.io.File
 
 class ReadTableDataUseCase(

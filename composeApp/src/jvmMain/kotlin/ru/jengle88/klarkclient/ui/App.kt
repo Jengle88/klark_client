@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.ui.app
+package ru.jengle88.klarkclient.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -16,7 +16,7 @@ import ru.jengle88.klarkclient.ui.auth.AuthIntent
 import ru.jengle88.klarkclient.ui.auth.AuthStatusRectangleAvatar
 import ru.jengle88.klarkclient.ui.auth.AuthViewScreenModel
 import ru.jengle88.klarkclient.ui.maintab.MainTabNavigationRailItem
-import ru.jengle88.klarkclient.ui.screen.main.MainTab
+import ru.jengle88.klarkclient.ui.screen.MainTab
 
 @Composable
 fun App() {
