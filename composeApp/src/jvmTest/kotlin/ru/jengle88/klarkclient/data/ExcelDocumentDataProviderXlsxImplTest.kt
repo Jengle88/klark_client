@@ -3,6 +3,7 @@ package ru.jengle88.klarkclient.data
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import ru.jengle88.klarkclient.data.document.ExcelDocumentDataProviderXlsxImpl
+import ru.jengle88.klarkclient.data.document.TableConfiguration
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -33,8 +34,8 @@ class ExcelDocumentDataProviderXlsxImplTest {
 
     @Test
     fun `readData returns empty list for non-existent file`() {
-        val result = provider.readData(File("/non/existent/path.xlsx"), ignoreLastNColumn = 0, unionLastNColumn = 0)
-        assertTrue(result.isEmpty())
+        val result = provider.readData(TableConfiguration(File("/non/existent/path.xlsx"), ignoreLastNColumn = 0, unionLastNColumn = 0))
+        assertTrue(result.rows.isEmpty())
     }
 
     @Test
@@ -42,8 +43,8 @@ class ExcelDocumentDataProviderXlsxImplTest {
         val textFile = File(tempDir, "test.txt")
         textFile.writeText("not an xlsx file")
 
-        val result = provider.readData(textFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
-        assertTrue(result.isEmpty())
+        val result = provider.readData(TableConfiguration(textFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
+        assertTrue(result.rows.isEmpty())
     }
 
     @Test
@@ -56,10 +57,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(1).setCellValue("World")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("Hello", "World"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("Hello", "World"), result.rows[0])
     }
 
     @Test
@@ -72,10 +73,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(1).setCellValue(100.0)
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("42", "100"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("42", "100"), result.rows[0])
     }
 
     @Test
@@ -88,10 +89,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(1).setCellValue(2.5)
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("3.14", "2.50"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("3.14", "2.50"), result.rows[0])
     }
 
     @Test
@@ -108,11 +109,11 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 cell.cellStyle = dateStyle
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(1, result[0].size)
-        assertEquals(dateFormat.format(testDate), result[0][0])
+        assertEquals(1, result.rows.size)
+        assertEquals(1, result.rows[0].size)
+        assertEquals(dateFormat.format(testDate), result.rows[0][0])
     }
 
     @Test
@@ -125,10 +126,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(1).setCellValue(false)
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("true", "false"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("true", "false"), result.rows[0])
     }
 
     @Test
@@ -142,10 +143,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(2).setCellValue("Third")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("First", "", "Third"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("First", "", "Third"), result.rows[0])
     }
 
     @Test
@@ -161,11 +162,11 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(4).setCellValue("E")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
+        assertEquals(1, result.rows.size)
         // Expectation: "A", "", "C", "", "E"
-        val rowData = result[0]
+        val rowData = result.rows[0]
         assertEquals(5, rowData.size)
         assertEquals("A", rowData[0])
         assertEquals("", rowData[1])
@@ -185,11 +186,11 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(2).setCellType(CellType.BLANK)
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(1, result[0].size)
-        assertEquals("A", result[0][0])
+        assertEquals(1, result.rows.size)
+        assertEquals(1, result.rows[0].size)
+        assertEquals("A", result.rows[0][0])
     }
 
     @Test
@@ -203,10 +204,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 formulaCell.cellFormula = "CONCATENATE(A1, \" World\")"
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertTrue(result[0].isNotEmpty())
+        assertEquals(1, result.rows.size)
+        assertTrue(result.rows[0].isNotEmpty())
     }
 
     @Test
@@ -221,11 +222,11 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 formulaCell.cellFormula = "A1+B1"
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertTrue(result[0].contains("10"))
-        assertTrue(result[0].contains("20"))
+        assertEquals(1, result.rows.size)
+        assertTrue(result.rows[0].contains("10"))
+        assertTrue(result.rows[0].contains("20"))
     }
 
     @Test
@@ -235,9 +236,9 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 workbook.createSheet("Empty")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertTrue(result.isEmpty())
+        assertTrue(result.rows.isEmpty())
     }
 
     @Test
@@ -252,12 +253,12 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 }
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(3, result.size)
-        assertEquals(listOf("Row0", "1"), result[0])
-        assertEquals(listOf("Row1", "2"), result[1])
-        assertEquals(listOf("Row2", "3"), result[2])
+        assertEquals(3, result.rows.size)
+        assertEquals(listOf("Row0", "1"), result.rows[0])
+        assertEquals(listOf("Row1", "2"), result.rows[1])
+        assertEquals(listOf("Row2", "3"), result.rows[2])
     }
 
     @Test
@@ -271,11 +272,11 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 sheet2.createRow(0).createCell(0).setCellValue("Sheet2Data")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(2, result.size)
-        assertEquals(listOf("Sheet1Data"), result[0])
-        assertEquals(listOf("Sheet2Data"), result[1])
+        assertEquals(2, result.rows.size)
+        assertEquals(listOf("Sheet1Data"), result.rows[0])
+        assertEquals(listOf("Sheet2Data"), result.rows[1])
     }
 
     @Test
@@ -296,14 +297,14 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 dateCell.cellStyle = dateStyle
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(4, result[0].size)
-        assertEquals("Text", result[0][0])
-        assertEquals("42", result[0][1])
-        assertEquals("true", result[0][2])
-        assertEquals(dateFormat.format(testDate), result[0][3])
+        assertEquals(1, result.rows.size)
+        assertEquals(4, result.rows[0].size)
+        assertEquals("Text", result.rows[0][0])
+        assertEquals("42", result.rows[0][1])
+        assertEquals("true", result.rows[0][2])
+        assertEquals(dateFormat.format(testDate), result.rows[0][3])
     }
 
     @Test
@@ -316,10 +317,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(1).setCellValue(999999999.0)
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("1000000", "999999999"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("1000000", "999999999"), result.rows[0])
     }
 
     @Test
@@ -332,11 +333,11 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(1).setCellValue(-3.14)
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals("-42", result[0][0])
-        assertEquals("-3.14", result[0][1])
+        assertEquals(1, result.rows.size)
+        assertEquals("-42", result.rows[0][0])
+        assertEquals("-3.14", result.rows[0][1])
     }
 
     @Test
@@ -348,10 +349,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(0).setCellValue(0.0)
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("0"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("0"), result.rows[0])
     }
 
     @Test
@@ -366,10 +367,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(3).setCellValue("D")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 2, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 2, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("A", "B"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("A", "B"), result.rows[0])
     }
 
     @Test
@@ -382,10 +383,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(1).setCellValue("B")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 2, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 2, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertTrue(result[0].isEmpty())
+        assertEquals(1, result.rows.size)
+        assertTrue(result.rows[0].isEmpty())
     }
 
     @Test
@@ -400,10 +401,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(3).setCellValue("Fourth")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 2)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 2))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("First", "Second", "Third Fourth"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("First", "Second", "Third Fourth"), result.rows[0])
     }
 
     @Test
@@ -417,10 +418,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(2).setCellValue("C")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 3)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 3))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("A B C"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("A B C"), result.rows[0])
     }
 
     @Test
@@ -437,10 +438,10 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(5).setCellValue("Ignore2")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 2, unionLastNColumn = 2)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 2, unionLastNColumn = 2))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("Keep1", "Keep2", "Union1 Union2"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("Keep1", "Keep2", "Union1 Union2"), result.rows[0])
     }
 
     @Test
@@ -456,11 +457,11 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 }
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 1, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 1, unionLastNColumn = 0))
 
-        assertEquals(2, result.size)
-        assertEquals(listOf("Row0A", "Row0B"), result[0])
-        assertEquals(listOf("Row1A", "Row1B"), result[1])
+        assertEquals(2, result.rows.size)
+        assertEquals(listOf("Row0A", "Row0B"), result.rows[0])
+        assertEquals(listOf("Row1A", "Row1B"), result.rows[1])
     }
 
     @Test
@@ -476,11 +477,11 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 }
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 2)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 2))
 
-        assertEquals(2, result.size)
-        assertEquals(listOf("Row0A", "Row0B Row0C"), result[0])
-        assertEquals(listOf("Row1A", "Row1B Row1C"), result[1])
+        assertEquals(2, result.rows.size)
+        assertEquals(listOf("Row0A", "Row0B Row0C"), result.rows[0])
+        assertEquals(listOf("Row1A", "Row1B Row1C"), result.rows[1])
     }
 
     @Test
@@ -499,11 +500,11 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row2.createCell(1).setCellValue("B2")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 2, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 2, unionLastNColumn = 0))
 
-        assertEquals(2, result.size)
-        assertEquals(listOf("A1", "B1"), result[0])
-        assertEquals(listOf("A2", "B2"), result[1])
+        assertEquals(2, result.rows.size)
+        assertEquals(listOf("A1", "B1"), result.rows[0])
+        assertEquals(listOf("A2", "B2"), result.rows[1])
     }
 
     @Test
@@ -517,10 +518,105 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 row.createCell(2).setCellValue("C")
             }
 
-        val result = provider.readData(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0)
+        val result = provider.readData(TableConfiguration(xlsxFile, ignoreLastNColumn = 0, unionLastNColumn = 0))
 
-        assertEquals(1, result.size)
-        assertEquals(listOf("A", "B", "C"), result[0])
+        assertEquals(1, result.rows.size)
+        assertEquals(listOf("A", "B", "C"), result.rows[0])
+    }
+
+    @Test
+    fun `readDataFromRange reads exact boundaries correctly`() {
+        val xlsxFile =
+            createTestXlsx("range_test.xlsx") { workbook ->
+                val sheet = workbook.createSheet("Test")
+                for (r in 0..4) {
+                    val row = sheet.createRow(r)
+                    for (c in 0..4) {
+                        row.createCell(c).setCellValue("R${r}C${c}")
+                    }
+                }
+            }
+
+        val result = provider.readData(TableConfiguration(xlsxFile, xRange = 1..3, yRange = 2..4))
+
+        assertEquals(3, result.rows.size)
+        assertEquals(listOf("R1C2", "R1C3", "R1C4"), result.rows[0])
+        assertEquals(listOf("R2C2", "R2C3", "R2C4"), result.rows[1])
+        assertEquals(listOf("R3C2", "R3C3", "R3C4"), result.rows[2])
+    }
+
+    @Test
+    fun `readDataFromRange preserves empty cells within range`() {
+        val xlsxFile =
+            createTestXlsx("range_empty_cells_test.xlsx") { workbook ->
+                val sheet = workbook.createSheet("Test")
+                val row1 = sheet.createRow(0)
+                row1.createCell(0).setCellValue("A")
+                row1.createCell(2).setCellValue("C")
+
+                val row2 = sheet.createRow(1)
+                row2.createCell(0).setCellValue("D")
+                row2.createCell(1).setCellValue("E")
+            }
+
+        val result = provider.readData(TableConfiguration(xlsxFile, xRange = 0..1, yRange = 0..2))
+
+        assertEquals(2, result.rows.size)
+        assertEquals(listOf("A", "", "C"), result.rows[0])
+        assertEquals(listOf("D", "E", ""), result.rows[1])
+    }
+
+    @Test
+    fun `readDataFromRange handles out of bounds ranges correctly`() {
+        val xlsxFile =
+            createTestXlsx("range_out_of_bounds.xlsx") { workbook ->
+                val sheet = workbook.createSheet("Test")
+                val row = sheet.createRow(0)
+                row.createCell(0).setCellValue("A")
+            }
+
+        // Запрашиваем строки 0..2 и колонки 0..2, хотя в файле заполнена только ячейка (0,0)
+        val result = provider.readData(TableConfiguration(xlsxFile, xRange = 0..2, yRange = 0..2))
+
+        assertEquals(3, result.rows.size)
+        assertEquals(listOf("A", "", ""), result.rows[0])
+        assertEquals(listOf("", "", ""), result.rows[1])
+        assertEquals(listOf("", "", ""), result.rows[2])
+    }
+
+    @Test
+    fun `readDataFromRange returns empty list for non-existent file`() {
+        val result = provider.readData(TableConfiguration(File("/non/existent/path.xlsx"), xRange = 0..1, yRange = 0..1))
+        assertTrue(result.rows.isEmpty())
+    }
+
+    @Test
+    fun `readDataFromRange reads typical populated table correctly`() {
+        val xlsxFile =
+            createTestXlsx("populated_table_test.xlsx") { workbook ->
+                val sheet = workbook.createSheet("Data")
+                val headers = sheet.createRow(0)
+                headers.createCell(0).setCellValue("Name")
+                headers.createCell(1).setCellValue("Age")
+                headers.createCell(2).setCellValue("Status")
+
+                val row1 = sheet.createRow(1)
+                row1.createCell(0).setCellValue("John")
+                row1.createCell(1).setCellValue(30.0)
+                row1.createCell(2).setCellValue(true)
+
+                val row2 = sheet.createRow(2)
+                row2.createCell(0).setCellValue("Alice")
+                row2.createCell(1).setCellValue(25.0)
+                row2.createCell(2).setCellValue(false)
+            }
+
+        val result = provider.readData(TableConfiguration(xlsxFile, xRange = 0..2, yRange = 0..2))
+
+        assertEquals(3, result.rows.size)
+        assertEquals(listOf("Name", "Age", "Status"), result.rows[0])
+        assertEquals(listOf("John", "30", "true"), result.rows[1])
+        assertEquals(listOf("Alice", "25", "false"), result.rows[2])
     }
 
     private fun createTestXlsx(

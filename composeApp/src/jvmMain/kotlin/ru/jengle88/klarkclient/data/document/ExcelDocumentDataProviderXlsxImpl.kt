@@ -7,32 +7,41 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import ru.jengle88.klarkclient.common.padLast
 import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
-import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
 import kotlin.math.min
 
 class ExcelDocumentDataProviderXlsxImpl(private val locale: Locale = Locale.getDefault()) : ExcelDocumentDataProvider {
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy")
 
-    override fun readData(
-        table: File,
-        ignoreLastNColumn: Int,
-        unionLastNColumn: Int,
-    ): List<List<String>> {
-        check(ignoreLastNColumn >= 0)
-        check(unionLastNColumn >= 0)
+    override fun readData(config: TableConfiguration): TableContent {
+        check(config.ignoreLastNColumn >= 0)
+        check(config.unionLastNColumn >= 0)
 
+        val table = config.file
         if (!table.exists() || table.extension != "xlsx") {
-            return emptyList()
+            return TableContent(emptyList())
         }
-        return try {
-            var resultList =
-                buildList {
-                    FileInputStream(table).use { fis ->
-                        XSSFWorkbook(fis).use { workbook ->
-                            workbook.sheetIterator().forEach { sheet ->
+
+        val resultRows = try {
+            FileInputStream(table).use { fis ->
+                XSSFWorkbook(fis).use { workbook ->
+                    buildList<List<String>> {
+                        for (sheet in workbook) {
+                            if (config.xRange != null && config.yRange != null) {
+                                for (rowIndex in config.xRange) {
+                                    val row = sheet.getRow(rowIndex)
+                                    val rowData = mutableListOf<String>()
+                                    for (colIndex in config.yRange) {
+                                        val cell =
+                                            row?.getCell(colIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)
+                                        val cellValue = cell?.let { parseCell(it) } ?: ""
+                                        rowData.add(cellValue)
+                                    }
+                                    add(rowData)
+                                }
+                            } else {
                                 for (row in sheet) {
                                     add(parseRow(row))
                                 }
@@ -40,29 +49,33 @@ class ExcelDocumentDataProviderXlsxImpl(private val locale: Locale = Locale.getD
                         }
                     }
                 }
-
-            val maxRowLength = resultList.maxOfOrNull { it.size } ?: 0
-            resultList =
-                resultList.map {
-                    // pad + drop
-                    val padAndDrop = it.padLast(maxRowLength, "").dropLast(ignoreLastNColumn)
-                    // union
-                    val lastValues = padAndDrop.takeLast(unionLastNColumn).joinToString(" ")
-                    padAndDrop
-                        .dropLast(unionLastNColumn)
-                        .toMutableList()
-                        .apply {
-                            if (unionLastNColumn > 0) {
-                                add(lastValues)
-                            }
-                        }
-                        .dropLastWhile { data -> data.isEmpty() }
-                }
-
-            resultList
+            }
         } catch (e: Exception) {
             throw e
         }
+
+        val finalRows = if (config.xRange == null || config.yRange == null) {
+            val maxRowLength = resultRows.maxOfOrNull { it.size } ?: 0
+            resultRows.map {
+                // pad + drop
+                val padAndDrop = it.padLast(maxRowLength, "").dropLast(config.ignoreLastNColumn)
+                // union
+                val lastValues = padAndDrop.takeLast(config.unionLastNColumn).joinToString(" ")
+                padAndDrop
+                    .dropLast(config.unionLastNColumn)
+                    .toMutableList()
+                    .apply {
+                        if (config.unionLastNColumn > 0) {
+                            add(lastValues)
+                        }
+                    }
+                    .dropLastWhile { data -> data.isEmpty() }
+            }
+        } else {
+            resultRows
+        }
+
+        return TableContent(finalRows)
     }
 
     private fun parseRow(row: Row?): List<String> {

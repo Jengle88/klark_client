@@ -77,9 +77,11 @@ class AuthManagerTest {
             authCodeReceiver = authCodeReceiver,
             ioDispatcher = testDispatcher,
             port = DEFAULT_PORT,
+            authProvider = authProvider
+
         )
 
-        val result = authManager.login(authProvider)
+        val result = authManager.login()
 
         assertEquals(expectedTokens.accessToken, result.accessToken)
         assertEquals(expectedTokens.refreshToken, result.refreshToken)
@@ -110,10 +112,11 @@ class AuthManagerTest {
             authCodeReceiver = authCodeReceiver,
             ioDispatcher = testDispatcher,
             port = DEFAULT_PORT,
+            authProvider = authProvider
         )
 
         assertFailsWith<IllegalStateException> {
-            authManager.login(authProvider)
+            authManager.login()
         }
     }
 
@@ -144,9 +147,10 @@ class AuthManagerTest {
             authCodeReceiver = authCodeReceiver,
             ioDispatcher = testDispatcher,
             port = DEFAULT_PORT,
+            authProvider = authProvider
         )
 
-        authManager.login(authProvider)
+        authManager.login()
 
         verify(authProvider).getAuthorizeUrl(eq("http://localhost:$DEFAULT_PORT"), any())
         verify(urlLauncher).open("https://oauth.yandex.ru/authorize?test=true")
@@ -171,9 +175,10 @@ class AuthManagerTest {
             authCodeReceiver = authCodeReceiver,
             ioDispatcher = testDispatcher,
             port = DEFAULT_PORT,
+            authProvider = authProvider
         )
 
-        val result = authManager.getUserProfile("testToken", authProvider)
+        val result = authManager.getUserProfile("testToken")
 
         assertEquals("John", result.firstName)
         assertEquals("Doe", result.lastName)
@@ -208,9 +213,10 @@ class AuthManagerTest {
             authCodeReceiver = authCodeReceiver,
             port = customPort,
             ioDispatcher = testDispatcher,
+            authProvider = authProvider
         )
 
-        authManager.login(authProvider)
+        authManager.login()
 
         verify(authCodeReceiver).awaitAuthCode(eq(customPort), any(), any())
         verify(authProvider).getAuthorizeUrl(eq("http://localhost:$customPort"), any())

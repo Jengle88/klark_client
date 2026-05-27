@@ -1,22 +1,20 @@
 package ru.jengle88.klarkclient.domain.api.document
 
-import java.io.File
+import ru.jengle88.klarkclient.data.document.TableConfiguration
+import ru.jengle88.klarkclient.data.document.TableContent
 
 /**
  * Provides functionality to read data from Excel documents such as XLSX files and process the content.
  */
 interface ExcelDocumentDataProvider {
     /**
-     * Reads data from the specified table file (for example, XLSX) and processes the content based on the provided parameters.
+     * Reads data from an Excel table file based on the provided configuration.
      *
-     * @param table The file representing the table to be read.
-     * @param ignoreLastNColumn The number of columns from the end of the table to be ignored during data processing.
-     * @param unionLastNColumn The number of columns from the end of the table to be merged into a single column.
-     * @return A list of lists, where each inner list represents a row of processed data from the table.
+     * @param config The configuration specifying the table file, optional column and row ranges,
+     *               as well as adjustments for columns to ignore or merge.
+     * @return The content of the table, represented as a list of rows, where each row is a list of strings.
      */
     fun readData(
-        table: File,
-        ignoreLastNColumn: Int,
-        unionLastNColumn: Int,
-    ): List<List<String>>
+        config: TableConfiguration
+    ): TableContent
 }
