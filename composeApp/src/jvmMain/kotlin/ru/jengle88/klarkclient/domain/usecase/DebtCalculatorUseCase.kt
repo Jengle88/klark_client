@@ -2,6 +2,7 @@ package ru.jengle88.klarkclient.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import ru.jengle88.klarkclient.data.document.TableConfiguration
 import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
 import java.io.File
 
@@ -47,9 +48,11 @@ class DebtCalculatorUseCase(
             emit(WorkStatus.TableDataReceived(tablesPath.size))
             for (tablePath in tablesPath) {
                 val table = excelDocumentDataProvider.readData(
-                    tablePath,
-                    0,
-                    0,
+                    TableConfiguration(
+                        file = tablePath,
+                        ignoreLastNColumn = 0,
+                        unionLastNColumn = 0,
+                    ),
                 )
 
             }
