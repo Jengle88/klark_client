@@ -2,7 +2,7 @@ package ru.jengle88.klarkclient.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.jengle88.klarkclient.domain.data.document.WordDocumentEditorFactory
+import ru.jengle88.klarkclient.domain.api.document.WordDocumentEditorFactory
 import java.io.File
 
 class GenerateWordFromTableUseCase(

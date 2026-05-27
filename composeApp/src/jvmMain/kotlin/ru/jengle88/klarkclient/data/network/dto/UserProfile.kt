@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.data.network.auth
+package ru.jengle88.klarkclient.data.network.dto
 
 import kotlinx.serialization.Serializable
 

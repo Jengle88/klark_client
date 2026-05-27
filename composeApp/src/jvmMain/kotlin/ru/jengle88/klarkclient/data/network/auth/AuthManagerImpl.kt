@@ -4,18 +4,24 @@ import androidx.annotation.WorkerThread
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import ru.jengle88.klarkclient.common.UrlLauncher
+import ru.jengle88.klarkclient.data.network.dto.AuthTokens
+import ru.jengle88.klarkclient.data.network.dto.UserProfile
+import ru.jengle88.klarkclient.domain.api.auth.AuthCodeReceiver
+import ru.jengle88.klarkclient.domain.api.auth.AuthManager
+import ru.jengle88.klarkclient.domain.api.auth.AuthProvider
 import java.util.UUID
 import kotlin.jvm.Throws
 
-class AuthManager(
+class AuthManagerImpl(
     private val authHttpClient: AuthHttpClient,
+    private val authProvider: AuthProvider,
     private val uriLauncher: UrlLauncher,
     private val authCodeReceiver: AuthCodeReceiver,
     private val port: Int,
     private val ioDispatcher: CoroutineDispatcher,
-) {
+) : AuthManager {
     @Throws(IllegalStateException::class)
-    suspend fun login(provider: AuthProvider): AuthTokens = withContext(ioDispatcher) {
+    override suspend fun login(): AuthTokens = withContext(ioDispatcher) {
         val state = UUID.randomUUID().toString() // генерируем для безопасности, чтобы сравнивать при возвращении запроса
 
         // redirectUri is constructed after we know the actual port
@@ -23,16 +29,16 @@ class AuthManager(
 
         val code = authCodeReceiver.awaitAuthCode(port, expectedState = state, onServerReady = { actualPort ->
             redirectUri = "http://localhost:$actualPort"
-            val url = provider.getAuthorizeUrl(redirectUri, state)
+            val url = authProvider.getAuthorizeUrl(redirectUri, state)
             openBrowser(url)
         })
         checkNotNull(code) { "Auth code is null" }
-        return@withContext provider.exchangeCodeForToken(authHttpClient.httpClient, code, redirectUri)
+        return@withContext authProvider.exchangeCodeForToken(authHttpClient.httpClient, code, redirectUri)
     }
 
     @WorkerThread
-    suspend fun getUserProfile(accessToken: String, provider: AuthProvider): UserProfile {
-        val userProfile = provider.getUserProfile(authHttpClient.httpClient, accessToken)
+    override suspend fun getUserProfile(accessToken: String): UserProfile {
+        val userProfile = authProvider.getUserProfile(authHttpClient.httpClient, accessToken)
         return userProfile
     }
 

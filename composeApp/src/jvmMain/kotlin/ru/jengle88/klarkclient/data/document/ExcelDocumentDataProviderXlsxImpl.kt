@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.DateUtil
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import ru.jengle88.klarkclient.common.padLast
-import ru.jengle88.klarkclient.domain.data.document.ExcelDocumentDataProvider
+import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat

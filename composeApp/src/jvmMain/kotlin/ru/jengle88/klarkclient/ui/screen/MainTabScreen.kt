@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.ui.screen.main
+package ru.jengle88.klarkclient.ui.screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable

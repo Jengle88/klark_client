@@ -1,7 +1,7 @@
 package ru.jengle88.klarkclient.data.document
 
-import ru.jengle88.klarkclient.domain.data.document.WordDocumentEditor
-import ru.jengle88.klarkclient.domain.data.document.WordDocumentEditorFactory
+import ru.jengle88.klarkclient.domain.api.document.WordDocumentEditor
+import ru.jengle88.klarkclient.domain.api.document.WordDocumentEditorFactory
 import java.io.File
 
 class WordDocumentEditorFactoryImpl : WordDocumentEditorFactory {
