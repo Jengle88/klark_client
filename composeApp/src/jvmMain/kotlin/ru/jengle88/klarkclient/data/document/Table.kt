@@ -11,13 +11,13 @@ data class TableConfiguration(
 )
 
 data class TableContent(
-    val rows: List<List<String>>
+    val rows: List<List<String>>,
 )
 
 data class TableData(
     val name: String, // Название таблицы/задачи (например, "Расчёт задолженности")
     val configuration: TableConfiguration,
-    val content: TableContent? = null // null, если таблица еще не была прочитана/вычислена
+    val content: TableContent? = null, // null, если таблица еще не была прочитана/вычислена
 ) {
     val fileName: String
         get() = configuration.file.name

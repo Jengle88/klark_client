@@ -23,7 +23,6 @@ import ru.jengle88.klarkclient.data.network.dto.UserProfile
  * - Throwing appropriate exceptions when the remote service returns errors.
  */
 interface AuthProvider {
-
     /**
      * Builds a provider-specific URL that initiates the OAuth authorization flow.
      *
@@ -35,7 +34,10 @@ interface AuthProvider {
      * @param state A random string used to protect against CSRF attacks.
      * @return A complete URL that can be opened in a browser to start the OAuth flow.
      */
-    fun getAuthorizeUrl(redirectUri: String, state: String): String
+    fun getAuthorizeUrl(
+        redirectUri: String,
+        state: String,
+    ): String
 
     /**
      * Exchanges an authorization code for OAuth tokens.
@@ -48,7 +50,11 @@ interface AuthProvider {
      * @param redirectUri The same redirect URI that was used in [getAuthorizeUrl].
      * @return An [AuthTokens] instance containing at least an access token and optionally a refresh token.
      */
-    suspend fun exchangeCodeForToken(httpClient: HttpClient, code: String, redirectUri: String): AuthTokens
+    suspend fun exchangeCodeForToken(
+        httpClient: HttpClient,
+        code: String,
+        redirectUri: String,
+    ): AuthTokens
 
     /**
      * Refreshes the OAuth tokens using the provided refresh token.
@@ -60,7 +66,11 @@ interface AuthProvider {
      * @param refreshToken The refresh token used to get a new access token.
      * @return An AuthTokens instance containing the new access token, and optionally a new refresh token and expiration time.
      */
-    suspend fun refreshToken(httpClient: HttpClient, refreshToken: String): AuthTokens
+    suspend fun refreshToken(
+        httpClient: HttpClient,
+        refreshToken: String,
+    ): AuthTokens
+
     /**
      * Retrieves the authenticated user's profile using a valid access token.
      *
@@ -71,5 +81,8 @@ interface AuthProvider {
      * @param accessToken The access token obtained from [exchangeCodeForToken].
      * @return A [UserProfile] representing the authenticated user.
      */
-    suspend fun getUserProfile(httpClient: HttpClient, accessToken: String): UserProfile
+    suspend fun getUserProfile(
+        httpClient: HttpClient,
+        accessToken: String,
+    ): UserProfile
 }

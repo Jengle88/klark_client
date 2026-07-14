@@ -6,7 +6,7 @@ import java.io.File
 
 class WordDocumentEditorFactoryImpl : WordDocumentEditorFactory {
     override fun create(docFile: File): WordDocumentEditor? {
-        return when(docFile.extension) {
+        return when (docFile.extension) {
             "docx" -> WordDocumentEditorDocxImpl.createEditor(docFile)
             else -> null
         }

@@ -1,6 +1,5 @@
 package ru.jengle88.klarkclient.ui.auth
 
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AuthStatusRectangleAvatar(
@@ -27,57 +27,60 @@ fun AuthStatusRectangleAvatar(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
     size: Dp = 48.dp,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     val shape = RoundedCornerShape(16.dp)
 
     Box(
-        modifier = modifier
-            .size(size)
-            .clickable(enabled = !isLoading, onClick = onClick, indication = null, interactionSource = null),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .size(size)
+                .clickable(enabled = !isLoading, onClick = onClick, indication = null, interactionSource = null),
+        contentAlignment = Alignment.Center,
     ) {
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(size * 0.7f),
                 strokeWidth = 2.dp,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         } else if (isAuthorized) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.primary, shape),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.primary, shape),
+                contentAlignment = Alignment.Center,
             ) {
                 if (userName != null) {
                     Text(
                         text = userName,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
-                        fontSize = (size.value / 2.5).sp
+                        fontSize = (size.value / 2.5).sp,
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Rounded.Person,
                         tint = MaterialTheme.colorScheme.onPrimary,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize(0.5f)
+                        modifier = Modifier.fillMaxSize(0.5f),
                     )
                 }
             }
         } else {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.primaryContainer, shape),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.primaryContainer, shape),
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Person,
                     contentDescription = "Login",
                     tint = Color.DarkGray,
-                    modifier = Modifier.fillMaxSize(0.5f)
+                    modifier = Modifier.fillMaxSize(0.5f),
                 )
             }
         }

@@ -21,7 +21,11 @@ class AuthStoreImpl : AuthStore {
     private val _userProfile = MutableStateFlow(loadUserProfile())
     override val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
 
-    override fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?) {
+    override fun saveAuth(
+        token: String,
+        refreshToken: String?,
+        userProfile: UserProfile?,
+    ) {
         _accessToken.value = token
         _refreshToken.value = refreshToken
         _userProfile.value = userProfile

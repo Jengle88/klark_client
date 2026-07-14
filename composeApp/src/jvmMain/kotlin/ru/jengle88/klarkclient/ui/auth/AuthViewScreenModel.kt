@@ -42,7 +42,7 @@ class AuthViewScreenModel(
                 _state.update {
                     getAuthInfoUseCase().toViewState(
                         isLoading = false,
-                        error = null
+                        error = null,
                     )
                 }
             } catch (e: Exception) {

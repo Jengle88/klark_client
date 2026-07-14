@@ -14,7 +14,5 @@ interface ExcelDocumentDataProvider {
      *               as well as adjustments for columns to ignore or merge.
      * @return The content of the table, represented as a list of rows, where each row is a list of strings.
      */
-    fun readData(
-        config: TableConfiguration
-    ): TableContent
+    fun readData(config: TableConfiguration): TableContent
 }

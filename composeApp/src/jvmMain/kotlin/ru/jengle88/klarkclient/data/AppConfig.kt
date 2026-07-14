@@ -14,8 +14,10 @@ class AppConfig {
     private fun getProperty(key: String): String =
         properties.getProperty(key)?.takeIf { it.isNotEmpty() } ?: throw IllegalStateException("$key is not set")
 
-    private fun getProperty(key: String, defaultValue: String): String =
-        properties.getProperty(key)?.takeIf { it.isNotEmpty() } ?: defaultValue
+    private fun getProperty(
+        key: String,
+        defaultValue: String,
+    ): String = properties.getProperty(key)?.takeIf { it.isNotEmpty() } ?: defaultValue
 
     val clientId: String
         get() = getProperty("clientId")
