@@ -5,24 +5,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import org.koin.compose.koinInject
-import ru.jengle88.klarkclient.ui.auth.AuthIntent
-import ru.jengle88.klarkclient.ui.auth.AuthStatusRectangleAvatar
-import ru.jengle88.klarkclient.ui.auth.AuthViewScreenModel
 import ru.jengle88.klarkclient.ui.maintab.MainTabNavigationRailItem
 import ru.jengle88.klarkclient.ui.screen.MainTab
 
 @Composable
 fun App() {
-    val authScreenModel: AuthViewScreenModel = koinInject()
-    val authState by authScreenModel.state.collectAsState()
-
     TabNavigator(MainTab) {
         Row(modifier = Modifier.fillMaxSize()) {
             NavigationRail(
@@ -33,18 +24,8 @@ fun App() {
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.primary,
                     )
-                    AuthStatusRectangleAvatar(
-                        isAuthorized = authState.isAuthorized,
-                        userName = authState.initials,
-                        isLoading = authState.isLoading,
-                        onClick = {
-                            if (!authState.isAuthorized) {
-                                authScreenModel.onIntent(AuthIntent.Login)
-                            } else {
-                                authScreenModel.onIntent(AuthIntent.Logout)
-                            }
-                        }
-                    )
+                    // Auth feature is disabled in UI but kept in code.
+                    // See AuthViewScreenModel and AuthStatusRectangleAvatar to re-enable.
                 },
             ) {
                 TabList(Modifier)
