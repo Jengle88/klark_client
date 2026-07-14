@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.TextFields
@@ -65,6 +66,10 @@ fun MainTabContent(
                 onClick = { onNavigate(feature.route) },
             )
         }
+
+        item {
+            ComingSoonCard()
+        }
     }
 }
 
@@ -100,22 +105,70 @@ fun WelcomeCard() {
 }
 
 @Composable
+fun ComingSoonCard() {
+    MainTabCard(
+        icon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.HelpOutline,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary,
+            )
+        },
+        iconBackgroundColor = MaterialTheme.colorScheme.outline,
+        title = "Новые фичи появятся позже",
+        description = "Следите за обновлениями.",
+        onClick = null,
+    )
+}
+
+@Composable
 fun FeatureCard(
     feature: AppFeatureVO,
     onClick: () -> Unit,
 ) {
+    MainTabCard(
+        icon = {
+            Icon(
+                imageVector = feature.icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary,
+            )
+        },
+        iconBackgroundColor = MaterialTheme.colorScheme.primary,
+        title = feature.title,
+        description = feature.description,
+        onClick = onClick,
+    )
+}
+
+@Composable
+private fun MainTabCard(
+    icon: @Composable () -> Unit,
+    iconBackgroundColor: androidx.compose.ui.graphics.Color,
+    title: String,
+    description: String,
+    onClick: (() -> Unit)?,
+) {
+    val cardModifier =
+        Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .clip(RoundedCornerShape(12.dp))
+
+    val clickableModifier =
+        if (onClick != null) {
+            cardModifier.clickable(onClick = onClick)
+        } else {
+            cardModifier
+        }
+
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
             ),
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .clickable(onClick = onClick),
+        modifier = clickableModifier,
     ) {
         Column(
             modifier =
@@ -130,19 +183,15 @@ fun FeatureCard(
                     Modifier
                         .size(48.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.primary),
+                        .background(iconBackgroundColor),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(
-                    imageVector = feature.icon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                )
+                icon()
             }
 
             Column {
                 Text(
-                    text = feature.title,
+                    text = title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
@@ -150,7 +199,7 @@ fun FeatureCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = feature.description,
+                    text = description,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 3,

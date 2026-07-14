@@ -1,11 +1,7 @@
 package ru.jengle88.klarkclient.ui.maintab
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.GeneratingTokens
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Translate
 import cafe.adriel.voyager.core.model.ScreenModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -30,7 +26,7 @@ class MainTabScreenModel : ScreenModel {
                     icon = Icons.Default.GeneratingTokens,
                     route = AppScreenDestination.GENERATION,
                 ),
-                AppFeatureVO(
+                /*AppFeatureVO(
                     title = "Калькулятор периодов",
                     description = "Расчет задолженности по ЛС с группировкой дат",
                     icon = Icons.Default.DateRange,
@@ -54,6 +50,7 @@ class MainTabScreenModel : ScreenModel {
                     icon = Icons.Default.LocationOn,
                     route = AppScreenDestination.JURISDICTION,
                 ),
+                 */
             )
         }
     }
