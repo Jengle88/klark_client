@@ -4,8 +4,9 @@ package ru.jengle88.klarkclient.di
 import org.koin.dsl.module
 // import ru.jengle88.klarkclient.data.network.ai.AiHttpClient
 
-val aiModule = module {
-    includes(appModule)
-    // AiHttpClient is disabled: unused and pulls in auth dependencies.
-    // singleOf(::AiHttpClient)
-}
+val aiModule =
+    module {
+        includes(appModule)
+        // AiHttpClient is disabled: unused and pulls in auth dependencies.
+        // singleOf(::AiHttpClient)
+    }

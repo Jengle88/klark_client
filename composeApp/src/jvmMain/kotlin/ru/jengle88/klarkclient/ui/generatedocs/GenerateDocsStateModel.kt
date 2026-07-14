@@ -83,10 +83,10 @@ class GenerateDocsStateModel(
         screenModelScope.launch(Dispatchers.IO) {
             val data =
                 readTableDataUseCase(
-                        currentState.pathToTable,
-                        currentState.ignoreLastNColumn,
-                        currentState.unionLastNColumn,
-                    ).map { it.toPersistentList() }
+                    currentState.pathToTable,
+                    currentState.ignoreLastNColumn,
+                    currentState.unionLastNColumn,
+                ).map { it.toPersistentList() }
                     .toPersistentList()
             _state.update { it.copy(isTableLoading = false, tableData = data) }
         }

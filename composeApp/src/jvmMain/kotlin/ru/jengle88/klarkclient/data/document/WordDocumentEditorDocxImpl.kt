@@ -12,7 +12,7 @@ import java.io.File
 
 class WordDocumentEditorDocxImpl private constructor(
     private val document: XWPFDocument,
-): WordDocumentEditor {
+) : WordDocumentEditor {
     override fun saveToFile(dstFile: File) {
         document.write(dstFile.outputStream())
     }

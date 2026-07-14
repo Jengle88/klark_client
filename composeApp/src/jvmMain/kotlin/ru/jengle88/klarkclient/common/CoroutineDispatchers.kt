@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.swing.Swing
 
 class CoroutineDispatchers {
-
     val io
         get() = Dispatchers.IO
 

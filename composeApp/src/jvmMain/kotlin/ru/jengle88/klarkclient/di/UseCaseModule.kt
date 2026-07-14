@@ -8,17 +8,16 @@ import ru.jengle88.klarkclient.domain.usecase.auth.GetAuthUserStateUseCase
 import ru.jengle88.klarkclient.domain.usecase.auth.LoginUseCase
 import ru.jengle88.klarkclient.domain.usecase.auth.LogoutUseCase
 
-val useCaseModule = module {
-    includes(appModule)
+val useCaseModule =
+    module {
+        includes(appModule)
 
-    // tables
-    factoryOf(::GenerateWordFromTableUseCase)
-    factoryOf(::ReadTableDataUseCase)
+        // tables
+        factoryOf(::GenerateWordFromTableUseCase)
+        factoryOf(::ReadTableDataUseCase)
 
-    // Auth
-    factoryOf(::GetAuthUserStateUseCase)
-    factoryOf(::LoginUseCase)
-    factoryOf(::LogoutUseCase)
-
-
-}
+        // Auth
+        factoryOf(::GetAuthUserStateUseCase)
+        factoryOf(::LoginUseCase)
+        factoryOf(::LogoutUseCase)
+    }

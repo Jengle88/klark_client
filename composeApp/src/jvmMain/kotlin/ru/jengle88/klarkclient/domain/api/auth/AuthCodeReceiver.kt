@@ -20,5 +20,9 @@ interface AuthCodeReceiver {
      * @param onServerReady Callback invoked once the server is active and ready for the redirect.
      * @return The captured authorization code if successful, or null if the operation fails.
      */
-    suspend fun awaitAuthCode(port: Int, expectedState: String, onServerReady: (port: Int) -> Unit): String?
+    suspend fun awaitAuthCode(
+        port: Int,
+        expectedState: String,
+        onServerReady: (port: Int) -> Unit,
+    ): String?
 }

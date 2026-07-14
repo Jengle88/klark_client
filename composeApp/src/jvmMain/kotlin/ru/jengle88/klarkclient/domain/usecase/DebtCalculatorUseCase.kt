@@ -8,15 +8,13 @@ import java.io.File
 
 class DebtCalculatorUseCase(
     private val excelDocumentDataProvider: ExcelDocumentDataProvider,
-
-    ) {
-
+) {
     sealed interface WorkStatus {
         data object Start : WorkStatus
 
         data class TableDataReceived(
             val amountOfAllFiles: Int,
-        ): WorkStatus
+        ) : WorkStatus
 
         data class ProcessingStep(
             val amountOfProcessedFiles: Int,
@@ -47,14 +45,14 @@ class DebtCalculatorUseCase(
             }
             emit(WorkStatus.TableDataReceived(tablesPath.size))
             for (tablePath in tablesPath) {
-                val table = excelDocumentDataProvider.readData(
-                    TableConfiguration(
-                        file = tablePath,
-                        ignoreLastNColumn = 0,
-                        unionLastNColumn = 0,
-                    ),
-                )
-
+                val table =
+                    excelDocumentDataProvider.readData(
+                        TableConfiguration(
+                            file = tablePath,
+                            ignoreLastNColumn = 0,
+                            unionLastNColumn = 0,
+                        ),
+                    )
             }
         }
 

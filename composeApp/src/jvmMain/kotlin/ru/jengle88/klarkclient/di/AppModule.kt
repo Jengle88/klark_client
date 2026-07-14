@@ -7,18 +7,18 @@ import ru.jengle88.klarkclient.common.CoroutineDispatchers
 import ru.jengle88.klarkclient.common.DesktopUrlLauncherImpl
 import ru.jengle88.klarkclient.common.UrlLauncher
 import ru.jengle88.klarkclient.data.AppConfig
-import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
 import ru.jengle88.klarkclient.data.document.ExcelDocumentDataProviderXlsxImpl
 import ru.jengle88.klarkclient.data.document.WordDocumentEditorFactoryImpl
-import ru.jengle88.klarkclient.domain.api.auth.AuthCodeReceiver
 import ru.jengle88.klarkclient.data.network.auth.AuthHttpClient
 import ru.jengle88.klarkclient.data.network.auth.AuthManagerImpl
-import ru.jengle88.klarkclient.domain.api.auth.AuthProvider
-import ru.jengle88.klarkclient.domain.api.auth.AuthStore
 import ru.jengle88.klarkclient.data.network.auth.AuthStoreImpl
 import ru.jengle88.klarkclient.data.network.auth.KtorAuthCodeReceiver
 import ru.jengle88.klarkclient.data.network.auth.YandexAuthProvider
+import ru.jengle88.klarkclient.domain.api.auth.AuthCodeReceiver
 import ru.jengle88.klarkclient.domain.api.auth.AuthManager
+import ru.jengle88.klarkclient.domain.api.auth.AuthProvider
+import ru.jengle88.klarkclient.domain.api.auth.AuthStore
+import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
 import ru.jengle88.klarkclient.domain.api.document.WordDocumentEditorFactory
 
 val appModule =
@@ -30,7 +30,7 @@ val appModule =
             val appConfig: AppConfig = get()
             YandexAuthProvider(
                 clientId = appConfig.clientId,
-                clientSecret = appConfig.clientSecret
+                clientSecret = appConfig.clientSecret,
             )
         }
         singleOf<AuthStore>(::AuthStoreImpl)

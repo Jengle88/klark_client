@@ -21,27 +21,28 @@ class AuthManagerImpl(
     private val ioDispatcher: CoroutineDispatcher,
 ) : AuthManager {
     @Throws(IllegalStateException::class)
-    override suspend fun login(): AuthTokens = withContext(ioDispatcher) {
-        val state = UUID.randomUUID().toString() // генерируем для безопасности, чтобы сравнивать при возвращении запроса
+    override suspend fun login(): AuthTokens =
+        withContext(ioDispatcher) {
+            val state = UUID.randomUUID().toString() // генерируем для безопасности, чтобы сравнивать при возвращении запроса
 
-        // redirectUri is constructed after we know the actual port
-        var redirectUri = ""
+            // redirectUri is constructed after we know the actual port
+            var redirectUri = ""
 
-        val code = authCodeReceiver.awaitAuthCode(port, expectedState = state, onServerReady = { actualPort ->
-            redirectUri = "http://localhost:$actualPort"
-            val url = authProvider.getAuthorizeUrl(redirectUri, state)
-            openBrowser(url)
-        })
-        checkNotNull(code) { "Auth code is null" }
-        return@withContext authProvider.exchangeCodeForToken(authHttpClient.httpClient, code, redirectUri)
-    }
+            val code =
+                authCodeReceiver.awaitAuthCode(port, expectedState = state, onServerReady = { actualPort ->
+                    redirectUri = "http://localhost:$actualPort"
+                    val url = authProvider.getAuthorizeUrl(redirectUri, state)
+                    openBrowser(url)
+                })
+            checkNotNull(code) { "Auth code is null" }
+            return@withContext authProvider.exchangeCodeForToken(authHttpClient.httpClient, code, redirectUri)
+        }
 
     @WorkerThread
     override suspend fun getUserProfile(accessToken: String): UserProfile {
         val userProfile = authProvider.getUserProfile(authHttpClient.httpClient, accessToken)
         return userProfile
     }
-
 
     private fun openBrowser(url: String) {
         uriLauncher.open(url)

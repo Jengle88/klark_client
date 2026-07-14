@@ -9,8 +9,8 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.jengle88.klarkclient.data.network.auth.AuthHttpClient
-import ru.jengle88.klarkclient.domain.api.auth.AuthStore
 import ru.jengle88.klarkclient.data.network.auth.YandexAuthProvider
+import ru.jengle88.klarkclient.domain.api.auth.AuthStore
 
 class AiHttpClient(
     authStore: AuthStore,
@@ -20,11 +20,13 @@ class AiHttpClient(
     val httpClient by lazy {
         HttpClient(CIO) {
             install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                })
+                json(
+                    Json {
+                        prettyPrint = true
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                    },
+                )
             }
 
             install(Auth) {
@@ -51,7 +53,7 @@ class AiHttpClient(
                             authStore.saveAuth(
                                 newTokens.accessToken,
                                 newTokens.refreshToken,
-                                authStore.userProfile.value
+                                authStore.userProfile.value,
                             )
 
                             BearerTokens(newTokens.accessToken, newTokens.refreshToken)
