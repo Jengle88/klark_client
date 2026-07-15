@@ -1,17 +1,37 @@
 package ru.jengle88.klarkclient.ui.generatedocs
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.persistentListOf
+import ru.jengle88.klarkclient.data.document.TableGroup
 import ru.jengle88.klarkclient.ui.components.NumberInputField
 import ru.jengle88.klarkclient.ui.components.PathInputField
 import ru.jengle88.klarkclient.ui.components.table.TableStyle
@@ -102,10 +122,15 @@ fun GenerateDocsContent(
             }
             VerticalDivider()
             Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Box(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -113,12 +138,32 @@ fun GenerateDocsContent(
                         style = MaterialTheme.typography.headlineMedium,
                     )
                 }
-                TableView(
-                    data = state.tableData,
-                    style = TableStyle(isAlternatingRowColorsEnabled = true),
-                )
+                if (state.tableGroups.isEmpty()) {
+                    TableView(
+                        data = state.tableData,
+                        style = TableStyle(isAlternatingRowColorsEnabled = true, isVerticalScrollable = false),
+                    )
+                } else {
+                    state.tableGroups.forEach { group ->
+                        GroupedTableView(group)
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun GroupedTableView(group: TableGroup) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = "Группа: ${group.key}",
+            style = MaterialTheme.typography.titleMedium,
+        )
+        TableView(
+            data = group.rows,
+            style = TableStyle(isAlternatingRowColorsEnabled = true, isVerticalScrollable = false, isFirstColumnVisible = false),
+        )
     }
 }
 
@@ -137,15 +182,34 @@ fun PreviewGenerateDocsScreen() {
                 isTableLoading = false,
                 tableData =
                     persistentListOf(
-                        persistentListOf("Заголовок 1", "Заголовок 2", "Заголовок 3", "Заголовок 4"),
-                        persistentListOf("Данные 1.1", "Данные 1.2", "Данные 1.3", "Данные 1.4"),
-                        persistentListOf("Данные 2.1", "Данные 2.2", "Данные 2.3", "Данные 2.4"),
-                        persistentListOf("Данные 3.1", "Данные 3.2", "Данные 3.3", "Данные 3.4"),
+                        persistentListOf("Группа", "Заголовок 2", "Заголовок 3", "Заголовок 4"),
+                        persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
+                        persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
+                        persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
                         persistentListOf(
-                            "Данные 4.1",
-                            "Данные 4.2",
-                            "Данные 4.3",
-                            "Данные 4.4",
+                            "Б",
+                            "Данные Б.4",
+                            "Данные Б.5",
+                            "Данные Б.6",
+                        ),
+                    ),
+                tableGroups =
+                    persistentListOf(
+                        TableGroup(
+                            key = "А",
+                            rows =
+                                persistentListOf(
+                                    persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
+                                    persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
+                                ),
+                        ),
+                        TableGroup(
+                            key = "Б",
+                            rows =
+                                persistentListOf(
+                                    persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
+                                    persistentListOf("Б", "Данные Б.4", "Данные Б.5", "Данные Б.6"),
+                                ),
                         ),
                     ),
             ),
