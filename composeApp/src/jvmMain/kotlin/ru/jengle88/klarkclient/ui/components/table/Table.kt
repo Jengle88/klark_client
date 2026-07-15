@@ -1,4 +1,4 @@
-package ru.jengle88.klarkclient.ui.components
+package ru.jengle88.klarkclient.ui.components.table
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
@@ -20,7 +20,10 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
-fun TableView(data: ImmutableList<ImmutableList<String>>) {
+fun TableView(
+    data: ImmutableList<ImmutableList<String>>,
+    style: TableStyle = TableStyle(),
+) {
     if (data.isEmpty()) return
     if (data.all { it.isEmpty() }) return
     val maxColumns = data.maxOf { it.size }
@@ -43,8 +46,14 @@ fun TableView(data: ImmutableList<ImmutableList<String>>) {
                 }
             }
             itemsIndexed(data) { index, row ->
+                val rowBackground =
+                    if (style.isAlternatingRowColorsEnabled && index % 2 == 1) {
+                        MaterialTheme.colorScheme.surfaceContainerHighest
+                    } else {
+                        Color.Transparent
+                    }
                 Row(
-                    modifier = Modifier.height(IntrinsicSize.Min),
+                    modifier = Modifier.height(IntrinsicSize.Min).background(rowBackground),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     TableLayoutCell((index + 1).toString())
@@ -133,5 +142,5 @@ fun PreviewTableView() {
             persistentListOf("Данные 4.1", "Данные 4.2", "Данные 4.3", "dghskadfjlkjassbkhasd fasdkg asdg askhdg namsdg a"),
         )
 
-    TableView(data)
+    TableView(data, style = TableStyle(isAlternatingRowColorsEnabled = true))
 }

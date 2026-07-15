@@ -14,7 +14,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.persistentListOf
 import ru.jengle88.klarkclient.ui.components.NumberInputField
 import ru.jengle88.klarkclient.ui.components.PathInputField
-import ru.jengle88.klarkclient.ui.components.TableView
+import ru.jengle88.klarkclient.ui.components.table.TableStyle
+import ru.jengle88.klarkclient.ui.components.table.TableView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,7 +113,10 @@ fun GenerateDocsContent(
                         style = MaterialTheme.typography.headlineMedium,
                     )
                 }
-                TableView(data = state.tableData)
+                TableView(
+                    data = state.tableData,
+                    style = TableStyle(isAlternatingRowColorsEnabled = true),
+                )
             }
         }
     }
