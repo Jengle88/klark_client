@@ -2,6 +2,7 @@ package ru.jengle88.klarkclient.ui.generatedocs
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import ru.jengle88.klarkclient.data.document.TableGroup
 
 data class GenerateDocsParamsState(
     val pathToTable: String,
@@ -12,6 +13,7 @@ data class GenerateDocsParamsState(
     val isGenerating: Boolean,
     val isTableLoading: Boolean,
     val tableData: ImmutableList<ImmutableList<String>>,
+    val tableGroups: ImmutableList<TableGroup>,
 ) {
     companion object {
         val EMPTY =
@@ -24,6 +26,7 @@ data class GenerateDocsParamsState(
                 isGenerating = false,
                 isTableLoading = false,
                 tableData = persistentListOf(),
+                tableGroups = persistentListOf(),
             )
     }
 }

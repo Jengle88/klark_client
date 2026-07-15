@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun TableView(
@@ -29,46 +30,84 @@ fun TableView(
     val maxColumns = data.maxOf { it.size }
 
     val horizontalScrollState = rememberScrollState()
+    val visibleData = if (style.isFirstColumnVisible) data else data.map { it.drop(1).toPersistentList() }.toPersistentList()
+    val visibleMaxColumns = if (style.isFirstColumnVisible) maxColumns else (maxColumns - 1).coerceAtLeast(0)
 
-    Box(modifier = Modifier.fillMaxSize().horizontalScroll(horizontalScrollState)) {
-        LazyColumn(
-            modifier = Modifier.widthIn(min = 100.dp),
-        ) {
-            stickyHeader {
-                Row(
-                    modifier = Modifier.height(IntrinsicSize.Min),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    TableEmptyCell(background = MaterialTheme.colorScheme.secondaryContainer)
-                    repeat(maxColumns) { i ->
-                        TableLayoutCell(getColumnName(i))
-                    }
+    Box(modifier = Modifier.fillMaxWidth().horizontalScroll(horizontalScrollState)) {
+        if (style.isVerticalScrollable) {
+            LazyColumn(
+                modifier = Modifier.widthIn(min = 100.dp),
+            ) {
+                stickyHeader {
+                    HeaderRow(maxColumns = visibleMaxColumns)
+                }
+                itemsIndexed(visibleData) { index, row ->
+                    DataRow(
+                        index = index,
+                        row = row,
+                        maxColumns = visibleMaxColumns,
+                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled,
+                    )
                 }
             }
-            itemsIndexed(data) { index, row ->
-                val rowBackground =
-                    if (style.isAlternatingRowColorsEnabled && index % 2 == 1) {
-                        MaterialTheme.colorScheme.surfaceContainerHighest
-                    } else {
-                        Color.Transparent
-                    }
-                Row(
-                    modifier = Modifier.height(IntrinsicSize.Min).background(rowBackground),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    TableLayoutCell((index + 1).toString())
-                    row.forEach { cellText ->
-                        if (cellText.isNotEmpty()) {
-                            TableCell(text = cellText)
-                        } else {
-                            TableEmptyCell()
-                        }
-                    }
-                    repeat(maxColumns - row.size) {
-                        TableEmptyCell()
-                    }
+        } else {
+            Column(
+                modifier = Modifier.widthIn(min = 100.dp),
+            ) {
+                HeaderRow(maxColumns = visibleMaxColumns)
+                visibleData.forEachIndexed { index, row ->
+                    DataRow(
+                        index = index,
+                        row = row,
+                        maxColumns = visibleMaxColumns,
+                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled,
+                    )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun HeaderRow(maxColumns: Int) {
+    Row(
+        modifier = Modifier.height(IntrinsicSize.Min),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TableEmptyCell(background = MaterialTheme.colorScheme.secondaryContainer)
+        repeat(maxColumns) { i ->
+            TableLayoutCell(getColumnName(i))
+        }
+    }
+}
+
+@Composable
+private fun DataRow(
+    index: Int,
+    row: ImmutableList<String>,
+    maxColumns: Int,
+    isAlternatingRowColorsEnabled: Boolean,
+) {
+    val rowBackground =
+        if (isAlternatingRowColorsEnabled && index % 2 == 1) {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        } else {
+            Color.Transparent
+        }
+    Row(
+        modifier = Modifier.height(IntrinsicSize.Min).background(rowBackground),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TableLayoutCell((index + 1).toString())
+        row.forEach { cellText ->
+            if (cellText.isNotEmpty()) {
+                TableCell(text = cellText)
+            } else {
+                TableEmptyCell()
+            }
+        }
+        repeat(maxColumns - row.size) {
+            TableEmptyCell()
         }
     }
 }
