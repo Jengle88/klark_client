@@ -40,6 +40,8 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             // FilePicker
             implementation(libs.filekit.compose)
+            // Markdown
+            implementation(libs.markdown.renderer.m3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -116,10 +118,11 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     }
 
     // Configure source and class directories for multiplatform project
-    val coverageSourceDirs = listOf(
-        "src/commonMain/kotlin",
-        "src/jvmMain/kotlin",
-    )
+    val coverageSourceDirs =
+        listOf(
+            "src/commonMain/kotlin",
+            "src/jvmMain/kotlin",
+        )
 
     sourceDirectories.setFrom(files(coverageSourceDirs))
     classDirectories.setFrom(
