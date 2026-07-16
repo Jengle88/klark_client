@@ -13,6 +13,7 @@ apache-poi = "5.2.5"
 apache-logging = "2.22.1"
 kotlinx-immutableList = "0.4.0"
 filekit = "0.8.8"
+markdownRenderer = "0.38.0"
 ktlint = "12.1.1"
 ktorVersion = "2.3.12"
 mockitoCore = "5.10.0"
@@ -40,6 +41,7 @@ apache-poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "apache-
 apache-logging-core = { module = "org.apache.logging.log4j:log4j-api", version.ref = "apache-logging" }
 apache-logging-api = { module = "org.apache.logging.log4j:log4j-core", version.ref = "apache-logging"  }
 filekit-compose = { module = "io.github.vinceglb:filekit-compose", version.ref = "filekit" }
+markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "markdownRenderer" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 # Ktor Client (чтобы отправить код и получить токен)

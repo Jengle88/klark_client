@@ -1,5 +1,6 @@
 package ru.jengle88.klarkclient.ui.screen
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -7,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
@@ -33,7 +35,9 @@ object MainTab : Tab {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        BottomSheetNavigator {
+        BottomSheetNavigator(
+            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        ) {
             Navigator(MainTabScreen()) {
                 CurrentScreen()
             }

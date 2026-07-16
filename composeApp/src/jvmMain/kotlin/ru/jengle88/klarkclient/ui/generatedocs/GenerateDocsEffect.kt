@@ -14,4 +14,6 @@ sealed class GenerateDocsEffect {
         val ignoreLastNColumn: Int,
         val unionLastNColumn: Int,
     ) : GenerateDocsEffect()
+
+    data object ShowInfoBottomSheet : GenerateDocsEffect()
 }

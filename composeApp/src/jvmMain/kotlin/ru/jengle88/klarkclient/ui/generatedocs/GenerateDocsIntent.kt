@@ -26,4 +26,6 @@ sealed class GenerateDocsIntent {
     ) : GenerateDocsIntent()
 
     data object StartGenerating : GenerateDocsIntent()
+
+    data object ShowInfo : GenerateDocsIntent()
 }

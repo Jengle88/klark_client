@@ -17,6 +17,7 @@ import io.github.vinceglb.filekit.core.PickerType
 import kotlinx.coroutines.flow.collectLatest
 import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsContent
 import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsEffect
+import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsInfoBottomSheetScreen
 import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsIntent
 import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsStateModel
 import ru.jengle88.klarkclient.ui.generatedocs.generationdialog.GenerateDocsGenerationDialogScreen
@@ -81,6 +82,11 @@ class GenerateDocsScreen : Screen {
                                 effect.ignoreLastNColumn,
                                 effect.unionLastNColumn,
                             ),
+                        )
+
+                    GenerateDocsEffect.ShowInfoBottomSheet ->
+                        bottomSheetNavigator.show(
+                            GenerateDocsInfoBottomSheetScreen(),
                         )
                 }
             }

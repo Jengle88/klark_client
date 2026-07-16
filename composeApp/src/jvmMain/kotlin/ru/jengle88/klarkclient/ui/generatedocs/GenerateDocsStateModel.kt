@@ -29,6 +29,7 @@ class GenerateDocsStateModel(
     fun onIntent(intent: GenerateDocsIntent) {
         when (intent) {
             is GenerateDocsIntent.StartGenerating -> generate()
+            is GenerateDocsIntent.ShowInfo -> showInfoDialog()
             is GenerateDocsIntent.ReceiveTableData -> {
                 val tableData = intent.data.map { row -> row.toPersistentList() }.toPersistentList()
                 val tableGroups = groupTableRowsByFirstColumnUseCase(intent.data).toImmutableList()
@@ -86,6 +87,12 @@ class GenerateDocsStateModel(
                     snapshotOfState.unionLastNColumn ?: 0,
                 ),
             )
+        }
+    }
+
+    private fun showInfoDialog() {
+        screenModelScope.launch {
+            _effect.emit(GenerateDocsEffect.ShowInfoBottomSheet)
         }
     }
 
