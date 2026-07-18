@@ -21,6 +21,10 @@ sealed class GenerateDocsIntent {
         val value: Int?,
     ) : GenerateDocsIntent()
 
+    data class UpdateIsTableGrouped(
+        val value: Boolean,
+    ) : GenerateDocsIntent()
+
     data class ReceiveTableData(
         val data: List<List<String>>,
     ) : GenerateDocsIntent()
