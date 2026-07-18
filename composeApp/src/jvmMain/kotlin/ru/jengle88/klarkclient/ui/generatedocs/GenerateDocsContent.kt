@@ -12,24 +12,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.persistentListOf
 import ru.jengle88.klarkclient.data.document.TableGroup
@@ -119,6 +122,38 @@ fun GenerateDocsContent(
                     onValueChange = { onIntent(GenerateDocsIntent.UpdateUnionLastNColumn(it)) },
                 )
 
+                val isTableControlsEnabled = !state.isTableLoading
+
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .toggleable(
+                                value = state.isTableGrouped,
+                                onValueChange = { onIntent(GenerateDocsIntent.UpdateIsTableGrouped(it)) },
+                                role = Role.Checkbox,
+                                enabled = isTableControlsEnabled,
+                            )
+                            .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Checkbox(
+                        checked = state.isTableGrouped,
+                        onCheckedChange = null,
+                        enabled = isTableControlsEnabled,
+                    )
+                    Text(
+                        text = "Группировать по шаблону",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(start = 12.dp),
+                        color = if (isTableControlsEnabled) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        },
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
@@ -146,15 +181,15 @@ fun GenerateDocsContent(
                         style = MaterialTheme.typography.headlineMedium,
                     )
                 }
-                if (state.tableGroups.isEmpty()) {
+                if (state.isTableGrouped && state.tableGroups.isNotEmpty()) {
+                    state.tableGroups.forEach { group ->
+                        GroupedTableView(group)
+                    }
+                } else {
                     TableView(
                         data = state.tableData,
                         style = TableStyle(isAlternatingRowColorsEnabled = true, isVerticalScrollable = false),
                     )
-                } else {
-                    state.tableGroups.forEach { group ->
-                        GroupedTableView(group)
-                    }
                 }
             }
         }
@@ -186,6 +221,7 @@ fun PreviewGenerateDocsScreen() {
                 pathToDestination = "C:/Users/user/Documents/output",
                 ignoreLastNColumn = 1,
                 unionLastNColumn = 2,
+                isTableGrouped = true,
                 isGenerating = false,
                 isTableLoading = false,
                 tableData =
