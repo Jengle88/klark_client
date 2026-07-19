@@ -1,5 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
+val klarkAppVersion = "1.0.0"
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
@@ -67,6 +69,7 @@ kotlin {
             implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.contentnegotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.semver)
             implementation(libs.ktor.server.core)
             implementation(libs.ktor.server.cio)
         }
@@ -80,7 +83,49 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.jengle88.klarkclient"
-            packageVersion = "1.0.0"
+            packageVersion = klarkAppVersion
+        }
+    }
+}
+
+abstract class GenerateBuildInfoTask : DefaultTask() {
+    @get:Input
+    abstract val appVersion: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val directory = outputDir.get().asFile
+        directory.mkdirs()
+        File(directory, "ru/jengle88/klarkclient/BuildInfo.kt").apply {
+            parentFile.mkdirs()
+            writeText(
+                """
+                package ru.jengle88.klarkclient
+
+                object BuildInfo {
+                    const val VERSION = "${appVersion.get()}"
+                }
+                """.trimIndent(),
+            )
+        }
+    }
+}
+
+val generateBuildInfo =
+    tasks.register<GenerateBuildInfoTask>("generateBuildInfo") {
+        appVersion.set(klarkAppVersion)
+        outputDir.set(
+            layout.buildDirectory.dir("generated/source/build-info/kotlin"),
+        )
+    }
+
+kotlin {
+    sourceSets {
+        jvmMain {
+            kotlin.srcDir(generateBuildInfo)
         }
     }
 }

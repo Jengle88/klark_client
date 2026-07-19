@@ -9,6 +9,7 @@ import ru.jengle88.klarkclient.common.UrlLauncher
 import ru.jengle88.klarkclient.data.AppConfig
 import ru.jengle88.klarkclient.data.document.ExcelDocumentDataProviderXlsxImpl
 import ru.jengle88.klarkclient.data.document.WordDocumentEditorFactoryImpl
+import ru.jengle88.klarkclient.data.network.HttpClientFactory
 import ru.jengle88.klarkclient.data.network.auth.AuthHttpClient
 import ru.jengle88.klarkclient.data.network.auth.AuthManagerImpl
 import ru.jengle88.klarkclient.data.network.auth.AuthStoreImpl
@@ -20,12 +21,14 @@ import ru.jengle88.klarkclient.domain.api.auth.AuthProvider
 import ru.jengle88.klarkclient.domain.api.auth.AuthStore
 import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
 import ru.jengle88.klarkclient.domain.api.document.WordDocumentEditorFactory
+import ru.jengle88.klarkclient.domain.api.update.UpdateChecker
 
 val appModule =
     module {
         single { CoroutineDispatchers() }
         single { AppConfig() }
-        single { AuthHttpClient() }
+        single { HttpClientFactory.create() }
+        single { AuthHttpClient(get()) }
         single<AuthProvider> {
             val appConfig: AppConfig = get()
             YandexAuthProvider(
@@ -49,4 +52,12 @@ val appModule =
         }
         singleOf<WordDocumentEditorFactory>(::WordDocumentEditorFactoryImpl)
         factoryOf<ExcelDocumentDataProvider>(::ExcelDocumentDataProviderXlsxImpl)
+
+        single {
+            UpdateChecker(
+                client = get(),
+                owner = "Jengle88",
+                repo = "klark_client",
+            )
+        }
     }

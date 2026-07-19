@@ -3,21 +3,34 @@ package ru.jengle88.klarkclient.ui.maintab
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GeneratingTokens
 import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import ru.jengle88.klarkclient.BuildInfo
+import ru.jengle88.klarkclient.common.CoroutineDispatchers
+import ru.jengle88.klarkclient.common.UrlLauncher
+import ru.jengle88.klarkclient.domain.api.update.UpdateChecker
+import ru.jengle88.klarkclient.domain.api.update.UpdateInfo
 import ru.jengle88.klarkclient.ui.datamodels.AppFeatureVO
 import ru.jengle88.klarkclient.ui.datamodels.AppScreenDestination
 
-class MainTabScreenModel : ScreenModel {
+class MainTabScreenModel(
+    private val updateChecker: UpdateChecker,
+    private val coroutineDispatchers: CoroutineDispatchers,
+    private val urlLauncher: UrlLauncher,
+) : ScreenModel {
     private val _state = MutableStateFlow<ImmutableList<AppFeatureVO>>(persistentListOf())
     val state: StateFlow<ImmutableList<AppFeatureVO>> = _state.asStateFlow()
 
+    private val _updateInfo = MutableStateFlow<UpdateInfo?>(null)
+    val updateInfo: StateFlow<UpdateInfo?> = _updateInfo.asStateFlow()
+
     init {
-        // STUB
         _state.update {
             persistentListOf(
                 AppFeatureVO(
@@ -52,6 +65,26 @@ class MainTabScreenModel : ScreenModel {
                 ),
                  */
             )
+        }
+
+        checkForUpdates()
+    }
+
+    private fun checkForUpdates() {
+        screenModelScope.launch(coroutineDispatchers.io) {
+            val updateInfo = updateChecker.checkForUpdate(BuildInfo.VERSION)
+            if (updateInfo != null) {
+                _updateInfo.update { updateInfo }
+            }
+        }
+    }
+
+    fun onUpdateClick() {
+        val url = _updateInfo.value?.downloadUrl ?: return
+        try {
+            urlLauncher.open(url)
+        } catch (_: Exception) {
+            // Desktop/Browser не поддерживается — ничего не делаем
         }
     }
 }

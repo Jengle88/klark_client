@@ -19,12 +19,18 @@ class MainTabScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel = koinScreenModel<MainTabScreenModel>()
         val features by screenModel.state.collectAsStateWithLifecycle()
+        val updateInfo by screenModel.updateInfo.collectAsStateWithLifecycle()
 
-        MainTabContent(features, onNavigate = { route ->
-            when (route) {
-                AppScreenDestination.GENERATION -> navigator.push(GenerateDocsScreen())
-                else -> TODO()
-            }
-        })
+        MainTabContent(
+            features = features,
+            updateInfo = updateInfo,
+            onNavigate = { route ->
+                when (route) {
+                    AppScreenDestination.GENERATION -> navigator.push(GenerateDocsScreen())
+                    else -> TODO()
+                }
+            },
+            onUpdateClick = screenModel::onUpdateClick,
+        )
     }
 }
