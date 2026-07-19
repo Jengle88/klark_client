@@ -23,8 +23,8 @@ class YandexAuthProviderTest {
     private val redirectUri = "http://localhost/callback"
     private val authProvider = YandexAuthProvider(clientId, clientSecret)
 
-    fun createHttpClient(mockEngine: MockEngine): HttpClient {
-        return HttpClient(mockEngine) {
+    fun createHttpClient(mockEngine: MockEngine): HttpClient =
+        HttpClient(mockEngine) {
             install(ContentNegotiation) {
                 json(
                     Json {
@@ -34,7 +34,6 @@ class YandexAuthProviderTest {
                 )
             }
         }
-    }
 
     @Test
     fun `getAuthorizeUrl returns correct URL`() {
@@ -106,9 +105,10 @@ class YandexAuthProviderTest {
             val mockEngine =
                 MockEngine { request ->
                     val uri =
-                        URLBuilder("https://login.yandex.ru/info").apply {
-                            parameters.append("format", "json")
-                        }.buildString()
+                        URLBuilder("https://login.yandex.ru/info")
+                            .apply {
+                                parameters.append("format", "json")
+                            }.buildString()
                     assertEquals(uri, request.url.toString())
                     assertEquals("OAuth $accessToken", request.headers["Authorization"])
                     respond(

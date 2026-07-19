@@ -92,13 +92,13 @@ fun MainTabContent(
 fun WelcomeCard() {
     Card(
         colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
+        CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -178,25 +178,25 @@ private fun MainTabCard(
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
+        CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
         modifier = clickableModifier,
     ) {
         Column(
             modifier =
-                Modifier
-                    .padding(16.dp)
-                    .fillMaxSize(),
+            Modifier
+                .padding(16.dp)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             // Иконка в кружочке
             Box(
                 modifier =
-                    Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(iconBackgroundColor),
+                Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(iconBackgroundColor),
                 contentAlignment = Alignment.Center,
             ) {
                 icon()

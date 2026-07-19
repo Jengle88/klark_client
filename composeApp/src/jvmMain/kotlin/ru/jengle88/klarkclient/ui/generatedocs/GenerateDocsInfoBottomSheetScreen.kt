@@ -59,9 +59,9 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
             cells.forEach { cell ->
                 Column(
                     modifier =
-                        Modifier
-                            .weight(1f)
-                            .padding(8.dp),
+                    Modifier
+                        .weight(1f)
+                        .padding(8.dp),
                 ) {
                     com.mikepenz.markdown.compose.elements.MarkdownTableBasicText(
                         content = content,
@@ -83,9 +83,9 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
     ) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
@@ -95,50 +95,50 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
 
             Markdown(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
                 content = description,
                 typography =
-                    markdownTypography(
-                        h1 = MaterialTheme.typography.headlineSmall.copy(fontSize = 22.sp),
-                        h2 = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
-                        h3 = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp),
-                        h4 = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
-                        paragraph = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                        bullet = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                        ordered = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                        quote = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                        code = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace, fontSize = 13.sp),
-                        inlineCode = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace, fontSize = 13.sp),
-                        table = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                    ),
+                markdownTypography(
+                    h1 = MaterialTheme.typography.headlineSmall.copy(fontSize = 22.sp),
+                    h2 = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
+                    h3 = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp),
+                    h4 = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
+                    paragraph = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                    bullet = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                    ordered = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                    quote = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                    code = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace, fontSize = 13.sp),
+                    inlineCode = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace, fontSize = 13.sp),
+                    table = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                ),
                 components =
-                    markdownComponents(
-                        table = { model ->
-                            MarkdownTable(
-                                content = model.content,
-                                node = model.node,
-                                style = model.typography.table,
-                                headerBlock = { content, header, _, style ->
-                                    WrappedMarkdownTableRow(
-                                        content = content,
-                                        row = header,
-                                        style = style.copy(fontWeight = FontWeight.Bold),
-                                        isHeader = true,
-                                    )
-                                },
-                                rowBlock = { content, row, _, style ->
-                                    WrappedMarkdownTableRow(
-                                        content = content,
-                                        row = row,
-                                        style = style,
-                                        isHeader = false,
-                                    )
-                                },
-                            )
-                        },
-                    ),
+                markdownComponents(
+                    table = { model ->
+                        MarkdownTable(
+                            content = model.content,
+                            node = model.node,
+                            style = model.typography.table,
+                            headerBlock = { content, header, _, style ->
+                                WrappedMarkdownTableRow(
+                                    content = content,
+                                    row = header,
+                                    style = style.copy(fontWeight = FontWeight.Bold),
+                                    isHeader = true,
+                                )
+                            },
+                            rowBlock = { content, row, _, style ->
+                                WrappedMarkdownTableRow(
+                                    content = content,
+                                    row = row,
+                                    style = style,
+                                    isHeader = false,
+                                )
+                            },
+                        )
+                    },
+                ),
             )
 
             Button(

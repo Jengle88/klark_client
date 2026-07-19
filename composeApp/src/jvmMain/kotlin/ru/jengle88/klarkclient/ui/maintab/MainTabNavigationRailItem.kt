@@ -34,12 +34,12 @@ fun MainTabNavigationRailItem(tab: Tab) {
             )
         },
         colors =
-            NavigationRailItemDefaults.colors(
-                selectedIconColor = MaterialTheme.colorScheme.primary,
-                unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                selectedTextColor = MaterialTheme.colorScheme.primary,
-                unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-            ),
+        NavigationRailItemDefaults.colors(
+            selectedIconColor = MaterialTheme.colorScheme.primary,
+            unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            selectedTextColor = MaterialTheme.colorScheme.primary,
+            unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+        ),
     )
 }
 

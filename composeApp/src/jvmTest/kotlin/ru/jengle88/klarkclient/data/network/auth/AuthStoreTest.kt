@@ -9,7 +9,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class AuthStoreTest {
-
     private lateinit var authStore: AuthStoreImpl
     private lateinit var preferences: Preferences
 

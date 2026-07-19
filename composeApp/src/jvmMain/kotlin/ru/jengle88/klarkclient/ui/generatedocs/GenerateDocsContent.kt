@@ -76,11 +76,11 @@ fun GenerateDocsContent(
         Row(modifier = Modifier.padding(paddingValues)) {
             Column(
                 modifier =
-                    Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(0.3f)
-                        .padding(16.dp)
-                        .verticalScroll(rememberScrollState()),
+                Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(0.3f)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
@@ -126,15 +126,15 @@ fun GenerateDocsContent(
 
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .toggleable(
-                                value = state.isTableGrouped,
-                                onValueChange = { onIntent(GenerateDocsIntent.UpdateIsTableGrouped(it)) },
-                                role = Role.Checkbox,
-                                enabled = isTableControlsEnabled,
-                            )
-                            .padding(vertical = 8.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .toggleable(
+                            value = state.isTableGrouped,
+                            onValueChange = { onIntent(GenerateDocsIntent.UpdateIsTableGrouped(it)) },
+                            role = Role.Checkbox,
+                            enabled = isTableControlsEnabled,
+                        )
+                        .padding(vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Checkbox(
@@ -166,10 +166,10 @@ fun GenerateDocsContent(
             VerticalDivider()
             Column(
                 modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(16.dp),
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Box(
@@ -215,48 +215,48 @@ private fun GroupedTableView(group: TableGroup) {
 fun PreviewGenerateDocsScreen() {
     GenerateDocsContent(
         state =
-            GenerateDocsParamsState(
-                pathToTable = "C:/Users/user/Documents/data.xlsx",
-                pathToTemplate = "C:/Users/user/Documents/template.docx",
-                pathToDestination = "C:/Users/user/Documents/output",
-                ignoreLastNColumn = 1,
-                unionLastNColumn = 2,
-                isTableGrouped = true,
-                isGenerating = false,
-                isTableLoading = false,
-                tableData =
+        GenerateDocsParamsState(
+            pathToTable = "C:/Users/user/Documents/data.xlsx",
+            pathToTemplate = "C:/Users/user/Documents/template.docx",
+            pathToDestination = "C:/Users/user/Documents/output",
+            ignoreLastNColumn = 1,
+            unionLastNColumn = 2,
+            isTableGrouped = true,
+            isGenerating = false,
+            isTableLoading = false,
+            tableData =
+            persistentListOf(
+                persistentListOf("Группа", "Заголовок 2", "Заголовок 3", "Заголовок 4"),
+                persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
+                persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
+                persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
+                persistentListOf(
+                    "Б",
+                    "Данные Б.4",
+                    "Данные Б.5",
+                    "Данные Б.6",
+                ),
+            ),
+            tableGroups =
+            persistentListOf(
+                TableGroup(
+                    key = "А",
+                    rows =
                     persistentListOf(
-                        persistentListOf("Группа", "Заголовок 2", "Заголовок 3", "Заголовок 4"),
                         persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
                         persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
-                        persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
-                        persistentListOf(
-                            "Б",
-                            "Данные Б.4",
-                            "Данные Б.5",
-                            "Данные Б.6",
-                        ),
                     ),
-                tableGroups =
+                ),
+                TableGroup(
+                    key = "Б",
+                    rows =
                     persistentListOf(
-                        TableGroup(
-                            key = "А",
-                            rows =
-                                persistentListOf(
-                                    persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
-                                    persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
-                                ),
-                        ),
-                        TableGroup(
-                            key = "Б",
-                            rows =
-                                persistentListOf(
-                                    persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
-                                    persistentListOf("Б", "Данные Б.4", "Данные Б.5", "Данные Б.6"),
-                                ),
-                        ),
+                        persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
+                        persistentListOf("Б", "Данные Б.4", "Данные Б.5", "Данные Б.6"),
                     ),
+                ),
             ),
+        ),
         onIntent = {},
         onEffect = {},
         onBack = {},

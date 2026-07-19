@@ -84,11 +84,12 @@ class GenerateDocsStateModel(
                 _state.update { prevState ->
                     prevState.copy(
                         isTableGrouped = intent.value,
-                        tableGroups = if (prevState.tableData.isNotEmpty()) {
-                            buildTableGroups(prevState.tableData, intent.value)
-                        } else {
-                            prevState.tableGroups
-                        }
+                        tableGroups =
+                            if (prevState.tableData.isNotEmpty()) {
+                                buildTableGroups(prevState.tableData, intent.value)
+                            } else {
+                                prevState.tableGroups
+                            },
                     )
                 }
             }

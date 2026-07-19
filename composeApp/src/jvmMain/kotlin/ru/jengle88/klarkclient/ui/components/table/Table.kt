@@ -117,11 +117,11 @@ private fun TableCell(text: String) {
     Text(
         text = text,
         modifier =
-            Modifier
-                .width(100.dp)
-                .fillMaxSize()
-                .border(1.dp, Color.LightGray)
-                .padding(8.dp),
+        Modifier
+            .width(100.dp)
+            .fillMaxSize()
+            .border(1.dp, Color.LightGray)
+            .padding(8.dp),
         textAlign = TextAlign.Start,
         maxLines = 3,
     )
@@ -131,12 +131,12 @@ private fun TableCell(text: String) {
 private fun TableLayoutCell(text: String) {
     Text(
         modifier =
-            Modifier
-                .width(100.dp)
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .border(1.dp, Color.LightGray)
-                .padding(8.dp),
+        Modifier
+            .width(100.dp)
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .border(1.dp, Color.LightGray)
+            .padding(8.dp),
         text = text,
         textAlign = TextAlign.Center,
     )
@@ -146,12 +146,12 @@ private fun TableLayoutCell(text: String) {
 private fun TableEmptyCell(background: Color = Color.Transparent) {
     Box(
         modifier =
-            Modifier
-                .width(100.dp)
-                .fillMaxSize()
-                .background(background)
-                .border(1.dp, Color.LightGray)
-                .padding(8.dp),
+        Modifier
+            .width(100.dp)
+            .fillMaxSize()
+            .background(background)
+            .border(1.dp, Color.LightGray)
+            .padding(8.dp),
     )
 }
 

@@ -7,12 +7,11 @@ import ru.jengle88.klarkclient.ui.auth.AuthUserState
 class GetAuthUserStateUseCase(
     private val authStore: AuthStore,
 ) {
-    operator fun invoke(): AuthUserState {
-        return AuthUserState(
+    operator fun invoke(): AuthUserState =
+        AuthUserState(
             isAuthorized = authStore.accessToken.value != null,
             initials = authStore.userProfile.value?.let { getUserNameInitials(it) },
         )
-    }
 
     private fun getUserNameInitials(profile: UserProfile): String {
         val firstInitial = profile.firstName.firstOrNull()

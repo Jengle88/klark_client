@@ -33,9 +33,9 @@ fun AuthStatusRectangleAvatar(
 
     Box(
         modifier =
-            modifier
-                .size(size)
-                .clickable(enabled = !isLoading, onClick = onClick, indication = null, interactionSource = null),
+        modifier
+            .size(size)
+            .clickable(enabled = !isLoading, onClick = onClick, indication = null, interactionSource = null),
         contentAlignment = Alignment.Center,
     ) {
         if (isLoading) {
@@ -47,9 +47,9 @@ fun AuthStatusRectangleAvatar(
         } else if (isAuthorized) {
             Box(
                 modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.primary, shape),
+                Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primary, shape),
                 contentAlignment = Alignment.Center,
             ) {
                 if (userName != null) {
@@ -71,9 +71,9 @@ fun AuthStatusRectangleAvatar(
         } else {
             Box(
                 modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.primaryContainer, shape),
+                Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primaryContainer, shape),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(

@@ -29,9 +29,9 @@ fun GenerateDocsGenerationDialogContent(
 ) {
     Box(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -53,10 +53,10 @@ fun GenerateDocsGenerationDialogContent(
 
             Box(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(vertical = 8.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(vertical = 8.dp),
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),

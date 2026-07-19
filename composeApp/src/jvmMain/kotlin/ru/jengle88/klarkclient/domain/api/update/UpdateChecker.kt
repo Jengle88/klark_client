@@ -20,8 +20,7 @@ class UpdateChecker(
                         header("Accept", "application/vnd.github+json")
                         header("X-GitHub-Api-Version", "2022-11-28")
                         header("User-Agent", "Klark-Desktop-UpdateChecker")
-                    }
-                    .body()
+                    }.body()
 
             val latestVersion = release.tagName.lowercase().removePrefix(VERSION_PREFIX)
             val current = currentVersion.lowercase().removePrefix(VERSION_PREFIX)

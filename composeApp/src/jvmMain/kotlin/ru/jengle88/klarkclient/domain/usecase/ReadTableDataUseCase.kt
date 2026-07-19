@@ -10,15 +10,13 @@ class ReadTableDataUseCase(
         pathToTable: String,
         ignoreLastNColumn: Int? = null,
         unionLastNColumn: Int? = null,
-    ): List<List<String>> {
-        return excelDocumentDataProvider
+    ): List<List<String>> =
+        excelDocumentDataProvider
             .readData(
                 TableConfiguration(
                     file = java.io.File(pathToTable),
                     ignoreLastNColumn = ignoreLastNColumn ?: 0,
                     unionLastNColumn = unionLastNColumn ?: 0,
                 ),
-            )
-            .rows
-    }
+            ).rows
 }

@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    alias(libs.plugins.ktlint)
+    alias(libs.plugins.spotless)
     alias(libs.plugins.kotlin.serialization)
     jacoco
 }
@@ -130,14 +130,13 @@ kotlin {
     }
 }
 
-ktlint {
-    debug.set(false)
-    verbose.set(true)
-    android.set(false) // установите true, если проект под Android
-    outputToConsole.set(true)
-    ignoreFailures.set(false) // если true, проект соберется даже с ошибками стиля
-    filter {
-        exclude("**/generated/**") // исключить сгенерированный код
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        targetExclude("**/generated/**")
+        ktlint(libs.versions.ktlintCore.get())
+        trimTrailingWhitespace()
+        endWithNewline()
     }
 }
 

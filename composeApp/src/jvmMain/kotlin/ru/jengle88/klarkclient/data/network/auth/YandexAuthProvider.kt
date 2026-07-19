@@ -23,9 +23,7 @@ class YandexAuthProvider(
     override fun getAuthorizeUrl(
         redirectUri: String,
         state: String,
-    ): String {
-        return "https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&state=$state"
-    }
+    ): String = "https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&state=$state"
 
     @Throws(DoubleReceiveException::class, NoTransformationFoundException::class)
     override suspend fun exchangeCodeForToken(
@@ -34,17 +32,18 @@ class YandexAuthProvider(
         redirectUri: String,
     ): AuthTokens {
         val response: YandexOAuthResponse =
-            httpClient.submitForm(
-                url = "https://oauth.yandex.ru/token",
-                formParameters =
-                    parameters {
-                        append("grant_type", "authorization_code")
-                        append("code", code)
-                        append("client_id", clientId)
-                        append("client_secret", clientSecret)
-                        append("redirect_uri", redirectUri)
-                    },
-            ).body()
+            httpClient
+                .submitForm(
+                    url = "https://oauth.yandex.ru/token",
+                    formParameters =
+                        parameters {
+                            append("grant_type", "authorization_code")
+                            append("code", code)
+                            append("client_id", clientId)
+                            append("client_secret", clientSecret)
+                            append("redirect_uri", redirectUri)
+                        },
+                ).body()
 
         return AuthTokens(
             accessToken = response.accessToken,
@@ -59,16 +58,17 @@ class YandexAuthProvider(
         refreshToken: String,
     ): AuthTokens {
         val response: YandexOAuthResponse =
-            httpClient.submitForm(
-                url = "https://oauth.yandex.ru/token",
-                formParameters =
-                    parameters {
-                        append("grant_type", "refresh_token")
-                        append("refresh_token", refreshToken)
-                        append("client_id", clientId)
-                        append("client_secret", clientSecret)
-                    },
-            ).body()
+            httpClient
+                .submitForm(
+                    url = "https://oauth.yandex.ru/token",
+                    formParameters =
+                        parameters {
+                            append("grant_type", "refresh_token")
+                            append("refresh_token", refreshToken)
+                            append("client_id", clientId)
+                            append("client_secret", clientSecret)
+                        },
+                ).body()
 
         return AuthTokens(
             accessToken = response.accessToken,
@@ -83,10 +83,11 @@ class YandexAuthProvider(
         accessToken: String,
     ): UserProfile {
         val rawProfile: YandexUserProfile =
-            httpClient.get("https://login.yandex.ru/info") {
-                header("Authorization", "OAuth $accessToken")
-                parameter("format", "json")
-            }.body()
+            httpClient
+                .get("https://login.yandex.ru/info") {
+                    header("Authorization", "OAuth $accessToken")
+                    parameter("format", "json")
+                }.body()
 
         return UserProfile(
             firstName = rawProfile.firstName ?: "",

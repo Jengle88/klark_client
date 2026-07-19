@@ -532,7 +532,7 @@ class ExcelDocumentDataProviderXlsxImplTest {
                 for (r in 0..4) {
                     val row = sheet.createRow(r)
                     for (c in 0..4) {
-                        row.createCell(c).setCellValue("R${r}C${c}")
+                        row.createCell(c).setCellValue("R${r}C$c")
                     }
                 }
             }
