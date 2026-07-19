@@ -1,5 +1,6 @@
 package ru.jengle88.klarkclient.ui.maintab
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import ru.jengle88.klarkclient.domain.api.update.UpdateInfo
 import ru.jengle88.klarkclient.ui.datamodels.AppFeatureVO
 import ru.jengle88.klarkclient.ui.datamodels.AppScreenDestination
 
@@ -45,30 +47,41 @@ import ru.jengle88.klarkclient.ui.datamodels.AppScreenDestination
 fun MainTabContent(
     features: ImmutableList<AppFeatureVO>,
     onNavigate: (AppScreenDestination) -> Unit,
+    updateInfo: UpdateInfo?,
+    onUpdateClick: () -> Unit,
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 160.dp),
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier =
-            Modifier
-                .fillMaxSize(),
-    ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            WelcomeCard()
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 160.dp),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.weight(1f),
+        ) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                WelcomeCard()
+            }
+
+            // Список действий приложения
+            items(features) { feature ->
+                FeatureCard(
+                    feature = feature,
+                    onClick = { onNavigate(feature.route) },
+                )
+            }
+
+            item {
+                ComingSoonCard()
+            }
         }
 
-        // Список действий приложения
-        items(features) { feature ->
-            FeatureCard(
-                feature = feature,
-                onClick = { onNavigate(feature.route) },
-            )
-        }
-
-        item {
-            ComingSoonCard()
+        AnimatedVisibility(visible = updateInfo != null) {
+            updateInfo?.let { info ->
+                UpdateBanner(
+                    updateInfo = info,
+                    onUpdateClick = onUpdateClick,
+                )
+            }
         }
     }
 }
@@ -236,5 +249,10 @@ fun PreviewMainTabContent() {
             ),
         ).toImmutableList()
 
-    MainTabContent(features = sampleFeatures, onNavigate = {})
+    MainTabContent(
+        features = sampleFeatures,
+        onNavigate = {},
+        updateInfo = null,
+        onUpdateClick = {},
+    )
 }
