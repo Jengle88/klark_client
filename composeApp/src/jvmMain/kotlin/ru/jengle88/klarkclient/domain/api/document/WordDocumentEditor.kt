@@ -20,8 +20,5 @@ interface WordDocumentEditor {
      * @param oldText The text to be replaced within the document.
      * @param newText The text to replace the old text with.
      */
-    fun replaceTextInDocument(
-        oldText: String,
-        newText: String,
-    )
+    fun replaceTextInDocument(oldText: String, newText: String)
 }

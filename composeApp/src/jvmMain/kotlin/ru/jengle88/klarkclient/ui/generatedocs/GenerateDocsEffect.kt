@@ -12,7 +12,7 @@ sealed class GenerateDocsEffect {
         val pathToTemplate: String,
         val pathToDestination: String,
         val ignoreLastNColumn: Int,
-        val unionLastNColumn: Int,
+        val unionLastNColumn: Int
     ) : GenerateDocsEffect()
 
     data object ShowInfoBottomSheet : GenerateDocsEffect()

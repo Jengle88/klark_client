@@ -45,11 +45,7 @@ interface AuthStore {
      * @param refreshToken the refresh token used to get new access tokens.
      * @param userProfile optional profile information for the authenticated user.
      */
-    fun saveAuth(
-        token: String,
-        refreshToken: String?,
-        userProfile: UserProfile?,
-    )
+    fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?)
 
     /**
      * Clear all stored authentication data, effectively logging out the user.

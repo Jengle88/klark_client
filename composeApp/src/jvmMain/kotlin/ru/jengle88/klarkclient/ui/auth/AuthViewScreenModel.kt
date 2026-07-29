@@ -13,7 +13,7 @@ class AuthViewScreenModel(
     private val loginUseCase: LoginUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val getAuthInfoUseCase: GetAuthUserStateUseCase,
-    private val coroutineDispatchers: CoroutineDispatchers,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) : ScreenModel {
     private val _state = MutableStateFlow(AuthViewState(isLoading = true))
     val state: StateFlow<AuthViewState> = _state.asStateFlow()
@@ -42,7 +42,7 @@ class AuthViewScreenModel(
                 _state.update {
                     getAuthInfoUseCase().toViewState(
                         isLoading = false,
-                        error = null,
+                        error = null
                     )
                 }
             } catch (e: Exception) {
@@ -50,7 +50,7 @@ class AuthViewScreenModel(
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        error = errorMessage,
+                        error = errorMessage
                     )
                 }
                 _effects.tryEmit(AuthEffect.Error(errorMessage))

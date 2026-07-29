@@ -6,5 +6,5 @@ data class AppFeatureVO(
     val title: String,
     val description: String,
     val icon: ImageVector,
-    val route: AppScreenDestination,
+    val route: AppScreenDestination
 )

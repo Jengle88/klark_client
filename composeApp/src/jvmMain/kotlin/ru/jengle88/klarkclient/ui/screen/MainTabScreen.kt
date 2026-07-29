@@ -30,7 +30,7 @@ class MainTabScreen : Screen {
                     else -> TODO()
                 }
             },
-            onUpdateClick = screenModel::onUpdateClick,
+            onUpdateClick = screenModel::onUpdateClick
         )
     }
 }

@@ -14,7 +14,7 @@ data class GenerateDocsParamsState(
     val isGenerating: Boolean,
     val isTableLoading: Boolean,
     val tableData: ImmutableList<ImmutableList<String>>,
-    val tableGroups: ImmutableList<TableGroup>,
+    val tableGroups: ImmutableList<TableGroup>
 ) {
     companion object {
         val EMPTY =
@@ -28,7 +28,7 @@ data class GenerateDocsParamsState(
                 isGenerating = false,
                 isTableLoading = false,
                 tableData = persistentListOf(),
-                tableGroups = persistentListOf(),
+                tableGroups = persistentListOf()
             )
     }
 }

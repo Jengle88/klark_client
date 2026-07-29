@@ -34,7 +34,7 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
         InfoBottomSheetContent(
             title = INFO_TITLE,
             description = INFO_DESCRIPTION,
-            onDismiss = bottomSheetNavigator::hide,
+            onDismiss = bottomSheetNavigator::hide
         )
     }
 
@@ -43,7 +43,7 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
         content: String,
         row: org.intellij.markdown.ast.ASTNode,
         style: TextStyle,
-        isHeader: Boolean,
+        isHeader: Boolean
     ) {
         val cellType = org.intellij.markdown.flavours.gfm.GFMTokenTypes.CELL
         val cells = row.children.filter { it.type == cellType }
@@ -54,20 +54,20 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth().background(backgroundColor),
+            modifier = Modifier.fillMaxWidth().background(backgroundColor)
         ) {
             cells.forEach { cell ->
                 Column(
                     modifier =
                     Modifier
                         .weight(1f)
-                        .padding(8.dp),
+                        .padding(8.dp)
                 ) {
                     com.mikepenz.markdown.compose.elements.MarkdownTableBasicText(
                         content = content,
                         cell = cell,
                         style = style,
-                        maxLines = Int.MAX_VALUE,
+                        maxLines = Int.MAX_VALUE
                     )
                 }
             }
@@ -76,21 +76,17 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
     }
 
     @Composable
-    private fun InfoBottomSheetContent(
-        title: String,
-        description: String,
-        onDismiss: () -> Unit,
-    ) {
+    private fun InfoBottomSheetContent(title: String, description: String, onDismiss: () -> Unit) {
         Column(
             modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.headlineSmall
             )
 
             Markdown(
@@ -109,9 +105,15 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
                     bullet = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                     ordered = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                     quote = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                    code = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace, fontSize = 13.sp),
-                    inlineCode = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace, fontSize = 13.sp),
-                    table = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                    code = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 13.sp
+                    ),
+                    inlineCode = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 13.sp
+                    ),
+                    table = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp)
                 ),
                 components =
                 markdownComponents(
@@ -125,7 +127,7 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
                                     content = content,
                                     row = header,
                                     style = style.copy(fontWeight = FontWeight.Bold),
-                                    isHeader = true,
+                                    isHeader = true
                                 )
                             },
                             rowBlock = { content, row, _, style ->
@@ -133,17 +135,17 @@ class GenerateDocsInfoBottomSheetScreen : Screen {
                                     content = content,
                                     row = row,
                                     style = style,
-                                    isHeader = false,
+                                    isHeader = false
                                 )
-                            },
+                            }
                         )
-                    },
-                ),
+                    }
+                )
             )
 
             Button(
                 onClick = onDismiss,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Понятно")
             }

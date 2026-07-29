@@ -15,7 +15,7 @@ import ru.jengle88.klarkclient.domain.api.auth.AuthStore
 class AiHttpClient(
     authStore: AuthStore,
     authProvider: YandexAuthProvider,
-    authHttpClient: AuthHttpClient,
+    authHttpClient: AuthHttpClient
 ) {
     val httpClient by lazy {
         HttpClient(CIO) {
@@ -25,7 +25,7 @@ class AiHttpClient(
                         prettyPrint = true
                         isLenient = true
                         ignoreUnknownKeys = true
-                    },
+                    }
                 )
             }
 
@@ -48,12 +48,15 @@ class AiHttpClient(
                         val refreshToken = oldTokens?.refreshToken ?: return@refreshTokens null
 
                         try {
-                            val newTokens = authProvider.refreshToken(authHttpClient.httpClient, refreshToken)
+                            val newTokens = authProvider.refreshToken(
+                                authHttpClient.httpClient,
+                                refreshToken
+                            )
 
                             authStore.saveAuth(
                                 newTokens.accessToken,
                                 newTokens.refreshToken,
-                                authStore.userProfile.value,
+                                authStore.userProfile.value
                             )
 
                             BearerTokens(newTokens.accessToken, newTokens.refreshToken)

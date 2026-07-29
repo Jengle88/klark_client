@@ -22,7 +22,7 @@ import ru.jengle88.klarkclient.domain.usecase.ReadTableDataUseCase
 class GenerateDocsStateModel(
     private val readTableDataUseCase: ReadTableDataUseCase,
     private val groupTableRowsByFirstColumnUseCase: GroupTableRowsByFirstColumnUseCase,
-    private val coroutineDispatchers: CoroutineDispatchers,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) : ScreenModel {
     private val _state = MutableStateFlow(GenerateDocsParamsState.EMPTY)
     val state = _state.asStateFlow()
@@ -44,7 +44,7 @@ class GenerateDocsStateModel(
                 _state.update { prevState ->
                     prevState.copy(
                         tableData = tableData,
-                        tableGroups = tableGroups,
+                        tableGroups = tableGroups
                     )
                 }
             }
@@ -85,11 +85,11 @@ class GenerateDocsStateModel(
                     prevState.copy(
                         isTableGrouped = intent.value,
                         tableGroups =
-                            if (prevState.tableData.isNotEmpty()) {
-                                buildTableGroups(prevState.tableData, intent.value)
-                            } else {
-                                prevState.tableGroups
-                            },
+                        if (prevState.tableData.isNotEmpty()) {
+                            buildTableGroups(prevState.tableData, intent.value)
+                        } else {
+                            prevState.tableGroups
+                        }
                     )
                 }
             }
@@ -112,8 +112,8 @@ class GenerateDocsStateModel(
                     snapshotOfState.pathToTemplate,
                     snapshotOfState.pathToDestination,
                     snapshotOfState.ignoreLastNColumn ?: 0,
-                    snapshotOfState.unionLastNColumn ?: 0,
-                ),
+                    snapshotOfState.unionLastNColumn ?: 0
+                )
             )
         }
     }
@@ -134,7 +134,7 @@ class GenerateDocsStateModel(
                     readTableDataUseCase(
                         currentState.pathToTable,
                         currentState.ignoreLastNColumn,
-                        currentState.unionLastNColumn,
+                        currentState.unionLastNColumn
                     )
                 val tableData = rawData.map { it.toPersistentList() }.toPersistentList()
                 val tableGroups = buildTableGroups(tableData, currentState.isTableGrouped)
@@ -143,7 +143,7 @@ class GenerateDocsStateModel(
                     it.copy(
                         isTableLoading = false,
                         tableData = tableData,
-                        tableGroups = tableGroups,
+                        tableGroups = tableGroups
                     )
                 }
             }
@@ -151,13 +151,12 @@ class GenerateDocsStateModel(
 
     private fun buildTableGroups(
         rows: List<List<String>>,
-        isGrouped: Boolean,
-    ): ImmutableList<TableGroup> =
-        if (isGrouped) {
-            groupTableRowsByFirstColumnUseCase(rows).toImmutableList()
-        } else {
-            persistentListOf()
-        }
+        isGrouped: Boolean
+    ): ImmutableList<TableGroup> = if (isGrouped) {
+        groupTableRowsByFirstColumnUseCase(rows).toImmutableList()
+    } else {
+        persistentListOf()
+    }
 
     override fun onDispose() {
         updateTableDataJob?.cancel()

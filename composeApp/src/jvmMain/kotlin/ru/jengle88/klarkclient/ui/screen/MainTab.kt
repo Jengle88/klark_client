@@ -27,7 +27,7 @@ object MainTab : Tab {
                 TabOptions(
                     index = 0u,
                     title = title,
-                    icon = icon,
+                    icon = icon
                 )
             }
         }
@@ -36,7 +36,7 @@ object MainTab : Tab {
     @Composable
     override fun Content() {
         BottomSheetNavigator(
-            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
         ) {
             Navigator(MainTabScreen()) {
                 CurrentScreen()

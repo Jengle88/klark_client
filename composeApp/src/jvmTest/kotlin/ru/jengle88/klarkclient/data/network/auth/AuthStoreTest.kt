@@ -1,12 +1,12 @@
 package ru.jengle88.klarkclient.data.network.auth
 
-import ru.jengle88.klarkclient.data.network.dto.UserProfile
 import java.util.prefs.Preferences
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import ru.jengle88.klarkclient.data.network.dto.UserProfile
 
 class AuthStoreTest {
     private lateinit var authStore: AuthStoreImpl

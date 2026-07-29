@@ -13,7 +13,7 @@ class GenerateDocsGenerationDialogScreen(
     val pathToTemplate: String,
     val pathToDestination: String,
     val ignoreLastNColumn: Int,
-    val unionLastNColumn: Int,
+    val unionLastNColumn: Int
 ) : Screen {
     @Composable
     override fun Content() {
@@ -28,8 +28,8 @@ class GenerateDocsGenerationDialogScreen(
                     pathToTemplate,
                     pathToDestination,
                     ignoreLastNColumn,
-                    unionLastNColumn,
-                ),
+                    unionLastNColumn
+                )
             )
         }
 

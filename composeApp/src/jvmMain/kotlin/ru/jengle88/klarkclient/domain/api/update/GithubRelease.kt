@@ -8,5 +8,5 @@ data class GithubRelease(
     @SerialName("tag_name") val tagName: String,
     @SerialName("html_url") val htmlUrl: String,
     val body: String? = null,
-    val name: String? = null,
+    val name: String? = null
 )

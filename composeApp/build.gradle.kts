@@ -108,7 +108,7 @@ abstract class GenerateBuildInfoTask : DefaultTask() {
                 object BuildInfo {
                     const val VERSION = "${appVersion.get()}"
                 }
-                """.trimIndent(),
+                """.trimIndent()
             )
         }
     }
@@ -118,7 +118,7 @@ val generateBuildInfo =
     tasks.register<GenerateBuildInfoTask>("generateBuildInfo") {
         appVersion.set(klarkAppVersion)
         outputDir.set(
-            layout.buildDirectory.dir("generated/source/build-info/kotlin"),
+            layout.buildDirectory.dir("generated/source/build-info/kotlin")
         )
     }
 
@@ -135,6 +135,7 @@ spotless {
         target("src/**/*.kt")
         targetExclude("**/generated/**")
         ktlint(libs.versions.ktlintCore.get())
+            .setEditorConfigPath(file("${rootProject.rootDir}/.editorconfig"))
         trimTrailingWhitespace()
         endWithNewline()
     }
@@ -153,7 +154,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         // Generate XML report for Codecov
         xml.required.set(true)
         xml.outputLocation.set(
-            file("${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml"),
+            file("${layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml")
         )
 
         // Generate HTML report for manual review
@@ -165,7 +166,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     val coverageSourceDirs =
         listOf(
             "src/commonMain/kotlin",
-            "src/jvmMain/kotlin",
+            "src/jvmMain/kotlin"
         )
 
     sourceDirectories.setFrom(files(coverageSourceDirs))
@@ -173,14 +174,14 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         fileTree(layout.buildDirectory.dir("classes/kotlin/jvm/main")) {
             exclude(
                 // Exclude generated files if needed
-                "**/BuildConfig.*",
+                "**/BuildConfig.*"
             )
-        },
+        }
     )
 
     executionData.setFrom(
         fileTree(layout.buildDirectory) {
             include("jacoco/jvmTest.exec")
-        },
+        }
     )
 }

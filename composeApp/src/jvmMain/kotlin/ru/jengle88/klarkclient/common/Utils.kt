@@ -1,9 +1,6 @@
 package ru.jengle88.klarkclient.common
 
-fun <T> List<T>.padLast(
-    size: Int,
-    value: T,
-): List<T> {
+fun <T> List<T>.padLast(size: Int, value: T): List<T> {
     val prevList = this
     return buildList {
         addAll(prevList.take(size))

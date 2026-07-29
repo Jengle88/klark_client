@@ -1,60 +1,57 @@
 package ru.jengle88.klarkclient.domain.usecase
 
+import java.io.File
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.jengle88.klarkclient.data.document.TableConfiguration
 import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
-import java.io.File
 
-class DebtCalculatorUseCase(
-    private val excelDocumentDataProvider: ExcelDocumentDataProvider,
-) {
+class DebtCalculatorUseCase(private val excelDocumentDataProvider: ExcelDocumentDataProvider) {
     sealed interface WorkStatus {
         data object Start : WorkStatus
 
-        data class TableDataReceived(
-            val amountOfAllFiles: Int,
-        ) : WorkStatus
+        data class TableDataReceived(val amountOfAllFiles: Int) : WorkStatus
 
         data class ProcessingStep(
             val amountOfProcessedFiles: Int,
             val amountOfFailedFiles: Int,
-            val amountOfAllFiles: Int,
+            val amountOfAllFiles: Int
         ) : WorkStatus
 
-        data class Finish(
-            val message: String? = null,
-            val cause: Throwable? = null,
-        ) : WorkStatus
+        data class Finish(val message: String? = null, val cause: Throwable? = null) : WorkStatus
     }
 
-    operator fun invoke(
-        pathToTables: File,
-        pathToDestination: String,
-    ): Flow<WorkStatus> =
-        flow {
-            emit(WorkStatus.Start)
-            if (!pathToTables.exists() || !pathToTables.isDirectory) {
-                emit(WorkStatus.Finish(cause = Exception("Выбранной папки с данными не существует")))
-                return@flow
-            }
-            val tablesPath = pathToTables.listFiles { file -> file.extension == "xlsx" }
-            if (tablesPath.isNullOrEmpty()) {
-                emit(WorkStatus.Finish(cause = Exception("В выбранной папке не найдены Excel-таблицы (формат xlsx)")))
-                return@flow
-            }
-            emit(WorkStatus.TableDataReceived(tablesPath.size))
-            for (tablePath in tablesPath) {
-                val table =
-                    excelDocumentDataProvider.readData(
-                        TableConfiguration(
-                            file = tablePath,
-                            ignoreLastNColumn = 0,
-                            unionLastNColumn = 0,
-                        ),
-                    )
-            }
+    operator fun invoke(pathToTables: File, pathToDestination: String): Flow<WorkStatus> = flow {
+        emit(WorkStatus.Start)
+        if (!pathToTables.exists() || !pathToTables.isDirectory) {
+            emit(
+                WorkStatus.Finish(cause = Exception("Выбранной папки с данными не существует"))
+            )
+            return@flow
         }
+        val tablesPath = pathToTables.listFiles { file -> file.extension == "xlsx" }
+        if (tablesPath.isNullOrEmpty()) {
+            emit(
+                WorkStatus.Finish(
+                    cause = Exception(
+                        "В выбранной папке не найдены Excel-таблицы (формат xlsx)"
+                    )
+                )
+            )
+            return@flow
+        }
+        emit(WorkStatus.TableDataReceived(tablesPath.size))
+        for (tablePath in tablesPath) {
+            val table =
+                excelDocumentDataProvider.readData(
+                    TableConfiguration(
+                        file = tablePath,
+                        ignoreLastNColumn = 0,
+                        unionLastNColumn = 0
+                    )
+                )
+        }
+    }
 
     private companion object {
         const val PROMPT = """

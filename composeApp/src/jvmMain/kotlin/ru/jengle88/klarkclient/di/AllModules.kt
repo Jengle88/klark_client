@@ -5,5 +5,5 @@ val allModules =
         appModule,
         aiModule,
         useCaseModule,
-        screenModelModule,
+        screenModelModule
     )

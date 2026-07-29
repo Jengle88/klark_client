@@ -1,5 +1,9 @@
 package ru.jengle88.klarkclient.data.document
 
+import java.io.FileInputStream
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.min
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.DateUtil
@@ -7,12 +11,9 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import ru.jengle88.klarkclient.common.padLast
 import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
-import java.io.FileInputStream
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.math.min
 
-class ExcelDocumentDataProviderXlsxImpl(private val locale: Locale = Locale.getDefault()) : ExcelDocumentDataProvider {
+class ExcelDocumentDataProviderXlsxImpl(private val locale: Locale = Locale.getDefault()) :
+    ExcelDocumentDataProvider {
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy")
 
     override fun readData(config: TableConfiguration): TableContent {
@@ -36,7 +37,10 @@ class ExcelDocumentDataProviderXlsxImpl(private val locale: Locale = Locale.getD
                                         val rowData = mutableListOf<String>()
                                         for (colIndex in config.yRange) {
                                             val cell =
-                                                row?.getCell(colIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)
+                                                row?.getCell(
+                                                    colIndex,
+                                                    Row.MissingCellPolicy.RETURN_BLANK_AS_NULL
+                                                )
                                             val cellValue = cell?.let { parseCell(it) } ?: ""
                                             rowData.add(cellValue)
                                         }

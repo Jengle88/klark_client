@@ -17,7 +17,7 @@ fun PathInputField(
     label: String,
     path: String,
     onPathChange: (String) -> Unit,
-    onBrowseClick: () -> Unit,
+    onBrowseClick: () -> Unit
 ) {
     OutlinedTextField(
         value = path,
@@ -29,16 +29,12 @@ fun PathInputField(
             IconButton(onClick = onBrowseClick) {
                 Icon(Icons.Default.FolderOpen, contentDescription = "Выбрать файл")
             }
-        },
+        }
     )
 }
 
 @Composable
-fun NumberInputField(
-    label: String,
-    value: Int?,
-    onValueChange: (Int?) -> Unit,
-) {
+fun NumberInputField(label: String, value: Int?, onValueChange: (Int?) -> Unit) {
     OutlinedTextField(
         value = value?.toString() ?: "",
         onValueChange = { text ->
@@ -47,6 +43,6 @@ fun NumberInputField(
         label = { Text(label) },
         modifier = Modifier.fillMaxWidth(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        singleLine = true,
+        singleLine = true
     )
 }

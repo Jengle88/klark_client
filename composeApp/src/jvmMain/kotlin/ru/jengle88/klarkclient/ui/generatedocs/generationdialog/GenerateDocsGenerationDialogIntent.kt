@@ -6,7 +6,7 @@ sealed class GenerateDocsGenerationDialogIntent {
         val pathToTemplate: String,
         val pathToDestination: String,
         val ignoreLastNColumn: Int,
-        val unionLastNColumn: Int,
+        val unionLastNColumn: Int
     ) : GenerateDocsGenerationDialogIntent()
 
     data object StopGeneration : GenerateDocsGenerationDialogIntent()

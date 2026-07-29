@@ -21,22 +21,27 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
-fun TableView(
-    data: ImmutableList<ImmutableList<String>>,
-    style: TableStyle = TableStyle(),
-) {
+fun TableView(data: ImmutableList<ImmutableList<String>>, style: TableStyle = TableStyle()) {
     if (data.isEmpty()) return
     if (data.all { it.isEmpty() }) return
     val maxColumns = data.maxOf { it.size }
 
     val horizontalScrollState = rememberScrollState()
-    val visibleData = if (style.isFirstColumnVisible) data else data.map { it.drop(1).toPersistentList() }.toPersistentList()
-    val visibleMaxColumns = if (style.isFirstColumnVisible) maxColumns else (maxColumns - 1).coerceAtLeast(0)
+    val visibleData = if (style.isFirstColumnVisible) {
+        data
+    } else {
+        data.map { it.drop(1).toPersistentList() }.toPersistentList()
+    }
+    val visibleMaxColumns = if (style.isFirstColumnVisible) {
+        maxColumns
+    } else {
+        (maxColumns - 1).coerceAtLeast(0)
+    }
 
     Box(modifier = Modifier.fillMaxWidth().horizontalScroll(horizontalScrollState)) {
         if (style.isVerticalScrollable) {
             LazyColumn(
-                modifier = Modifier.widthIn(min = 100.dp),
+                modifier = Modifier.widthIn(min = 100.dp)
             ) {
                 stickyHeader {
                     HeaderRow(maxColumns = visibleMaxColumns)
@@ -46,13 +51,13 @@ fun TableView(
                         index = index,
                         row = row,
                         maxColumns = visibleMaxColumns,
-                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled,
+                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled
                     )
                 }
             }
         } else {
             Column(
-                modifier = Modifier.widthIn(min = 100.dp),
+                modifier = Modifier.widthIn(min = 100.dp)
             ) {
                 HeaderRow(maxColumns = visibleMaxColumns)
                 visibleData.forEachIndexed { index, row ->
@@ -60,7 +65,7 @@ fun TableView(
                         index = index,
                         row = row,
                         maxColumns = visibleMaxColumns,
-                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled,
+                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled
                     )
                 }
             }
@@ -72,7 +77,7 @@ fun TableView(
 private fun HeaderRow(maxColumns: Int) {
     Row(
         modifier = Modifier.height(IntrinsicSize.Min),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         TableEmptyCell(background = MaterialTheme.colorScheme.secondaryContainer)
         repeat(maxColumns) { i ->
@@ -86,7 +91,7 @@ private fun DataRow(
     index: Int,
     row: ImmutableList<String>,
     maxColumns: Int,
-    isAlternatingRowColorsEnabled: Boolean,
+    isAlternatingRowColorsEnabled: Boolean
 ) {
     val rowBackground =
         if (isAlternatingRowColorsEnabled && index % 2 == 1) {
@@ -96,7 +101,7 @@ private fun DataRow(
         }
     Row(
         modifier = Modifier.height(IntrinsicSize.Min).background(rowBackground),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         TableLayoutCell((index + 1).toString())
         row.forEach { cellText ->
@@ -123,7 +128,7 @@ private fun TableCell(text: String) {
             .border(1.dp, Color.LightGray)
             .padding(8.dp),
         textAlign = TextAlign.Start,
-        maxLines = 3,
+        maxLines = 3
     )
 }
 
@@ -138,7 +143,7 @@ private fun TableLayoutCell(text: String) {
             .border(1.dp, Color.LightGray)
             .padding(8.dp),
         text = text,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Center
     )
 }
 
@@ -151,7 +156,7 @@ private fun TableEmptyCell(background: Color = Color.Transparent) {
             .fillMaxSize()
             .background(background)
             .border(1.dp, Color.LightGray)
-            .padding(8.dp),
+            .padding(8.dp)
     )
 }
 
@@ -178,7 +183,12 @@ fun PreviewTableView() {
             persistentListOf("Данные 1.1", "Данные 1.2", "Данные 1.3", ""),
             persistentListOf("Данные 2.1", "Данные 2.2", "Данные 2.3", "Данные 2.4"),
             persistentListOf("Данные 3.1", "", "Данные 3.3", "Данные 3.4"),
-            persistentListOf("Данные 4.1", "Данные 4.2", "Данные 4.3", "dghskadfjlkjassbkhasd fasdkg asdg askhdg namsdg a"),
+            persistentListOf(
+                "Данные 4.1",
+                "Данные 4.2",
+                "Данные 4.3",
+                "dghskadfjlkjassbkhasd fasdkg asdg askhdg namsdg a"
+            )
         )
 
     TableView(data, style = TableStyle(isAlternatingRowColorsEnabled = true))
