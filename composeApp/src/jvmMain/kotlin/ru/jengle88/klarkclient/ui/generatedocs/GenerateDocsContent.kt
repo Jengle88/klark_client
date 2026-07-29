@@ -34,7 +34,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import ru.jengle88.klarkclient.data.document.TableGroup
 import ru.jengle88.klarkclient.ui.components.NumberInputField
 import ru.jengle88.klarkclient.ui.components.PathInputField
@@ -187,7 +189,10 @@ fun GenerateDocsContent(
                 }
                 if (state.isTableGrouped && state.tableGroups.isNotEmpty()) {
                     state.tableGroups.forEach { group ->
-                        GroupedTableView(group)
+                        GroupedTableView(
+                            group = group,
+                            customHeaders = state.masksByGroupKey[group.key] ?: persistentListOf()
+                        )
                     }
                 } else {
                     TableView(
@@ -204,7 +209,7 @@ fun GenerateDocsContent(
 }
 
 @Composable
-private fun GroupedTableView(group: TableGroup) {
+private fun GroupedTableView(group: TableGroup, customHeaders: ImmutableList<String>) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
             text = "Группа: ${group.key}",
@@ -216,7 +221,8 @@ private fun GroupedTableView(group: TableGroup) {
                 isAlternatingRowColorsEnabled = true,
                 isVerticalScrollable = false,
                 isFirstColumnVisible = false
-            )
+            ),
+            customHeaders = customHeaders
         )
     }
 }
@@ -266,6 +272,11 @@ fun PreviewGenerateDocsScreen() {
                         persistentListOf("Б", "Данные Б.4", "Данные Б.5", "Данные Б.6")
                     )
                 )
+            ),
+            masksByGroupKey =
+            persistentMapOf(
+                "А" to persistentListOf($$$"$$key1$$", $$$"$$key2$$", $$$"$$key3$$"),
+                "Б" to persistentListOf($$$"$$key1$$", $$$"$$key2$$", $$$"$$filename$$")
             )
         ),
         onIntent = {},

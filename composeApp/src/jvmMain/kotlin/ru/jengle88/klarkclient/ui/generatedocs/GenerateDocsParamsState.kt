@@ -1,7 +1,9 @@
 package ru.jengle88.klarkclient.ui.generatedocs
 
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import ru.jengle88.klarkclient.data.document.TableGroup
 
 data class GenerateDocsParamsState(
@@ -14,7 +16,8 @@ data class GenerateDocsParamsState(
     val isGenerating: Boolean,
     val isTableLoading: Boolean,
     val tableData: ImmutableList<ImmutableList<String>>,
-    val tableGroups: ImmutableList<TableGroup>
+    val tableGroups: ImmutableList<TableGroup>,
+    val masksByGroupKey: ImmutableMap<String, ImmutableList<String>>
 ) {
     companion object {
         val EMPTY =
@@ -28,7 +31,8 @@ data class GenerateDocsParamsState(
                 isGenerating = false,
                 isTableLoading = false,
                 tableData = persistentListOf(),
-                tableGroups = persistentListOf()
+                tableGroups = persistentListOf(),
+                masksByGroupKey = persistentMapOf()
             )
     }
 }

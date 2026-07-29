@@ -8,10 +8,10 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeoutOrNull
 import ru.jengle88.klarkclient.domain.api.auth.AuthCodeReceiver
-import kotlin.time.Duration.Companion.milliseconds
 
 private const val AUTH_TIMEOUT_MS = 120_000L
 
