@@ -66,8 +66,8 @@ class AuthManagerTest {
                 )
 
             whenever(authCodeReceiver.awaitAuthCode(eq(DEFAULT_PORT), any(), any())).thenAnswer { invocation ->
-                val onServerReady = invocation.getArgument<() -> Unit>(2)
-                onServerReady()
+                val onServerReady = invocation.getArgument<(Int) -> Unit>(2)
+                onServerReady(DEFAULT_PORT)
                 "testAuthCode"
             }
             whenever(authProvider.getAuthorizeUrl(any(), any())).thenReturn("https://test.auth.url")
@@ -105,8 +105,8 @@ class AuthManagerTest {
             val authProvider = mock<AuthProvider>()
 
             whenever(authCodeReceiver.awaitAuthCode(eq(DEFAULT_PORT), any(), any())).thenAnswer { invocation ->
-                val onServerReady = invocation.getArgument<() -> Unit>(2)
-                onServerReady()
+                val onServerReady = invocation.getArgument<(Int) -> Unit>(2)
+                onServerReady(DEFAULT_PORT)
                 null
             }
             whenever(authProvider.getAuthorizeUrl(any(), any())).thenReturn("https://test.auth.url")
@@ -141,8 +141,8 @@ class AuthManagerTest {
             val expectedTokens = AuthTokens(accessToken = "token", refreshToken = "", expiresIn = 3600)
 
             whenever(authCodeReceiver.awaitAuthCode(any(), any(), any())).thenAnswer { invocation ->
-                val onServerReady = invocation.getArgument<() -> Unit>(2)
-                onServerReady()
+                val onServerReady = invocation.getArgument<(Int) -> Unit>(2)
+                onServerReady(DEFAULT_PORT)
                 "code"
             }
             whenever(authProvider.getAuthorizeUrl(eq("http://localhost:$DEFAULT_PORT"), any()))
@@ -213,8 +213,8 @@ class AuthManagerTest {
             val expectedTokens = AuthTokens(accessToken = "token", refreshToken = "", expiresIn = 3600)
 
             whenever(authCodeReceiver.awaitAuthCode(eq(customPort), any(), any())).thenAnswer { invocation ->
-                val onServerReady = invocation.getArgument<() -> Unit>(2)
-                onServerReady()
+                val onServerReady = invocation.getArgument<(Int) -> Unit>(2)
+                onServerReady(customPort)
                 "code"
             }
             whenever(authProvider.getAuthorizeUrl(eq("http://localhost:$customPort"), any()))

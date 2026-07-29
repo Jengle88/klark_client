@@ -51,7 +51,7 @@ class GenerateDocsStateModel(
 
             is GenerateDocsIntent.UpdatePathToTable -> {
                 _state.update { it.copy(pathToTable = intent.path) }
-                if (_state.value.tableData.isNotEmpty()) {
+                if (intent.path.isNotBlank()) {
                     updateTableData()
                 }
             }
