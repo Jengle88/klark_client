@@ -33,7 +33,7 @@ val appModule =
             val appConfig: AppConfig = get()
             YandexAuthProvider(
                 clientId = appConfig.clientId,
-                clientSecret = appConfig.clientSecret,
+                clientSecret = appConfig.clientSecret
             )
         }
         singleOf<AuthStore>(::AuthStoreImpl)
@@ -47,7 +47,7 @@ val appModule =
                 uriLauncher = get(),
                 authCodeReceiver = get(),
                 port = appConfig.authPort,
-                ioDispatcher = get<CoroutineDispatchers>().io,
+                ioDispatcher = get<CoroutineDispatchers>().io
             )
         }
         singleOf<WordDocumentEditorFactory>(::WordDocumentEditorFactoryImpl)
@@ -57,7 +57,7 @@ val appModule =
             UpdateChecker(
                 client = get(),
                 owner = "Jengle88",
-                repo = "klark_client",
+                repo = "klark_client"
             )
         }
     }

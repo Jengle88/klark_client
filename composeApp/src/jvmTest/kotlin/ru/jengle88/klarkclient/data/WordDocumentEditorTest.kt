@@ -1,7 +1,5 @@
 package ru.jengle88.klarkclient.data
 
-import org.apache.poi.xwpf.usermodel.XWPFDocument
-import ru.jengle88.klarkclient.data.document.WordDocumentEditorDocxImpl
 import java.io.File
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -9,13 +7,16 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.apache.poi.xwpf.usermodel.XWPFDocument
+import ru.jengle88.klarkclient.data.document.WordDocumentEditorDocxImpl
 
 class WordDocumentEditorTest {
     private lateinit var tempDir: File
 
     @BeforeTest
     fun setUp() {
-        tempDir = File(System.getProperty("java.io.tmpdir"), "word_test_${System.currentTimeMillis()}")
+        tempDir =
+            File(System.getProperty("java.io.tmpdir"), "word_test_${System.currentTimeMillis()}")
         tempDir.mkdirs()
     }
 
@@ -91,21 +92,21 @@ class WordDocumentEditorTest {
                 .getRow(0)
                 .getCell(0)
                 .text
-                .contains("John"),
+                .contains("John")
         )
         assertTrue(
             table
                 .getRow(0)
                 .getCell(1)
                 .text
-                .contains("25"),
+                .contains("25")
         )
         assertTrue(
             table
                 .getRow(1)
                 .getCell(0)
                 .text
-                .contains("John"),
+                .contains("John")
         )
         assertFalse(table.text.contains("{{NAME}}"))
         assertFalse(table.text.contains("{{AGE}}"))
@@ -269,10 +270,7 @@ class WordDocumentEditorTest {
         resultDoc.close()
     }
 
-    private fun createTestDocx(
-        fileName: String,
-        configure: (XWPFDocument) -> Unit,
-    ): File {
+    private fun createTestDocx(fileName: String, configure: (XWPFDocument) -> Unit): File {
         val file = File(tempDir, fileName)
         XWPFDocument().use { document ->
             configure(document)

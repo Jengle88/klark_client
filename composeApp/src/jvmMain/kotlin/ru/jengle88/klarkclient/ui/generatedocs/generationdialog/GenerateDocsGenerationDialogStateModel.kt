@@ -19,7 +19,7 @@ import ru.jengle88.klarkclient.domain.usecase.GenerateWordFromTableUseCase
 import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsGenerationDialogState
 
 class GenerateDocsGenerationDialogStateModel(
-    private val generateWordFromTableUseCase: GenerateWordFromTableUseCase,
+    private val generateWordFromTableUseCase: GenerateWordFromTableUseCase
 ) : ScreenModel {
     private val _state = MutableStateFlow(GenerateDocsGenerationDialogState.EMPTY)
     val state = _state.asStateFlow()
@@ -56,17 +56,25 @@ class GenerateDocsGenerationDialogStateModel(
                     intent.pathToTemplate,
                     intent.pathToDestination,
                     intent.ignoreLastNColumn,
-                    intent.unionLastNColumn,
+                    intent.unionLastNColumn
                 ).flowOn(Dispatchers.IO)
                 .onEach { newState ->
                     when (newState) {
                         GenerateWordFromTableUseCase.WorkStatus.Start -> {
-                            _state.update { it.copy(isGenerating = true, steps = persistentListOf()) }
+                            _state.update {
+                                it.copy(isGenerating = true, steps = persistentListOf())
+                            }
                         }
 
                         is GenerateWordFromTableUseCase.WorkStatus.Step -> {
                             _state.update { prevState ->
-                                prevState.copy(steps = (prevState.steps + listOf(newState.message)).toImmutableList())
+                                prevState.copy(
+                                    steps = (
+                                        prevState.steps + listOf(
+                                            newState.message
+                                        )
+                                        ).toImmutableList()
+                                )
                             }
                         }
 
@@ -74,11 +82,19 @@ class GenerateDocsGenerationDialogStateModel(
                             _state.update { prevState ->
                                 val steps =
                                     if (newState.message != null) {
-                                        (prevState.steps + listOf(newState.message)).toImmutableList()
+                                        (
+                                            prevState.steps + listOf(
+                                                newState.message
+                                            )
+                                            ).toImmutableList()
                                     } else {
                                         prevState.steps
                                     }
-                                prevState.copy(isGenerating = false, steps = steps, error = newState.cause?.message)
+                                prevState.copy(
+                                    isGenerating = false,
+                                    steps = steps,
+                                    error = newState.cause?.message
+                                )
                             }
                         }
                     }

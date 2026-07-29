@@ -1,9 +1,9 @@
 package ru.jengle88.klarkclient.domain.api.auth
 
 import androidx.annotation.WorkerThread
+import kotlin.jvm.Throws
 import ru.jengle88.klarkclient.data.network.dto.AuthTokens
 import ru.jengle88.klarkclient.data.network.dto.UserProfile
-import kotlin.jvm.Throws
 
 /**
  * Entry point for managing authentication flows and retrieving user identity information.

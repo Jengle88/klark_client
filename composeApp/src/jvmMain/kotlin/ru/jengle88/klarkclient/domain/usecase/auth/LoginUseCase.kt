@@ -8,7 +8,7 @@ import ru.jengle88.klarkclient.domain.api.auth.AuthStore
 class LoginUseCase(
     private val authManager: AuthManager,
     private val authStore: AuthStore,
-    private val coroutineDispatcher: CoroutineDispatchers,
+    private val coroutineDispatcher: CoroutineDispatchers
 ) {
     @Throws(IllegalStateException::class)
     suspend operator fun invoke() {

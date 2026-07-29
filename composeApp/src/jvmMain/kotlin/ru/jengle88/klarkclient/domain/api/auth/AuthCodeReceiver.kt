@@ -23,6 +23,6 @@ interface AuthCodeReceiver {
     suspend fun awaitAuthCode(
         port: Int,
         expectedState: String,
-        onServerReady: (port: Int) -> Unit,
+        onServerReady: (port: Int) -> Unit
     ): String?
 }

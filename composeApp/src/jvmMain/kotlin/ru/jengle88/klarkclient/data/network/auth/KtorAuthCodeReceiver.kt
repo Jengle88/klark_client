@@ -11,6 +11,7 @@ import io.ktor.server.routing.routing
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeoutOrNull
 import ru.jengle88.klarkclient.domain.api.auth.AuthCodeReceiver
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val AUTH_TIMEOUT_MS = 120_000L
 
@@ -18,7 +19,7 @@ class KtorAuthCodeReceiver : AuthCodeReceiver {
     override suspend fun awaitAuthCode(
         port: Int,
         expectedState: String,
-        onServerReady: (port: Int) -> Unit,
+        onServerReady: (port: Int) -> Unit
     ): String? {
         val codeDeferred = CompletableDeferred<String>()
         val server =
@@ -51,7 +52,7 @@ class KtorAuthCodeReceiver : AuthCodeReceiver {
 
         return try {
             val code =
-                withTimeoutOrNull(AUTH_TIMEOUT_MS) {
+                withTimeoutOrNull(AUTH_TIMEOUT_MS.milliseconds) {
                     codeDeferred.await()
                 }
             code

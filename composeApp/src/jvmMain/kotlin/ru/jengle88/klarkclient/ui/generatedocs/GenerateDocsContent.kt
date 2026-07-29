@@ -47,12 +47,14 @@ fun GenerateDocsContent(
     state: GenerateDocsParamsState,
     onIntent: (GenerateDocsIntent) -> Unit,
     onEffect: (GenerateDocsEffect) -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                ),
                 title = {
                     if (state.isGenerating || state.isTableLoading) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -65,13 +67,13 @@ fun GenerateDocsContent(
                 },
                 actions = {
                     TextButton(
-                        onClick = { onIntent(GenerateDocsIntent.ShowInfo) },
+                        onClick = { onIntent(GenerateDocsIntent.ShowInfo) }
                     ) {
                         Text("Информация о режиме")
                     }
-                },
+                }
             )
-        },
+        }
     ) { paddingValues ->
         Row(modifier = Modifier.padding(paddingValues)) {
             Column(
@@ -82,44 +84,44 @@ fun GenerateDocsContent(
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
                     "Генерация документов",
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineMedium
                 )
 
                 PathInputField(
                     label = "Путь к таблице с данными",
                     path = state.pathToTable,
                     onPathChange = { onIntent(GenerateDocsIntent.UpdatePathToTable(it)) },
-                    onBrowseClick = { onEffect(GenerateDocsEffect.ShowTablePicker) },
+                    onBrowseClick = { onEffect(GenerateDocsEffect.ShowTablePicker) }
                 )
 
                 PathInputField(
                     label = "Путь к папке с шаблоном",
                     path = state.pathToTemplate,
                     onPathChange = { onIntent(GenerateDocsIntent.UpdatePathToTemplate(it)) },
-                    onBrowseClick = { onEffect(GenerateDocsEffect.ShowTemplatePicker) },
+                    onBrowseClick = { onEffect(GenerateDocsEffect.ShowTemplatePicker) }
                 )
 
                 PathInputField(
                     label = "Путь для сохранения документов",
                     path = state.pathToDestination,
                     onPathChange = { onIntent(GenerateDocsIntent.UpdatePathToDestination(it)) },
-                    onBrowseClick = { onEffect(GenerateDocsEffect.ShowDestinationPicker) },
+                    onBrowseClick = { onEffect(GenerateDocsEffect.ShowDestinationPicker) }
                 )
 
                 NumberInputField(
                     label = "Исключить последние N колонок",
                     value = state.ignoreLastNColumn,
-                    onValueChange = { onIntent(GenerateDocsIntent.UpdateIgnoreLastNColumn(it)) },
+                    onValueChange = { onIntent(GenerateDocsIntent.UpdateIgnoreLastNColumn(it)) }
                 )
 
                 NumberInputField(
                     label = "Объединить последние N колонок",
                     value = state.unionLastNColumn,
-                    onValueChange = { onIntent(GenerateDocsIntent.UpdateUnionLastNColumn(it)) },
+                    onValueChange = { onIntent(GenerateDocsIntent.UpdateUnionLastNColumn(it)) }
                 )
 
                 val isTableControlsEnabled = !state.isTableLoading
@@ -130,17 +132,19 @@ fun GenerateDocsContent(
                         .fillMaxWidth()
                         .toggleable(
                             value = state.isTableGrouped,
-                            onValueChange = { onIntent(GenerateDocsIntent.UpdateIsTableGrouped(it)) },
+                            onValueChange = {
+                                onIntent(GenerateDocsIntent.UpdateIsTableGrouped(it))
+                            },
                             role = Role.Checkbox,
-                            enabled = isTableControlsEnabled,
+                            enabled = isTableControlsEnabled
                         )
                         .padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Checkbox(
                         checked = state.isTableGrouped,
                         onCheckedChange = null,
-                        enabled = isTableControlsEnabled,
+                        enabled = isTableControlsEnabled
                     )
                     Text(
                         text = "Группировать по шаблону",
@@ -150,7 +154,7 @@ fun GenerateDocsContent(
                             MaterialTheme.colorScheme.onSurface
                         } else {
                             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                        },
+                        }
                     )
                 }
 
@@ -158,7 +162,7 @@ fun GenerateDocsContent(
 
                 Button(
                     onClick = { onIntent(GenerateDocsIntent.StartGenerating) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Сгенерировать")
                 }
@@ -170,15 +174,15 @@ fun GenerateDocsContent(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center,
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
                         "Просмотр данных",
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.headlineMedium
                     )
                 }
                 if (state.isTableGrouped && state.tableGroups.isNotEmpty()) {
@@ -188,7 +192,10 @@ fun GenerateDocsContent(
                 } else {
                     TableView(
                         data = state.tableData,
-                        style = TableStyle(isAlternatingRowColorsEnabled = true, isVerticalScrollable = false),
+                        style = TableStyle(
+                            isAlternatingRowColorsEnabled = true,
+                            isVerticalScrollable = false
+                        )
                     )
                 }
             }
@@ -201,11 +208,15 @@ private fun GroupedTableView(group: TableGroup) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
             text = "Группа: ${group.key}",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium
         )
         TableView(
             data = group.rows,
-            style = TableStyle(isAlternatingRowColorsEnabled = true, isVerticalScrollable = false, isFirstColumnVisible = false),
+            style = TableStyle(
+                isAlternatingRowColorsEnabled = true,
+                isVerticalScrollable = false,
+                isFirstColumnVisible = false
+            )
         )
     }
 }
@@ -234,8 +245,8 @@ fun PreviewGenerateDocsScreen() {
                     "Б",
                     "Данные Б.4",
                     "Данные Б.5",
-                    "Данные Б.6",
-                ),
+                    "Данные Б.6"
+                )
             ),
             tableGroups =
             persistentListOf(
@@ -244,21 +255,21 @@ fun PreviewGenerateDocsScreen() {
                     rows =
                     persistentListOf(
                         persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
-                        persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
-                    ),
+                        persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5")
+                    )
                 ),
                 TableGroup(
                     key = "Б",
                     rows =
                     persistentListOf(
                         persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
-                        persistentListOf("Б", "Данные Б.4", "Данные Б.5", "Данные Б.6"),
-                    ),
-                ),
-            ),
+                        persistentListOf("Б", "Данные Б.4", "Данные Б.5", "Данные Б.6")
+                    )
+                )
+            )
         ),
         onIntent = {},
         onEffect = {},
-        onBack = {},
+        onBack = {}
     )
 }

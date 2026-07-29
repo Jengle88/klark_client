@@ -1,5 +1,6 @@
 package ru.jengle88.klarkclient.data.network.auth
 
+import java.util.prefs.Preferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -7,7 +8,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import ru.jengle88.klarkclient.data.network.dto.UserProfile
 import ru.jengle88.klarkclient.domain.api.auth.AuthStore
-import java.util.prefs.Preferences
 
 class AuthStoreImpl : AuthStore {
     private val preferences = Preferences.userNodeForPackage(AuthStoreImpl::class.java)
@@ -21,11 +21,7 @@ class AuthStoreImpl : AuthStore {
     private val _userProfile = MutableStateFlow(loadUserProfile())
     override val userProfile: StateFlow<UserProfile?> = _userProfile.asStateFlow()
 
-    override fun saveAuth(
-        token: String,
-        refreshToken: String?,
-        userProfile: UserProfile?,
-    ) {
+    override fun saveAuth(token: String, refreshToken: String?, userProfile: UserProfile?) {
         _accessToken.value = token
         _refreshToken.value = refreshToken
         _userProfile.value = userProfile

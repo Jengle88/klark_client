@@ -1,5 +1,6 @@
 package ru.jengle88.klarkclient.data.document
 
+import java.io.File
 import org.apache.poi.xwpf.usermodel.PositionInParagraph
 import org.apache.poi.xwpf.usermodel.TextSegment
 import org.apache.poi.xwpf.usermodel.XWPFDocument
@@ -8,19 +9,14 @@ import org.apache.poi.xwpf.usermodel.XWPFTable
 import org.apache.poi.xwpf.usermodel.XWPFTableCell
 import org.apache.poi.xwpf.usermodel.XWPFTableRow
 import ru.jengle88.klarkclient.domain.api.document.WordDocumentEditor
-import java.io.File
 
-class WordDocumentEditorDocxImpl private constructor(
-    private val document: XWPFDocument,
-) : WordDocumentEditor {
+class WordDocumentEditorDocxImpl private constructor(private val document: XWPFDocument) :
+    WordDocumentEditor {
     override fun saveToFile(dstFile: File) {
         document.write(dstFile.outputStream())
     }
 
-    override fun replaceTextInDocument(
-        oldText: String,
-        newText: String,
-    ) {
+    override fun replaceTextInDocument(oldText: String, newText: String) {
         diveToTablesAndReplaceText(document.tables, oldText, newText)
         replaceTextInParagraphs(document.paragraphs, oldText, newText)
     }
@@ -28,7 +24,7 @@ class WordDocumentEditorDocxImpl private constructor(
     private fun diveToTablesAndReplaceText(
         tables: List<XWPFTable>,
         oldText: String,
-        newText: String,
+        newText: String
     ) {
         if (tables.isEmpty()) {
             return
@@ -38,11 +34,7 @@ class WordDocumentEditorDocxImpl private constructor(
         }
     }
 
-    private fun diveToRowsAndReplace(
-        rows: List<XWPFTableRow>,
-        oldText: String,
-        newText: String,
-    ) {
+    private fun diveToRowsAndReplace(rows: List<XWPFTableRow>, oldText: String, newText: String) {
         if (rows.isEmpty()) {
             return
         }
@@ -54,7 +46,7 @@ class WordDocumentEditorDocxImpl private constructor(
     private fun diveToCellsAndReplace(
         cells: List<XWPFTableCell>,
         oldText: String,
-        newText: String,
+        newText: String
     ) {
         if (cells.isEmpty()) {
             return
@@ -72,15 +64,20 @@ class WordDocumentEditorDocxImpl private constructor(
     private fun replaceTextInParagraphs(
         paragraphs: List<XWPFParagraph>,
         oldText: String,
-        newText: String,
+        newText: String
     ) {
         for (paragraph in paragraphs) {
             var posInText: TextSegment? = paragraph.searchText(oldText, PositionInParagraph())
             while (posInText != null) {
-                if (posInText.beginRun >= paragraph.runs.size || posInText.endRun >= paragraph.runs.size) {
+                if (posInText.beginRun >= paragraph.runs.size ||
+                    posInText.endRun >= paragraph.runs.size
+                ) {
                     // do nothing
                 } else if (posInText.beginRun == posInText.endRun) {
-                    val newText = paragraph.runs[posInText.beginRun].text().replace(oldText, newText)
+                    val newText = paragraph.runs[posInText.beginRun].text().replace(
+                        oldText,
+                        newText
+                    )
                     paragraph.runs[posInText.beginRun].setText(newText, 0)
                 } else {
                     val leftTextBeforeMask =

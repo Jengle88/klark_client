@@ -15,15 +15,11 @@ import androidx.compose.ui.unit.dp
 import ru.jengle88.klarkclient.domain.api.update.UpdateInfo
 
 @Composable
-fun UpdateBanner(
-    updateInfo: UpdateInfo,
-    onUpdateClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun UpdateBanner(updateInfo: UpdateInfo, onUpdateClick: () -> Unit, modifier: Modifier = Modifier) {
     Surface(
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -31,11 +27,11 @@ fun UpdateBanner(
             modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             Text(
                 text = "Доступна новая версия ${updateInfo.version}",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium
             )
             Button(onClick = onUpdateClick) {
                 Text(text = "Обновить")
