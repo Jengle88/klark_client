@@ -5,9 +5,10 @@ import kotlin.io.path.createTempDirectory
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import ru.jengle88.klarkclient.domain.mapping.TemplateDataMapping
 
 class ReadTemplateMasksUseCaseTest {
-    private val useCase = ReadTemplateMasksUseCase()
+    private val useCase = ReadTemplateMasksUseCase(TemplateDataMapping())
 
     @Test
     fun `invoke returns parsed masks from file`() {
@@ -59,6 +60,18 @@ class ReadTemplateMasksUseCaseTest {
         val result = useCase(tempDir.absolutePath, "template1")
 
         assertEquals(listOf($$$"$$key1$$"), result)
+        tempDir.deleteRecursively()
+    }
+
+    @Test
+    fun `invoke preserves meaningful empty mask before trailing separator`() {
+        val tempDir = createTempDirectory("template").toFile()
+        val templateDir = File(tempDir, "template1").apply { mkdirs() }
+        File(templateDir, "маски.txt").writeText($$$"$$key1$$;;")
+
+        val result = useCase(tempDir.absolutePath, "template1")
+
+        assertEquals(listOf($$$"$$key1$$", ""), result)
         tempDir.deleteRecursively()
     }
 }

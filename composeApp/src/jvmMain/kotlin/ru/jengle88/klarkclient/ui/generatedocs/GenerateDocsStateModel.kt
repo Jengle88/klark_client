@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.jengle88.klarkclient.common.CoroutineDispatchers
 import ru.jengle88.klarkclient.data.document.TableGroup
+import ru.jengle88.klarkclient.domain.mapping.TemplateDataMapping
 import ru.jengle88.klarkclient.domain.usecase.GroupTableRowsByFirstColumnUseCase
 import ru.jengle88.klarkclient.domain.usecase.ReadTableDataUseCase
 import ru.jengle88.klarkclient.domain.usecase.ReadTemplateMasksUseCase
@@ -26,6 +27,7 @@ class GenerateDocsStateModel(
     private val readTableDataUseCase: ReadTableDataUseCase,
     private val readTemplateMasksUseCase: ReadTemplateMasksUseCase,
     private val groupTableRowsByFirstColumnUseCase: GroupTableRowsByFirstColumnUseCase,
+    private val templateDataMapping: TemplateDataMapping,
     private val coroutineDispatchers: CoroutineDispatchers,
 ) : ScreenModel {
     private val _state = MutableStateFlow(GenerateDocsParamsState.EMPTY)
@@ -145,20 +147,9 @@ class GenerateDocsStateModel(
             screenModelScope.launch(coroutineDispatchers.io) {
                 val masksByGroupKey =
                     currentState.tableGroups
-                        .map { it.key }
-                        .distinct()
-                        .associate { key ->
-                            val groupRows = currentState.tableGroups.first { it.key == key }.rows
-                            val rawMasks = readTemplateMasksUseCase(pathToTemplate, key)
-                            val visibleMasks =
-                                rawMasks
-                                    .filterIndexed { index, _ ->
-                                        groupRows.any { row ->
-                                            row.getOrNull(index + 1)?.isNotEmpty() == true
-                                        }
-                                    }
-                                    .toImmutableList()
-                            key to visibleMasks
+                        .associate { group ->
+                            group.key to
+                                readTemplateMasksUseCase(pathToTemplate, group.key).toImmutableList()
                         }
                         .toImmutableMap()
                 ensureActive()
@@ -197,38 +188,20 @@ class GenerateDocsStateModel(
         isGrouped: Boolean,
     ): ImmutableList<TableGroup> = if (isGrouped) {
         groupTableRowsByFirstColumnUseCase(rows)
-            .map { it.filterEmptyColumns() }
+            .map { it.compactRows() }
             .toImmutableList()
     } else {
         persistentListOf()
     }
 
-    private fun TableGroup.filterEmptyColumns(): TableGroup {
-        if (rows.isEmpty()) return this
-
-        val maxColumns = rows.maxOf { it.size } - 1
-        if (maxColumns <= 0) return this
-
-        val nonEmptyColumnIndices =
-            (0 until maxColumns).filter { colIndex ->
-                rows.any { row -> row.getOrNull(colIndex + 1)?.isNotEmpty() == true }
-            }
-        if (nonEmptyColumnIndices.size == maxColumns) return this
-
-        return copy(
+    private fun TableGroup.compactRows(): TableGroup =
+        copy(
             rows =
-            rows
-                .map { row ->
-                    (
-                        listOf(row.first()) + nonEmptyColumnIndices.map { colIndex ->
-                            row.getOrNull(colIndex + 1) ?: ""
-                        }
-                        )
-                        .toPersistentList()
-                }
-                .toImmutableList(),
+                rows
+                    .map { row ->
+                        (listOf(row.first()) + templateDataMapping.getRowValues(row)).toPersistentList()
+                    }.toImmutableList(),
         )
-    }
 
     override fun onDispose() {
         updateTableDataJob?.cancel()

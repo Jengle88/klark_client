@@ -2,6 +2,7 @@ package ru.jengle88.klarkclient.di
 
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
+import ru.jengle88.klarkclient.domain.mapping.TemplateDataMapping
 import ru.jengle88.klarkclient.domain.usecase.GenerateWordFromTableUseCase
 import ru.jengle88.klarkclient.domain.usecase.GroupTableRowsByFirstColumnUseCase
 import ru.jengle88.klarkclient.domain.usecase.ReadTableDataUseCase
@@ -19,6 +20,7 @@ val useCaseModule =
         factoryOf(::GroupTableRowsByFirstColumnUseCase)
         factoryOf(::ReadTableDataUseCase)
         factoryOf(::ReadTemplateMasksUseCase)
+        factoryOf(::TemplateDataMapping)
 
         // Auth
         factoryOf(::GetAuthUserStateUseCase)

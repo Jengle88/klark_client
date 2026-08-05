@@ -4,9 +4,11 @@ import java.io.File
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.jengle88.klarkclient.domain.api.document.WordDocumentEditorFactory
+import ru.jengle88.klarkclient.domain.mapping.TemplateDataMapping
 
 class GenerateWordFromTableUseCase(
-    private val wordDocumentEditorFactory: WordDocumentEditorFactory
+    private val wordDocumentEditorFactory: WordDocumentEditorFactory,
+    private val templateDataMapping: TemplateDataMapping,
 ) {
     sealed interface WorkStatus {
         data object Start : WorkStatus
@@ -108,7 +110,7 @@ class GenerateWordFromTableUseCase(
 
         val masks = getMasks(masksFile)
         var filename = fallbackFileName
-        val rowWithRemovedEmptyCell = row.filter { it.isNotEmpty() }.drop(1)
+        val rowWithRemovedEmptyCell = templateDataMapping.getRowValues(row)
         masks.zip(rowWithRemovedEmptyCell).forEach { (mask, value) ->
             if (mask == "\$filename\$") {
                 filename = parseFileName(value)
@@ -136,16 +138,8 @@ class GenerateWordFromTableUseCase(
         return "$fixedFilename.docx"
     }
 
-    private fun getMasks(masksFile: File): List<String> = masksFile
-        .readText()
-        .split(";")
-        .run {
-            if (isNotEmpty() && last().isEmpty()) {
-                dropLast(1)
-            } else {
-                this
-            }
-        }.map { mask -> mask.trim() }
+    private fun getMasks(masksFile: File): List<String> =
+        templateDataMapping.parseMasks(masksFile.readText())
 
     private fun getFolder(pathToTemplate: String, row: List<String>): File? {
         val templateFolderName = row.first()
