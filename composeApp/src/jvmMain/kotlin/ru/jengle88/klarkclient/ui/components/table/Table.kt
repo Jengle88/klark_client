@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
@@ -21,7 +22,11 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
-fun TableView(data: ImmutableList<ImmutableList<String>>, style: TableStyle = TableStyle()) {
+fun TableView(
+    data: ImmutableList<ImmutableList<String>>,
+    style: TableStyle = TableStyle(),
+    customHeaders: ImmutableList<String> = persistentListOf(),
+) {
     if (data.isEmpty()) return
     if (data.all { it.isEmpty() }) return
     val maxColumns = data.maxOf { it.size }
@@ -41,31 +46,37 @@ fun TableView(data: ImmutableList<ImmutableList<String>>, style: TableStyle = Ta
     Box(modifier = Modifier.fillMaxWidth().horizontalScroll(horizontalScrollState)) {
         if (style.isVerticalScrollable) {
             LazyColumn(
-                modifier = Modifier.widthIn(min = 100.dp)
+                modifier = Modifier.widthIn(min = 100.dp),
             ) {
                 stickyHeader {
-                    HeaderRow(maxColumns = visibleMaxColumns)
+                    HeaderRow(
+                        maxColumns = visibleMaxColumns,
+                        customHeaders = customHeaders,
+                    )
                 }
                 itemsIndexed(visibleData) { index, row ->
                     DataRow(
                         index = index,
                         row = row,
                         maxColumns = visibleMaxColumns,
-                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled
+                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled,
                     )
                 }
             }
         } else {
             Column(
-                modifier = Modifier.widthIn(min = 100.dp)
+                modifier = Modifier.widthIn(min = 100.dp),
             ) {
-                HeaderRow(maxColumns = visibleMaxColumns)
+                HeaderRow(
+                    maxColumns = visibleMaxColumns,
+                    customHeaders = customHeaders,
+                )
                 visibleData.forEachIndexed { index, row ->
                     DataRow(
                         index = index,
                         row = row,
                         maxColumns = visibleMaxColumns,
-                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled
+                        isAlternatingRowColorsEnabled = style.isAlternatingRowColorsEnabled,
                     )
                 }
             }
@@ -74,14 +85,15 @@ fun TableView(data: ImmutableList<ImmutableList<String>>, style: TableStyle = Ta
 }
 
 @Composable
-private fun HeaderRow(maxColumns: Int) {
+private fun HeaderRow(maxColumns: Int, customHeaders: ImmutableList<String>) {
     Row(
         modifier = Modifier.height(IntrinsicSize.Min),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         TableEmptyCell(background = MaterialTheme.colorScheme.secondaryContainer)
         repeat(maxColumns) { i ->
-            TableLayoutCell(getColumnName(i))
+            val customHeader = customHeaders.getOrNull(i)
+            TableLayoutCell(customHeader ?: getColumnName(i), isHighlighted = customHeader != null)
         }
     }
 }
@@ -91,7 +103,7 @@ private fun DataRow(
     index: Int,
     row: ImmutableList<String>,
     maxColumns: Int,
-    isAlternatingRowColorsEnabled: Boolean
+    isAlternatingRowColorsEnabled: Boolean,
 ) {
     val rowBackground =
         if (isAlternatingRowColorsEnabled && index % 2 == 1) {
@@ -101,9 +113,9 @@ private fun DataRow(
         }
     Row(
         modifier = Modifier.height(IntrinsicSize.Min).background(rowBackground),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        TableLayoutCell((index + 1).toString())
+        TableLayoutCell((index + 1).toString(), isHighlighted = false)
         row.forEach { cellText ->
             if (cellText.isNotEmpty()) {
                 TableCell(text = cellText)
@@ -128,12 +140,12 @@ private fun TableCell(text: String) {
             .border(1.dp, Color.LightGray)
             .padding(8.dp),
         textAlign = TextAlign.Start,
-        maxLines = 3
+        maxLines = 3,
     )
 }
 
 @Composable
-private fun TableLayoutCell(text: String) {
+private fun TableLayoutCell(text: String, isHighlighted: Boolean) {
     Text(
         modifier =
         Modifier
@@ -143,7 +155,12 @@ private fun TableLayoutCell(text: String) {
             .border(1.dp, Color.LightGray)
             .padding(8.dp),
         text = text,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        fontWeight = if (isHighlighted) {
+            FontWeight.Bold
+        } else {
+            FontWeight.Normal
+        }
     )
 }
 
@@ -156,7 +173,7 @@ private fun TableEmptyCell(background: Color = Color.Transparent) {
             .fillMaxSize()
             .background(background)
             .border(1.dp, Color.LightGray)
-            .padding(8.dp)
+            .padding(8.dp),
     )
 }
 
@@ -187,8 +204,8 @@ fun PreviewTableView() {
                 "Данные 4.1",
                 "Данные 4.2",
                 "Данные 4.3",
-                "dghskadfjlkjassbkhasd fasdkg asdg askhdg namsdg a"
-            )
+                "dghskadfjlkjassbkhasd fasdkg asdg askhdg namsdg a",
+            ),
         )
 
     TableView(data, style = TableStyle(isAlternatingRowColorsEnabled = true))

@@ -4,7 +4,9 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
@@ -16,13 +18,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.jengle88.klarkclient.common.CoroutineDispatchers
 import ru.jengle88.klarkclient.data.document.TableGroup
+import ru.jengle88.klarkclient.domain.mapping.TemplateDataMapping
 import ru.jengle88.klarkclient.domain.usecase.GroupTableRowsByFirstColumnUseCase
 import ru.jengle88.klarkclient.domain.usecase.ReadTableDataUseCase
+import ru.jengle88.klarkclient.domain.usecase.ReadTemplateMasksUseCase
 
 class GenerateDocsStateModel(
     private val readTableDataUseCase: ReadTableDataUseCase,
+    private val readTemplateMasksUseCase: ReadTemplateMasksUseCase,
     private val groupTableRowsByFirstColumnUseCase: GroupTableRowsByFirstColumnUseCase,
-    private val coroutineDispatchers: CoroutineDispatchers
+    private val templateDataMapping: TemplateDataMapping,
+    private val coroutineDispatchers: CoroutineDispatchers,
 ) : ScreenModel {
     private val _state = MutableStateFlow(GenerateDocsParamsState.EMPTY)
     val state = _state.asStateFlow()
@@ -31,6 +37,7 @@ class GenerateDocsStateModel(
     val effect = _effect.asSharedFlow()
 
     private var updateTableDataJob: Job? = null
+    private var loadMasksJob: Job? = null
 
     val supportedTableFormat = listOf("xlsx", "xls")
 
@@ -44,9 +51,10 @@ class GenerateDocsStateModel(
                 _state.update { prevState ->
                     prevState.copy(
                         tableData = tableData,
-                        tableGroups = tableGroups
+                        tableGroups = tableGroups,
                     )
                 }
+                loadMasks()
             }
 
             is GenerateDocsIntent.UpdatePathToTable -> {
@@ -58,6 +66,7 @@ class GenerateDocsStateModel(
 
             is GenerateDocsIntent.UpdatePathToTemplate -> {
                 _state.update { it.copy(pathToTemplate = intent.path) }
+                loadMasks()
             }
 
             is GenerateDocsIntent.UpdatePathToDestination -> {
@@ -89,9 +98,10 @@ class GenerateDocsStateModel(
                             buildTableGroups(prevState.tableData, intent.value)
                         } else {
                             prevState.tableGroups
-                        }
+                        },
                     )
                 }
+                loadMasks()
             }
         }
     }
@@ -112,8 +122,8 @@ class GenerateDocsStateModel(
                     snapshotOfState.pathToTemplate,
                     snapshotOfState.pathToDestination,
                     snapshotOfState.ignoreLastNColumn ?: 0,
-                    snapshotOfState.unionLastNColumn ?: 0
-                )
+                    snapshotOfState.unionLastNColumn ?: 0,
+                ),
             )
         }
     }
@@ -122,6 +132,29 @@ class GenerateDocsStateModel(
         screenModelScope.launch {
             _effect.emit(GenerateDocsEffect.ShowInfoBottomSheet)
         }
+    }
+
+    private fun loadMasks() {
+        loadMasksJob?.cancel()
+        val currentState = _state.value
+        val pathToTemplate = currentState.pathToTemplate
+        if (pathToTemplate.isBlank() || currentState.tableGroups.isEmpty() || !currentState.isTableGrouped) {
+            _state.update { it.copy(masksByGroupKey = persistentMapOf()) }
+            return
+        }
+
+        loadMasksJob =
+            screenModelScope.launch(coroutineDispatchers.io) {
+                val masksByGroupKey =
+                    currentState.tableGroups
+                        .associate { group ->
+                            group.key to
+                                readTemplateMasksUseCase(pathToTemplate, group.key).toImmutableList()
+                        }
+                        .toImmutableMap()
+                ensureActive()
+                _state.update { it.copy(masksByGroupKey = masksByGroupKey) }
+            }
     }
 
     private fun updateTableData() {
@@ -134,7 +167,7 @@ class GenerateDocsStateModel(
                     readTableDataUseCase(
                         currentState.pathToTable,
                         currentState.ignoreLastNColumn,
-                        currentState.unionLastNColumn
+                        currentState.unionLastNColumn,
                     )
                 val tableData = rawData.map { it.toPersistentList() }.toPersistentList()
                 val tableGroups = buildTableGroups(tableData, currentState.isTableGrouped)
@@ -143,22 +176,35 @@ class GenerateDocsStateModel(
                     it.copy(
                         isTableLoading = false,
                         tableData = tableData,
-                        tableGroups = tableGroups
+                        tableGroups = tableGroups,
                     )
                 }
+                loadMasks()
             }
     }
 
     private fun buildTableGroups(
         rows: List<List<String>>,
-        isGrouped: Boolean
+        isGrouped: Boolean,
     ): ImmutableList<TableGroup> = if (isGrouped) {
-        groupTableRowsByFirstColumnUseCase(rows).toImmutableList()
+        groupTableRowsByFirstColumnUseCase(rows)
+            .map { it.compactRows() }
+            .toImmutableList()
     } else {
         persistentListOf()
     }
 
+    private fun TableGroup.compactRows(): TableGroup =
+        copy(
+            rows =
+                rows
+                    .map { row ->
+                        (listOf(row.first()) + templateDataMapping.getRowValues(row)).toPersistentList()
+                    }.toImmutableList(),
+        )
+
     override fun onDispose() {
         updateTableDataJob?.cancel()
+        loadMasksJob?.cancel()
     }
 }
