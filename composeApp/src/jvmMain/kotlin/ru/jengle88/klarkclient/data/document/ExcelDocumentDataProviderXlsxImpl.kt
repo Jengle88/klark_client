@@ -31,25 +31,8 @@ class ExcelDocumentDataProviderXlsxImpl(private val locale: Locale = Locale.getD
                     XSSFWorkbook(fis).use { workbook ->
                         buildList<List<String>> {
                             for (sheet in workbook) {
-                                if (config.xRange != null && config.yRange != null) {
-                                    for (rowIndex in config.xRange) {
-                                        val row = sheet.getRow(rowIndex)
-                                        val rowData = mutableListOf<String>()
-                                        for (colIndex in config.yRange) {
-                                            val cell =
-                                                row?.getCell(
-                                                    colIndex,
-                                                    Row.MissingCellPolicy.RETURN_BLANK_AS_NULL,
-                                                )
-                                            val cellValue = cell?.let { parseCell(it) } ?: ""
-                                            rowData.add(cellValue)
-                                        }
-                                        add(rowData)
-                                    }
-                                } else {
-                                    for (row in sheet) {
-                                        add(parseRow(row))
-                                    }
+                                for (row in sheet) {
+                                    add(parseRow(row))
                                 }
                             }
                         }
@@ -59,27 +42,22 @@ class ExcelDocumentDataProviderXlsxImpl(private val locale: Locale = Locale.getD
                 throw e
             }
 
-        val finalRows =
-            if (config.xRange == null || config.yRange == null) {
-                val maxRowLength = resultRows.maxOfOrNull { it.size } ?: 0
-                resultRows.map {
-                    // pad + drop
-                    val padAndDrop = it.padLast(maxRowLength, "").dropLast(config.ignoreLastNColumn)
-                    // union
-                    val lastValues = padAndDrop.takeLast(config.unionLastNColumn).joinToString(" ")
-                    padAndDrop
-                        .dropLast(config.unionLastNColumn)
-                        .toMutableList()
-                        .apply {
-                            if (config.unionLastNColumn > 0) {
-                                add(lastValues)
-                            }
-                        }
-                        .dropLastWhile { data -> data.isEmpty() }
+        val maxRowLength = resultRows.maxOfOrNull { it.size } ?: 0
+        val finalRows = resultRows.map {
+            // pad + drop
+            val padAndDrop = it.padLast(maxRowLength, "").dropLast(config.ignoreLastNColumn)
+            // union
+            val lastValues = padAndDrop.takeLast(config.unionLastNColumn).joinToString(" ")
+            padAndDrop
+                .dropLast(config.unionLastNColumn)
+                .toMutableList()
+                .apply {
+                    if (config.unionLastNColumn > 0) {
+                        add(lastValues)
+                    }
                 }
-            } else {
-                resultRows
-            }
+                .dropLastWhile { data -> data.isEmpty() }
+        }
 
         return TableContent(finalRows)
     }

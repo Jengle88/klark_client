@@ -16,7 +16,7 @@ import ru.jengle88.klarkclient.common.CoroutineDispatchers
 import ru.jengle88.klarkclient.common.UrlLauncher
 import ru.jengle88.klarkclient.domain.api.update.UpdateChecker
 import ru.jengle88.klarkclient.domain.api.update.UpdateInfo
-import ru.jengle88.klarkclient.ui.datamodels.AppFeatureVO
+import ru.jengle88.klarkclient.ui.datamodels.AppFeatureState
 import ru.jengle88.klarkclient.ui.datamodels.AppScreenDestination
 
 class MainTabScreenModel(
@@ -24,8 +24,8 @@ class MainTabScreenModel(
     private val coroutineDispatchers: CoroutineDispatchers,
     private val urlLauncher: UrlLauncher,
 ) : ScreenModel {
-    private val _state = MutableStateFlow<ImmutableList<AppFeatureVO>>(persistentListOf())
-    val state: StateFlow<ImmutableList<AppFeatureVO>> = _state.asStateFlow()
+    private val _state = MutableStateFlow<ImmutableList<AppFeatureState>>(persistentListOf())
+    val state: StateFlow<ImmutableList<AppFeatureState>> = _state.asStateFlow()
 
     private val _updateInfo = MutableStateFlow<UpdateInfo?>(null)
     val updateInfo: StateFlow<UpdateInfo?> = _updateInfo.asStateFlow()
@@ -33,7 +33,7 @@ class MainTabScreenModel(
     init {
         _state.update {
             persistentListOf(
-                AppFeatureVO(
+                AppFeatureState(
                     title = "Генерация документов",
                     description = "Генерация Word-документов по Excel-таблице",
                     icon = Icons.Default.GeneratingTokens,

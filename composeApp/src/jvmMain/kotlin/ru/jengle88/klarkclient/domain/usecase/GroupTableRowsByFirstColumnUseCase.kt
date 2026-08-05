@@ -1,7 +1,6 @@
 package ru.jengle88.klarkclient.domain.usecase
 
-import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import ru.jengle88.klarkclient.data.document.TableContent
 import ru.jengle88.klarkclient.data.document.TableGroup
 
 /**
@@ -22,7 +21,7 @@ class GroupTableRowsByFirstColumnUseCase {
             .map { (key, groupRows) ->
                 TableGroup(
                     key = key,
-                    rows = groupRows.map { it.toPersistentList() }.toImmutableList(),
+                    content = TableContent(groupRows),
                 )
             }
     }

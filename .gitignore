@@ -20,3 +20,4 @@ captures
 node_modules/
 /composeApp/src/jvmMain/resources/config.properties
 CLAUDE.md
+/.editorconfig

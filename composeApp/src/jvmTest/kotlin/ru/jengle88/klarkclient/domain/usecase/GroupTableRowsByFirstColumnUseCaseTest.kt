@@ -27,14 +27,14 @@ class GroupTableRowsByFirstColumnUseCaseTest {
                 persistentListOf("А", "Иван", "100"),
                 persistentListOf("А", "Мария", "300"),
             ),
-            result[0].rows,
+            result[0].content.rows,
         )
         assertEquals("Б", result[1].key)
         assertEquals(
             persistentListOf(
                 persistentListOf("Б", "Пётр", "200"),
             ),
-            result[1].rows,
+            result[1].content.rows,
         )
     }
 
@@ -57,7 +57,7 @@ class GroupTableRowsByFirstColumnUseCaseTest {
                 persistentListOf("А", "Иван"),
                 persistentListOf("А", "Мария"),
             ),
-            result[0].rows,
+            result[0].content.rows,
         )
     }
 

@@ -22,6 +22,8 @@ import ru.jengle88.klarkclient.domain.mapping.TemplateDataMapping
 import ru.jengle88.klarkclient.domain.usecase.GroupTableRowsByFirstColumnUseCase
 import ru.jengle88.klarkclient.domain.usecase.ReadTableDataUseCase
 import ru.jengle88.klarkclient.domain.usecase.ReadTemplateMasksUseCase
+import ru.jengle88.klarkclient.ui.datamodels.TableContentState
+import ru.jengle88.klarkclient.ui.datamodels.TableGroupState
 
 class GenerateDocsStateModel(
     private val readTableDataUseCase: ReadTableDataUseCase,
@@ -46,8 +48,8 @@ class GenerateDocsStateModel(
             is GenerateDocsIntent.StartGenerating -> generate()
             is GenerateDocsIntent.ShowInfo -> showInfoDialog()
             is GenerateDocsIntent.ReceiveTableData -> {
-                val tableData = intent.data.map { row -> row.toPersistentList() }.toPersistentList()
-                val tableGroups = buildTableGroups(tableData, _state.value.isTableGrouped)
+                val tableData = intent.data.toTableContentState()
+                val tableGroups = buildTableGroups(tableData.rows, _state.value.isTableGrouped)
                 _state.update { prevState ->
                     prevState.copy(
                         tableData = tableData,
@@ -76,7 +78,7 @@ class GenerateDocsStateModel(
             is GenerateDocsIntent.UpdateIgnoreLastNColumn -> {
                 val coerceValue = intent.value?.coerceAtMost(100)
                 _state.update { it.copy(ignoreLastNColumn = coerceValue) }
-                if (_state.value.tableData.isNotEmpty()) {
+                if (_state.value.tableData.rows.isNotEmpty()) {
                     updateTableData()
                 }
             }
@@ -84,7 +86,7 @@ class GenerateDocsStateModel(
             is GenerateDocsIntent.UpdateUnionLastNColumn -> {
                 val coerceValue = intent.value?.coerceAtMost(100)
                 _state.update { it.copy(unionLastNColumn = coerceValue) }
-                if (_state.value.tableData.isNotEmpty()) {
+                if (_state.value.tableData.rows.isNotEmpty()) {
                     updateTableData()
                 }
             }
@@ -94,8 +96,8 @@ class GenerateDocsStateModel(
                     prevState.copy(
                         isTableGrouped = intent.value,
                         tableGroups =
-                        if (prevState.tableData.isNotEmpty()) {
-                            buildTableGroups(prevState.tableData, intent.value)
+                        if (prevState.tableData.rows.isNotEmpty()) {
+                            buildTableGroups(prevState.tableData.rows, intent.value)
                         } else {
                             prevState.tableGroups
                         },
@@ -118,7 +120,7 @@ class GenerateDocsStateModel(
 
             _effect.emit(
                 GenerateDocsEffect.ShowProcessingBottomSheet(
-                    snapshotOfState.tableData,
+                    snapshotOfState.tableData.rows,
                     snapshotOfState.pathToTemplate,
                     snapshotOfState.pathToDestination,
                     snapshotOfState.ignoreLastNColumn ?: 0,
@@ -138,7 +140,8 @@ class GenerateDocsStateModel(
         loadMasksJob?.cancel()
         val currentState = _state.value
         val pathToTemplate = currentState.pathToTemplate
-        if (pathToTemplate.isBlank() || currentState.tableGroups.isEmpty() ||
+        if (pathToTemplate.isBlank() ||
+            currentState.tableGroups.isEmpty() ||
             !currentState.isTableGrouped
         ) {
             _state.update { it.copy(masksByGroupKey = persistentMapOf()) }
@@ -174,8 +177,8 @@ class GenerateDocsStateModel(
                         currentState.ignoreLastNColumn,
                         currentState.unionLastNColumn,
                     )
-                val tableData = rawData.map { it.toPersistentList() }.toPersistentList()
-                val tableGroups = buildTableGroups(tableData, currentState.isTableGrouped)
+                val tableData = rawData.toTableContentState()
+                val tableGroups = buildTableGroups(tableData.rows, currentState.isTableGrouped)
                 ensureActive()
                 _state.update {
                     it.copy(
@@ -191,24 +194,31 @@ class GenerateDocsStateModel(
     private fun buildTableGroups(
         rows: List<List<String>>,
         isGrouped: Boolean,
-    ): ImmutableList<TableGroup> = if (isGrouped) {
+    ): ImmutableList<TableGroupState> = if (isGrouped) {
         groupTableRowsByFirstColumnUseCase(rows)
-            .map { it.compactRows() }
+            .map { it.toTableGroupState() }
             .toImmutableList()
     } else {
         persistentListOf()
     }
 
-    private fun TableGroup.compactRows(): TableGroup = copy(
-        rows =
-        rows
-            .map { row ->
-                (
-                    listOf(
-                        row.first(),
-                    ) + templateDataMapping.getRowValues(row)
-                    ).toPersistentList()
-            }.toImmutableList(),
+    private fun TableGroup.toTableGroupState(): TableGroupState = TableGroupState(
+        key = key,
+        content =
+        TableContentState(
+            content.rows
+                .map { row ->
+                    (
+                        listOf(
+                            row.first(),
+                        ) + templateDataMapping.getRowValues(row)
+                        ).toPersistentList()
+                }.toPersistentList(),
+        ),
+    )
+
+    private fun List<List<String>>.toTableContentState(): TableContentState = TableContentState(
+        map { row -> row.toPersistentList() }.toPersistentList(),
     )
 
     override fun onDispose() {

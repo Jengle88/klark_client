@@ -4,7 +4,8 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
-import ru.jengle88.klarkclient.data.document.TableGroup
+import ru.jengle88.klarkclient.ui.datamodels.TableContentState
+import ru.jengle88.klarkclient.ui.datamodels.TableGroupState
 
 data class GenerateDocsParamsState(
     val pathToTable: String,
@@ -15,8 +16,8 @@ data class GenerateDocsParamsState(
     val isTableGrouped: Boolean,
     val isGenerating: Boolean,
     val isTableLoading: Boolean,
-    val tableData: ImmutableList<ImmutableList<String>>,
-    val tableGroups: ImmutableList<TableGroup>,
+    val tableData: TableContentState,
+    val tableGroups: ImmutableList<TableGroupState>,
     val masksByGroupKey: ImmutableMap<String, ImmutableList<String>>,
 ) {
     companion object {
@@ -30,7 +31,7 @@ data class GenerateDocsParamsState(
                 isTableGrouped = true,
                 isGenerating = false,
                 isTableLoading = false,
-                tableData = persistentListOf(),
+                tableData = TableContentState(persistentListOf()),
                 tableGroups = persistentListOf(),
                 masksByGroupKey = persistentMapOf(),
             )

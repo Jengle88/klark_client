@@ -37,11 +37,12 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
-import ru.jengle88.klarkclient.data.document.TableGroup
 import ru.jengle88.klarkclient.ui.components.NumberInputField
 import ru.jengle88.klarkclient.ui.components.PathInputField
 import ru.jengle88.klarkclient.ui.components.table.TableStyle
 import ru.jengle88.klarkclient.ui.components.table.TableView
+import ru.jengle88.klarkclient.ui.datamodels.TableContentState
+import ru.jengle88.klarkclient.ui.datamodels.TableGroupState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -196,7 +197,7 @@ fun GenerateDocsContent(
                     }
                 } else {
                     TableView(
-                        data = state.tableData,
+                        data = state.tableData.rows,
                         style = TableStyle(
                             isAlternatingRowColorsEnabled = true,
                             isVerticalScrollable = false,
@@ -209,14 +210,14 @@ fun GenerateDocsContent(
 }
 
 @Composable
-private fun GroupedTableView(group: TableGroup, customHeaders: ImmutableList<String>) {
+private fun GroupedTableView(group: TableGroupState, customHeaders: ImmutableList<String>) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
             text = "Группа: ${group.key}",
             style = MaterialTheme.typography.titleMedium,
         )
         TableView(
-            data = group.rows,
+            data = group.content.rows,
             style = TableStyle(
                 isAlternatingRowColorsEnabled = true,
                 isVerticalScrollable = false,
@@ -242,34 +243,40 @@ fun PreviewGenerateDocsScreen() {
             isGenerating = false,
             isTableLoading = false,
             tableData =
-            persistentListOf(
-                persistentListOf("Группа", "Заголовок 2", "Заголовок 3", "Заголовок 4"),
-                persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
-                persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
-                persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
+            TableContentState(
                 persistentListOf(
-                    "Б",
-                    "Данные Б.4",
-                    "Данные Б.5",
-                    "Данные Б.6",
+                    persistentListOf("Группа", "Заголовок 2", "Заголовок 3", "Заголовок 4"),
+                    persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
+                    persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
+                    persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
+                    persistentListOf(
+                        "Б",
+                        "Данные Б.4",
+                        "Данные Б.5",
+                        "Данные Б.6",
+                    ),
                 ),
             ),
             tableGroups =
             persistentListOf(
-                TableGroup(
+                TableGroupState(
                     key = "А",
-                    rows =
-                    persistentListOf(
-                        persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
-                        persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
+                    content =
+                    TableContentState(
+                        persistentListOf(
+                            persistentListOf("А", "Данные А.1", "Данные А.2", "Данные А.3"),
+                            persistentListOf("А", "Данные А.3", "Данные А.4", "Данные А.5"),
+                        ),
                     ),
                 ),
-                TableGroup(
+                TableGroupState(
                     key = "Б",
-                    rows =
-                    persistentListOf(
-                        persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
-                        persistentListOf("Б", "Данные Б.4", "Данные Б.5", "Данные Б.6"),
+                    content =
+                    TableContentState(
+                        persistentListOf(
+                            persistentListOf("Б", "Данные Б.1", "Данные Б.2", "Данные Б.3"),
+                            persistentListOf("Б", "Данные Б.4", "Данные Б.5", "Данные Б.6"),
+                        ),
                     ),
                 ),
             ),

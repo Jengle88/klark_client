@@ -40,12 +40,12 @@ import androidx.compose.ui.unit.sp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import ru.jengle88.klarkclient.domain.api.update.UpdateInfo
-import ru.jengle88.klarkclient.ui.datamodels.AppFeatureVO
+import ru.jengle88.klarkclient.ui.datamodels.AppFeatureState
 import ru.jengle88.klarkclient.ui.datamodels.AppScreenDestination
 
 @Composable
 fun MainTabContent(
-    features: ImmutableList<AppFeatureVO>,
+    features: ImmutableList<AppFeatureState>,
     onNavigate: (AppScreenDestination) -> Unit,
     updateInfo: UpdateInfo?,
     onUpdateClick: () -> Unit,
@@ -135,7 +135,7 @@ fun ComingSoonCard() {
 }
 
 @Composable
-fun FeatureCard(feature: AppFeatureVO, onClick: () -> Unit) {
+fun FeatureCard(feature: AppFeatureState, onClick: () -> Unit) {
     MainTabCard(
         icon = {
             Icon(
@@ -226,19 +226,19 @@ private fun MainTabCard(
 fun PreviewMainTabContent() {
     val sampleFeatures =
         listOf(
-            AppFeatureVO(
+            AppFeatureState(
                 title = "Расчет задолженности",
                 description = "Калькулятор для расчета сумм задолженностей и неустоек.",
                 icon = Icons.Default.Calculate,
                 route = AppScreenDestination.DEBT_CALCULATOR,
             ),
-            AppFeatureVO(
+            AppFeatureState(
                 title = "Определение подсудности",
                 description = "Помощник для определения подсудности спора.",
                 icon = Icons.Default.AccountBalance,
                 route = AppScreenDestination.JURISDICTION,
             ),
-            AppFeatureVO(
+            AppFeatureState(
                 title = "Текстовые утилиты",
                 description = "Склонение ФИО, определение пола, числа прописью.",
                 icon = Icons.Default.TextFields,
