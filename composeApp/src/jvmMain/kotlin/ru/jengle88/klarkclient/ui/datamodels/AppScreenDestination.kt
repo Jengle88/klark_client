@@ -6,5 +6,5 @@ enum class AppScreenDestination {
     JURISDICTION, // Подсудность
     TEXT_UTILS, // Склонение, пол, числа прописью
     TEMPLATES, // Шаблоны и формулировки
-    GENERATION // Генерация документов по таблице
+    GENERATION, // Генерация документов по таблице
 }

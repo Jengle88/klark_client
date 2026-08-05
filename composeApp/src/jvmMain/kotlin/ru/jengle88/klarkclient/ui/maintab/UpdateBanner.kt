@@ -19,7 +19,7 @@ fun UpdateBanner(updateInfo: UpdateInfo, onUpdateClick: () -> Unit, modifier: Mo
     Surface(
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -27,11 +27,11 @@ fun UpdateBanner(updateInfo: UpdateInfo, onUpdateClick: () -> Unit, modifier: Mo
             modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Text(
                 text = "Доступна новая версия ${updateInfo.version}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
             Button(onClick = onUpdateClick) {
                 Text(text = "Обновить")

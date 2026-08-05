@@ -10,7 +10,7 @@ import kotlinx.coroutines.CancellationException
 class UpdateChecker(
     private val client: HttpClient,
     private val owner: String,
-    private val repo: String
+    private val repo: String,
 ) {
     suspend fun checkForUpdate(currentVersion: String): UpdateInfo? = try {
         val release: GithubRelease =
@@ -30,7 +30,7 @@ class UpdateChecker(
         if (latestSemver != null && currentSemver != null && latestSemver > currentSemver) {
             UpdateInfo(
                 version = latestVersion,
-                downloadUrl = release.htmlUrl
+                downloadUrl = release.htmlUrl,
             )
         } else {
             null

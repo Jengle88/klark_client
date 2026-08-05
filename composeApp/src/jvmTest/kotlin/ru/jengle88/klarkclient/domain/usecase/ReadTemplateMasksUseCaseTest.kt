@@ -22,9 +22,9 @@ class ReadTemplateMasksUseCaseTest {
             listOf(
                 $$$"$$key1$$",
                 $$$"$$key2$$",
-                $$$"$$filename$$"
+                $$$"$$filename$$",
             ),
-            result
+            result,
         )
         tempDir.deleteRecursively()
     }

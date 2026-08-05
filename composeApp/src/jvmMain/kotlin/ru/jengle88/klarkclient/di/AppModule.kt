@@ -6,58 +6,28 @@ import org.koin.dsl.module
 import ru.jengle88.klarkclient.common.CoroutineDispatchers
 import ru.jengle88.klarkclient.common.DesktopUrlLauncherImpl
 import ru.jengle88.klarkclient.common.UrlLauncher
-import ru.jengle88.klarkclient.data.AppConfig
 import ru.jengle88.klarkclient.data.document.ExcelDocumentDataProviderXlsxImpl
 import ru.jengle88.klarkclient.data.document.WordDocumentEditorFactoryImpl
 import ru.jengle88.klarkclient.data.network.HttpClientFactory
-import ru.jengle88.klarkclient.data.network.auth.AuthHttpClient
-import ru.jengle88.klarkclient.data.network.auth.AuthManagerImpl
-import ru.jengle88.klarkclient.data.network.auth.AuthStoreImpl
-import ru.jengle88.klarkclient.data.network.auth.KtorAuthCodeReceiver
-import ru.jengle88.klarkclient.data.network.auth.YandexAuthProvider
-import ru.jengle88.klarkclient.domain.api.auth.AuthCodeReceiver
-import ru.jengle88.klarkclient.domain.api.auth.AuthManager
-import ru.jengle88.klarkclient.domain.api.auth.AuthProvider
-import ru.jengle88.klarkclient.domain.api.auth.AuthStore
 import ru.jengle88.klarkclient.domain.api.document.ExcelDocumentDataProvider
 import ru.jengle88.klarkclient.domain.api.document.WordDocumentEditorFactory
 import ru.jengle88.klarkclient.domain.api.update.UpdateChecker
+import ru.jengle88.klarkclient.domain.mapping.TemplateDataMapping
 
 val appModule =
     module {
         single { CoroutineDispatchers() }
-        single { AppConfig() }
         single { HttpClientFactory.create() }
-        single { AuthHttpClient(get()) }
-        single<AuthProvider> {
-            val appConfig: AppConfig = get()
-            YandexAuthProvider(
-                clientId = appConfig.clientId,
-                clientSecret = appConfig.clientSecret
-            )
-        }
-        singleOf<AuthStore>(::AuthStoreImpl)
         factoryOf<UrlLauncher>(::DesktopUrlLauncherImpl)
-        singleOf<AuthCodeReceiver>(::KtorAuthCodeReceiver)
-        single<AuthManager> {
-            val appConfig: AppConfig = get()
-            AuthManagerImpl(
-                authHttpClient = get(),
-                authProvider = get(),
-                uriLauncher = get(),
-                authCodeReceiver = get(),
-                port = appConfig.authPort,
-                ioDispatcher = get<CoroutineDispatchers>().io
-            )
-        }
         singleOf<WordDocumentEditorFactory>(::WordDocumentEditorFactoryImpl)
         factoryOf<ExcelDocumentDataProvider>(::ExcelDocumentDataProviderXlsxImpl)
+        factoryOf(::TemplateDataMapping)
 
         single {
             UpdateChecker(
                 client = get(),
                 owner = "Jengle88",
-                repo = "klark_client"
+                repo = "klark_client",
             )
         }
     }

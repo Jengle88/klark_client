@@ -160,7 +160,7 @@ private fun TableLayoutCell(text: String, isHighlighted: Boolean) {
             FontWeight.Bold
         } else {
             FontWeight.Normal
-        }
+        },
     )
 }
 

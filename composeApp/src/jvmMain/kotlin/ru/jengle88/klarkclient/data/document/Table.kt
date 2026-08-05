@@ -9,7 +9,7 @@ data class TableConfiguration(
     // Опционально: граница по строкам (если используется чтение из диапазона)
     val xRange: IntRange? = null,
     // Опционально: граница по колонкам
-    val yRange: IntRange? = null
+    val yRange: IntRange? = null,
 )
 
 data class TableContent(val rows: List<List<String>>)

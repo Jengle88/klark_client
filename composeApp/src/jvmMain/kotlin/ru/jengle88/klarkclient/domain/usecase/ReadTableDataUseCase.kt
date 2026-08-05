@@ -7,13 +7,13 @@ class ReadTableDataUseCase(private val excelDocumentDataProvider: ExcelDocumentD
     operator fun invoke(
         pathToTable: String,
         ignoreLastNColumn: Int? = null,
-        unionLastNColumn: Int? = null
+        unionLastNColumn: Int? = null,
     ): List<List<String>> = excelDocumentDataProvider
         .readData(
             TableConfiguration(
                 file = java.io.File(pathToTable),
                 ignoreLastNColumn = ignoreLastNColumn ?: 0,
-                unionLastNColumn = unionLastNColumn ?: 0
-            )
+                unionLastNColumn = unionLastNColumn ?: 0,
+            ),
         ).rows
 }

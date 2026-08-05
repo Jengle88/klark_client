@@ -23,7 +23,7 @@ class GenerateWordFromTableUseCase(
         pathToTemplate: String,
         pathToDestination: String,
         ignoreLastNColumn: Int,
-        unionLastNColumn: Int
+        unionLastNColumn: Int,
     ): Flow<WorkStatus> = flow {
         emit(WorkStatus.Start)
         val mapOfSuccessRowForTemplate = mutableMapOf<String, Int>()
@@ -36,15 +36,15 @@ class GenerateWordFromTableUseCase(
                         pathToTemplate,
                         fallbackFileName = "dstFile${index + 1}.docx",
                         pathToDestination,
-                        generatedFolderName
+                        generatedFolderName,
                     )
 
                 if (parseResult.isSuccess) {
                     val result = parseResult.getOrThrow()
                     emit(
                         WorkStatus.Step(
-                            "Готово: \"${result.destinationFileName}\" в папке \"${result.destinationFolderName}\""
-                        )
+                            "Готово: \"${result.destinationFileName}\" в папке \"${result.destinationFolderName}\"",
+                        ),
                     )
                     mapOfSuccessRowForTemplate[result.templateFolder] =
                         (mapOfSuccessRowForTemplate[result.templateFolder] ?: 0) + 1
@@ -62,11 +62,11 @@ class GenerateWordFromTableUseCase(
             val finishResult =
                 buildString {
                     appendLine(
-                        "Всего файлов в папке \"${generatedFolderName}\" = ${amountOfGeneratedFilesInFolder.values.sum()}"
+                        "Всего файлов в папке \"${generatedFolderName}\" = ${amountOfGeneratedFilesInFolder.values.sum()}",
                     )
                     amountOfGeneratedFilesInFolder.forEach { (folderName, amount) ->
                         appendLine(
-                            "В папке \"$folderName\" сгенерировано файлов: $amount, успешных строк: ${mapOfSuccessRowForTemplate[folderName] ?: 0}"
+                            "В папке \"$folderName\" сгенерировано файлов: $amount, успешных строк: ${mapOfSuccessRowForTemplate[folderName] ?: 0}",
                         )
                     }
                 }
@@ -82,7 +82,7 @@ class GenerateWordFromTableUseCase(
         pathToTemplate: String,
         fallbackFileName: String,
         pathToDestination: String,
-        generatedFolderName: String
+        generatedFolderName: String,
     ): Result<ParseRowResult> {
         val templateFolder =
             getFolder(pathToTemplate, row)
@@ -92,16 +92,16 @@ class GenerateWordFromTableUseCase(
             getFile(templateFolder, "шаблон.docx")
                 ?: return Result.failure(
                     Exception(
-                        "Ошибка: \"шаблон.docx\" не найден в папке \"${templateFolder}\" или недоступен!"
-                    )
+                        "Ошибка: \"шаблон.docx\" не найден в папке \"${templateFolder}\" или недоступен!",
+                    ),
                 )
 
         val masksFile =
             getFile(templateFolder, "маски.txt")
                 ?: return Result.failure(
                     Exception(
-                        "Ошибка: \"маски.txt\" не найден в папке \"${templateFolder}\" или недоступен!"
-                    )
+                        "Ошибка: \"маски.txt\" не найден в папке \"${templateFolder}\" или недоступен!",
+                    ),
                 )
 
         val docxEditor =
@@ -126,7 +126,7 @@ class GenerateWordFromTableUseCase(
         val destinationFile = File(destinationFolder, filename)
         docxEditor.saveToFile(destinationFile)
         return Result.success(
-            ParseRowResult(destinationFile.name, destinationFolder.name, templateFolder.name)
+            ParseRowResult(destinationFile.name, destinationFolder.name, templateFolder.name),
         )
     }
 
@@ -161,6 +161,6 @@ class GenerateWordFromTableUseCase(
     private data class ParseRowResult(
         val destinationFileName: String,
         val destinationFolderName: String,
-        val templateFolder: String
+        val templateFolder: String,
     )
 }

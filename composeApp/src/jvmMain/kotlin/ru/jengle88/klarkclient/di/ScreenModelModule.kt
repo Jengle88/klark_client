@@ -10,8 +10,6 @@ import ru.jengle88.klarkclient.ui.maintab.MainTabScreenModel
 val screenModelModule =
     module {
         includes(useCaseModule)
-        // Auth feature is disabled in UI but kept in code.
-        // singleOf(::AuthViewScreenModel)
         singleOf(::MainTabScreenModel)
         factoryOf(::GenerateDocsStateModel)
         factoryOf(::GenerateDocsGenerationDialogStateModel)

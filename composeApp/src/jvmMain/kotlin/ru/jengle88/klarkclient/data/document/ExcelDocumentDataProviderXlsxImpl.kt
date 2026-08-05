@@ -39,7 +39,7 @@ class ExcelDocumentDataProviderXlsxImpl(private val locale: Locale = Locale.getD
                                             val cell =
                                                 row?.getCell(
                                                     colIndex,
-                                                    Row.MissingCellPolicy.RETURN_BLANK_AS_NULL
+                                                    Row.MissingCellPolicy.RETURN_BLANK_AS_NULL,
                                                 )
                                             val cellValue = cell?.let { parseCell(it) } ?: ""
                                             rowData.add(cellValue)

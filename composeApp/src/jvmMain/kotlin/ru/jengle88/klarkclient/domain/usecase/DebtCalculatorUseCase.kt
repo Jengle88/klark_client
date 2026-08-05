@@ -15,7 +15,7 @@ class DebtCalculatorUseCase(private val excelDocumentDataProvider: ExcelDocument
         data class ProcessingStep(
             val amountOfProcessedFiles: Int,
             val amountOfFailedFiles: Int,
-            val amountOfAllFiles: Int
+            val amountOfAllFiles: Int,
         ) : WorkStatus
 
         data class Finish(val message: String? = null, val cause: Throwable? = null) : WorkStatus
@@ -25,7 +25,7 @@ class DebtCalculatorUseCase(private val excelDocumentDataProvider: ExcelDocument
         emit(WorkStatus.Start)
         if (!pathToTables.exists() || !pathToTables.isDirectory) {
             emit(
-                WorkStatus.Finish(cause = Exception("Выбранной папки с данными не существует"))
+                WorkStatus.Finish(cause = Exception("Выбранной папки с данными не существует")),
             )
             return@flow
         }
@@ -34,9 +34,9 @@ class DebtCalculatorUseCase(private val excelDocumentDataProvider: ExcelDocument
             emit(
                 WorkStatus.Finish(
                     cause = Exception(
-                        "В выбранной папке не найдены Excel-таблицы (формат xlsx)"
-                    )
-                )
+                        "В выбранной папке не найдены Excel-таблицы (формат xlsx)",
+                    ),
+                ),
             )
             return@flow
         }
@@ -47,8 +47,8 @@ class DebtCalculatorUseCase(private val excelDocumentDataProvider: ExcelDocument
                     TableConfiguration(
                         file = tablePath,
                         ignoreLastNColumn = 0,
-                        unionLastNColumn = 0
-                    )
+                        unionLastNColumn = 0,
+                    ),
                 )
         }
     }

@@ -35,14 +35,14 @@ class GenerateDocsScreen : Screen {
             state,
             onIntent = screenModel::onIntent,
             onEffect = screenModel::onEffect,
-            onBack = navigator::pop
+            onBack = navigator::pop,
         )
 
         val tablePickerLauncher =
             rememberFilePickerLauncher(
                 type = PickerType.File(extensions = screenModel.supportedTableFormat),
                 mode = PickerMode.Single,
-                title = "Выберите таблицу с данными для генерации"
+                title = "Выберите таблицу с данными для генерации",
             ) { file ->
                 file?.path?.let { path ->
                     screenModel.onIntent(GenerateDocsIntent.UpdatePathToTable(path))
@@ -51,7 +51,7 @@ class GenerateDocsScreen : Screen {
 
         val templatePickerLauncher =
             rememberDirectoryPickerLauncher(
-                title = "Выберите папку с шаблонами для использования"
+                title = "Выберите папку с шаблонами для использования",
             ) { directory ->
                 directory?.path?.let { path ->
                     screenModel.onIntent(GenerateDocsIntent.UpdatePathToTemplate(path))
@@ -60,7 +60,7 @@ class GenerateDocsScreen : Screen {
 
         val destinationPickerLauncher =
             rememberDirectoryPickerLauncher(
-                title = "Выберите папку для сохранения результатов"
+                title = "Выберите папку для сохранения результатов",
             ) { directory ->
                 directory?.path?.let { path ->
                     screenModel.onIntent(GenerateDocsIntent.UpdatePathToDestination(path))
@@ -80,13 +80,13 @@ class GenerateDocsScreen : Screen {
                                 effect.pathToTemplate,
                                 effect.pathToDestination,
                                 effect.ignoreLastNColumn,
-                                effect.unionLastNColumn
-                            )
+                                effect.unionLastNColumn,
+                            ),
                         )
 
                     GenerateDocsEffect.ShowInfoBottomSheet ->
                         bottomSheetNavigator.show(
-                            GenerateDocsInfoBottomSheetScreen()
+                            GenerateDocsInfoBottomSheetScreen(),
                         )
                 }
             }

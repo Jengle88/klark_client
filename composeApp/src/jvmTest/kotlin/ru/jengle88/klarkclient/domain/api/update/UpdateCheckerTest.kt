@@ -26,7 +26,7 @@ class UpdateCheckerTest {
                 Json {
                     ignoreUnknownKeys = true
                     isLenient = true
-                }
+                },
             )
         }
     }
@@ -37,7 +37,7 @@ class UpdateCheckerTest {
             MockEngine { request ->
                 assertEquals(
                     "/repos/$owner/$repo/releases/latest",
-                    request.url.fullPath
+                    request.url.fullPath,
                 )
                 respond(
                     """
@@ -47,14 +47,14 @@ class UpdateCheckerTest {
                         }
                     """.trimIndent(),
                     HttpStatusCode.OK,
-                    headers = headersOf("Content-Type" to listOf("application/json"))
+                    headers = headersOf("Content-Type" to listOf("application/json")),
                 )
             }
         val updateChecker =
             UpdateChecker(
                 client = createHttpClient(mockEngine),
                 owner = owner,
-                repo = repo
+                repo = repo,
             )
 
         val result = updateChecker.checkForUpdate("1.0.0")
@@ -76,14 +76,14 @@ class UpdateCheckerTest {
                         }
                     """.trimIndent(),
                     HttpStatusCode.OK,
-                    headers = headersOf("Content-Type" to listOf("application/json"))
+                    headers = headersOf("Content-Type" to listOf("application/json")),
                 )
             }
         val updateChecker =
             UpdateChecker(
                 client = createHttpClient(mockEngine),
                 owner = owner,
-                repo = repo
+                repo = repo,
             )
 
         val result = updateChecker.checkForUpdate("1.0.0")
@@ -103,14 +103,14 @@ class UpdateCheckerTest {
                         }
                     """.trimIndent(),
                     HttpStatusCode.OK,
-                    headers = headersOf("Content-Type" to listOf("application/json"))
+                    headers = headersOf("Content-Type" to listOf("application/json")),
                 )
             }
         val updateChecker =
             UpdateChecker(
                 client = createHttpClient(mockEngine),
                 owner = owner,
-                repo = repo
+                repo = repo,
             )
 
         val result = updateChecker.checkForUpdate("1.1.0")
@@ -125,7 +125,7 @@ class UpdateCheckerTest {
             UpdateChecker(
                 client = createHttpClient(mockEngine),
                 owner = owner,
-                repo = repo
+                repo = repo,
             )
 
         val result = updateChecker.checkForUpdate("1.0.0")
@@ -140,14 +140,14 @@ class UpdateCheckerTest {
                 respond(
                     "not-json",
                     HttpStatusCode.OK,
-                    headers = headersOf("Content-Type" to listOf("application/json"))
+                    headers = headersOf("Content-Type" to listOf("application/json")),
                 )
             }
         val updateChecker =
             UpdateChecker(
                 client = createHttpClient(mockEngine),
                 owner = owner,
-                repo = repo
+                repo = repo,
             )
 
         val result = updateChecker.checkForUpdate("1.0.0")
@@ -167,14 +167,14 @@ class UpdateCheckerTest {
                         }
                     """.trimIndent(),
                     HttpStatusCode.OK,
-                    headers = headersOf("Content-Type" to listOf("application/json"))
+                    headers = headersOf("Content-Type" to listOf("application/json")),
                 )
             }
         val updateChecker =
             UpdateChecker(
                 client = createHttpClient(mockEngine),
                 owner = owner,
-                repo = repo
+                repo = repo,
             )
 
         val result = updateChecker.checkForUpdate("1.0.0")

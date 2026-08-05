@@ -19,7 +19,7 @@ import ru.jengle88.klarkclient.domain.usecase.GenerateWordFromTableUseCase
 import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsGenerationDialogState
 
 class GenerateDocsGenerationDialogStateModel(
-    private val generateWordFromTableUseCase: GenerateWordFromTableUseCase
+    private val generateWordFromTableUseCase: GenerateWordFromTableUseCase,
 ) : ScreenModel {
     private val _state = MutableStateFlow(GenerateDocsGenerationDialogState.EMPTY)
     val state = _state.asStateFlow()
@@ -56,7 +56,7 @@ class GenerateDocsGenerationDialogStateModel(
                     intent.pathToTemplate,
                     intent.pathToDestination,
                     intent.ignoreLastNColumn,
-                    intent.unionLastNColumn
+                    intent.unionLastNColumn,
                 ).flowOn(Dispatchers.IO)
                 .onEach { newState ->
                     when (newState) {
@@ -71,9 +71,9 @@ class GenerateDocsGenerationDialogStateModel(
                                 prevState.copy(
                                     steps = (
                                         prevState.steps + listOf(
-                                            newState.message
+                                            newState.message,
                                         )
-                                        ).toImmutableList()
+                                        ).toImmutableList(),
                                 )
                             }
                         }
@@ -84,7 +84,7 @@ class GenerateDocsGenerationDialogStateModel(
                                     if (newState.message != null) {
                                         (
                                             prevState.steps + listOf(
-                                                newState.message
+                                                newState.message,
                                             )
                                             ).toImmutableList()
                                     } else {
@@ -93,7 +93,7 @@ class GenerateDocsGenerationDialogStateModel(
                                 prevState.copy(
                                     isGenerating = false,
                                     steps = steps,
-                                    error = newState.cause?.message
+                                    error = newState.cause?.message,
                                 )
                             }
                         }

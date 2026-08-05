@@ -17,7 +17,7 @@ data class GenerateDocsParamsState(
     val isTableLoading: Boolean,
     val tableData: ImmutableList<ImmutableList<String>>,
     val tableGroups: ImmutableList<TableGroup>,
-    val masksByGroupKey: ImmutableMap<String, ImmutableList<String>>
+    val masksByGroupKey: ImmutableMap<String, ImmutableList<String>>,
 ) {
     companion object {
         val EMPTY =
@@ -32,7 +32,7 @@ data class GenerateDocsParamsState(
                 isTableLoading = false,
                 tableData = persistentListOf(),
                 tableGroups = persistentListOf(),
-                masksByGroupKey = persistentMapOf()
+                masksByGroupKey = persistentMapOf(),
             )
     }
 }
