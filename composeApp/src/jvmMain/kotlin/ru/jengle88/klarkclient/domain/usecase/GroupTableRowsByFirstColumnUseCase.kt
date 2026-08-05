@@ -22,7 +22,7 @@ class GroupTableRowsByFirstColumnUseCase {
             .map { (key, groupRows) ->
                 TableGroup(
                     key = key,
-                    rows = groupRows.map { it.toPersistentList() }.toImmutableList()
+                    rows = groupRows.map { it.toPersistentList() }.toImmutableList(),
                 )
             }
     }

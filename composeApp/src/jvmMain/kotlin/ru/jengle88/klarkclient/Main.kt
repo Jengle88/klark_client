@@ -15,7 +15,7 @@ fun main() = application {
     MaterialTheme {
         Window(
             onCloseRequest = ::exitApplication,
-            title = "Klark"
+            title = "Klark",
         ) {
             App()
         }

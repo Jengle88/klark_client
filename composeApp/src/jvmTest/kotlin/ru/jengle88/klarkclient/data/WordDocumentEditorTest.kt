@@ -92,21 +92,21 @@ class WordDocumentEditorTest {
                 .getRow(0)
                 .getCell(0)
                 .text
-                .contains("John")
+                .contains("John"),
         )
         assertTrue(
             table
                 .getRow(0)
                 .getCell(1)
                 .text
-                .contains("25")
+                .contains("25"),
         )
         assertTrue(
             table
                 .getRow(1)
                 .getCell(0)
                 .text
-                .contains("John")
+                .contains("John"),
         )
         assertFalse(table.text.contains("{{NAME}}"))
         assertFalse(table.text.contains("{{AGE}}"))

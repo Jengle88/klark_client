@@ -18,9 +18,6 @@ ktlintCore = "1.5.0"
 spotless = "8.8.0"
 ktorVersion = "2.3.12"
 semver = "1.0.0"
-mockitoCore = "5.10.0"
-mockitoInline = "5.2.0"
-mockitoKotlin = "5.2.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -44,23 +41,15 @@ apache-logging-core = { module = "org.apache.logging.log4j:log4j-api", version.r
 apache-logging-api = { module = "org.apache.logging.log4j:log4j-core", version.ref = "apache-logging"  }
 filekit-compose = { module = "io.github.vinceglb:filekit-compose", version.ref = "filekit" }
 markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "markdownRenderer" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
-# Ktor Client (чтобы отправить код и получить токен)
+# Ktor Client
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" } # CIO движок работает и как клиент, и как сервер
-ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
 ktor-client-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
-# Ktor Server (чтобы поднять localhost)
-ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorVersion" }
-ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktorVersion" } # Легковесный движок
 # Ktor tests
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktorVersion" }
 semver = { module = "io.github.z4kn4fein:semver", version.ref = "semver" }
-mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 
 [plugins]
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }

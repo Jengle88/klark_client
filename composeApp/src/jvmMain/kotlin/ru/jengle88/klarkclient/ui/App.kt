@@ -22,11 +22,9 @@ fun App() {
                     Text(
                         text = "Klark",
                         style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
-                    // Auth feature is disabled in UI but kept in code.
-                    // See AuthViewScreenModel and AuthStatusRectangleAvatar to re-enable.
-                }
+                },
             ) {
                 TabList(Modifier)
             }

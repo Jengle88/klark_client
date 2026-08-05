@@ -15,7 +15,7 @@ class GroupTableRowsByFirstColumnUseCaseTest {
                 listOf("Группа", "Имя", "Сумма"),
                 listOf("А", "Иван", "100"),
                 listOf("Б", "Пётр", "200"),
-                listOf("А", "Мария", "300")
+                listOf("А", "Мария", "300"),
             )
 
         val result = useCase(rows)
@@ -25,16 +25,16 @@ class GroupTableRowsByFirstColumnUseCaseTest {
         assertEquals(
             persistentListOf(
                 persistentListOf("А", "Иван", "100"),
-                persistentListOf("А", "Мария", "300")
+                persistentListOf("А", "Мария", "300"),
             ),
-            result[0].rows
+            result[0].rows,
         )
         assertEquals("Б", result[1].key)
         assertEquals(
             persistentListOf(
-                persistentListOf("Б", "Пётр", "200")
+                persistentListOf("Б", "Пётр", "200"),
             ),
-            result[1].rows
+            result[1].rows,
         )
     }
 
@@ -45,7 +45,7 @@ class GroupTableRowsByFirstColumnUseCaseTest {
                 listOf("Группа", "Имя"),
                 listOf("А", "Иван"),
                 listOf("", "Пётр"),
-                listOf("А", "Мария")
+                listOf("А", "Мария"),
             )
 
         val result = useCase(rows)
@@ -55,9 +55,9 @@ class GroupTableRowsByFirstColumnUseCaseTest {
         assertEquals(
             persistentListOf(
                 persistentListOf("А", "Иван"),
-                persistentListOf("А", "Мария")
+                persistentListOf("А", "Мария"),
             ),
-            result[0].rows
+            result[0].rows,
         )
     }
 
@@ -69,7 +69,7 @@ class GroupTableRowsByFirstColumnUseCaseTest {
                 listOf("В", "Иван"),
                 listOf("А", "Пётр"),
                 listOf("В", "Мария"),
-                listOf("А", "Ольга")
+                listOf("А", "Ольга"),
             )
 
         val result = useCase(rows)

@@ -22,7 +22,7 @@ import ru.jengle88.klarkclient.ui.datamodels.AppScreenDestination
 class MainTabScreenModel(
     private val updateChecker: UpdateChecker,
     private val coroutineDispatchers: CoroutineDispatchers,
-    private val urlLauncher: UrlLauncher
+    private val urlLauncher: UrlLauncher,
 ) : ScreenModel {
     private val _state = MutableStateFlow<ImmutableList<AppFeatureVO>>(persistentListOf())
     val state: StateFlow<ImmutableList<AppFeatureVO>> = _state.asStateFlow()
@@ -37,8 +37,8 @@ class MainTabScreenModel(
                     title = "Генерация документов",
                     description = "Генерация Word-документов по Excel-таблице",
                     icon = Icons.Default.GeneratingTokens,
-                    route = AppScreenDestination.GENERATION
-                )
+                    route = AppScreenDestination.GENERATION,
+                ),
                 /*AppFeatureVO(
                     title = "Калькулятор периодов",
                     description = "Расчет задолженности по ЛС с группировкой дат",

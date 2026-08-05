@@ -25,28 +25,28 @@ import ru.jengle88.klarkclient.ui.generatedocs.GenerateDocsGenerationDialogState
 @Composable
 fun GenerateDocsGenerationDialogContent(
     state: GenerateDocsGenerationDialogState,
-    onIntent: (GenerateDocsGenerationDialogIntent) -> Unit
+    onIntent: (GenerateDocsGenerationDialogIntent) -> Unit,
 ) {
     Box(
         modifier =
         Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                horizontalArrangement = Arrangement.Start,
             ) {
                 IconButton(
-                    onClick = { onIntent(GenerateDocsGenerationDialogIntent.StopGeneration) }
+                    onClick = { onIntent(GenerateDocsGenerationDialogIntent.StopGeneration) },
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Close"
+                        contentDescription = "Close",
                     )
                 }
             }
@@ -56,11 +56,11 @@ fun GenerateDocsGenerationDialogContent(
                 Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 8.dp),
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     if (state.isGenerating) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -68,7 +68,7 @@ fun GenerateDocsGenerationDialogContent(
 
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         items(state.steps) { item ->
                             Text(item)
@@ -85,11 +85,11 @@ fun GenerateDocsGenerationDialogContent(
             if (state.isGenerating) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Button(
                         onClick = { onIntent(GenerateDocsGenerationDialogIntent.StopGeneration) },
-                        modifier = Modifier.width(100.dp)
+                        modifier = Modifier.width(100.dp),
                     ) {
                         Text("Стоп")
                     }

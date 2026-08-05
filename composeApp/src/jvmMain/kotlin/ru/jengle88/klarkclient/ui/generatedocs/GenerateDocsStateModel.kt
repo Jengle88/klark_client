@@ -138,7 +138,9 @@ class GenerateDocsStateModel(
         loadMasksJob?.cancel()
         val currentState = _state.value
         val pathToTemplate = currentState.pathToTemplate
-        if (pathToTemplate.isBlank() || currentState.tableGroups.isEmpty() || !currentState.isTableGrouped) {
+        if (pathToTemplate.isBlank() || currentState.tableGroups.isEmpty() ||
+            !currentState.isTableGrouped
+        ) {
             _state.update { it.copy(masksByGroupKey = persistentMapOf()) }
             return
         }
@@ -149,7 +151,10 @@ class GenerateDocsStateModel(
                     currentState.tableGroups
                         .associate { group ->
                             group.key to
-                                readTemplateMasksUseCase(pathToTemplate, group.key).toImmutableList()
+                                readTemplateMasksUseCase(
+                                    pathToTemplate,
+                                    group.key,
+                                ).toImmutableList()
                         }
                         .toImmutableMap()
                 ensureActive()
@@ -194,14 +199,17 @@ class GenerateDocsStateModel(
         persistentListOf()
     }
 
-    private fun TableGroup.compactRows(): TableGroup =
-        copy(
-            rows =
-                rows
-                    .map { row ->
-                        (listOf(row.first()) + templateDataMapping.getRowValues(row)).toPersistentList()
-                    }.toImmutableList(),
-        )
+    private fun TableGroup.compactRows(): TableGroup = copy(
+        rows =
+        rows
+            .map { row ->
+                (
+                    listOf(
+                        row.first(),
+                    ) + templateDataMapping.getRowValues(row)
+                    ).toPersistentList()
+            }.toImmutableList(),
+    )
 
     override fun onDispose() {
         updateTableDataJob?.cancel()

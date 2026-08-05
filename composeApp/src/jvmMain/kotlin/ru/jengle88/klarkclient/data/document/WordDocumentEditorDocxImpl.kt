@@ -24,7 +24,7 @@ class WordDocumentEditorDocxImpl private constructor(private val document: XWPFD
     private fun diveToTablesAndReplaceText(
         tables: List<XWPFTable>,
         oldText: String,
-        newText: String
+        newText: String,
     ) {
         if (tables.isEmpty()) {
             return
@@ -46,7 +46,7 @@ class WordDocumentEditorDocxImpl private constructor(private val document: XWPFD
     private fun diveToCellsAndReplace(
         cells: List<XWPFTableCell>,
         oldText: String,
-        newText: String
+        newText: String,
     ) {
         if (cells.isEmpty()) {
             return
@@ -64,7 +64,7 @@ class WordDocumentEditorDocxImpl private constructor(private val document: XWPFD
     private fun replaceTextInParagraphs(
         paragraphs: List<XWPFParagraph>,
         oldText: String,
-        newText: String
+        newText: String,
     ) {
         for (paragraph in paragraphs) {
             var posInText: TextSegment? = paragraph.searchText(oldText, PositionInParagraph())
@@ -76,7 +76,7 @@ class WordDocumentEditorDocxImpl private constructor(private val document: XWPFD
                 } else if (posInText.beginRun == posInText.endRun) {
                     val newText = paragraph.runs[posInText.beginRun].text().replace(
                         oldText,
-                        newText
+                        newText,
                     )
                     paragraph.runs[posInText.beginRun].setText(newText, 0)
                 } else {

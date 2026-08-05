@@ -24,13 +24,13 @@ fun MainTabNavigationRailItem(tab: Tab) {
             Icon(
                 modifier = Modifier.size(24.dp),
                 painter = tab.options.icon!!,
-                contentDescription = tab.options.title
+                contentDescription = tab.options.title,
             )
         },
         label = {
             Text(
                 text = tab.options.title,
-                style = MaterialTheme.typography.labelSmall
+                style = MaterialTheme.typography.labelSmall,
             )
         },
         colors =
@@ -38,8 +38,8 @@ fun MainTabNavigationRailItem(tab: Tab) {
             selectedIconColor = MaterialTheme.colorScheme.primary,
             unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             selectedTextColor = MaterialTheme.colorScheme.primary,
-            unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        )
+            unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+        ),
     )
 }
 

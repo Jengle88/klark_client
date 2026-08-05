@@ -48,7 +48,7 @@ fun MainTabContent(
     features: ImmutableList<AppFeatureVO>,
     onNavigate: (AppScreenDestination) -> Unit,
     updateInfo: UpdateInfo?,
-    onUpdateClick: () -> Unit
+    onUpdateClick: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         LazyVerticalGrid(
@@ -56,7 +56,7 @@ fun MainTabContent(
             contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 WelcomeCard()
@@ -66,7 +66,7 @@ fun MainTabContent(
             items(features) { feature ->
                 FeatureCard(
                     feature = feature,
-                    onClick = { onNavigate(feature.route) }
+                    onClick = { onNavigate(feature.route) },
                 )
             }
 
@@ -79,7 +79,7 @@ fun MainTabContent(
             updateInfo?.let { info ->
                 UpdateBanner(
                     updateInfo = info,
-                    onUpdateClick = onUpdateClick
+                    onUpdateClick = onUpdateClick,
                 )
             }
         }
@@ -93,25 +93,25 @@ fun WelcomeCard() {
     Card(
         colors =
         CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
         modifier =
         Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp)
+            .padding(bottom = 16.dp),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
             Text(
                 text = "Добро пожаловать, Коллега!",
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Выберите инструмент для работы с задолженностями и документами.",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
     }
@@ -124,13 +124,13 @@ fun ComingSoonCard() {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.HelpOutline,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = MaterialTheme.colorScheme.onPrimary,
             )
         },
         iconBackgroundColor = MaterialTheme.colorScheme.outline,
         title = "Новые фичи появятся позже",
         description = "Следите за обновлениями.",
-        onClick = null
+        onClick = null,
     )
 }
 
@@ -141,13 +141,13 @@ fun FeatureCard(feature: AppFeatureVO, onClick: () -> Unit) {
             Icon(
                 imageVector = feature.icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = MaterialTheme.colorScheme.onPrimary,
             )
         },
         iconBackgroundColor = MaterialTheme.colorScheme.primary,
         title = feature.title,
         description = feature.description,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -157,7 +157,7 @@ private fun MainTabCard(
     iconBackgroundColor: androidx.compose.ui.graphics.Color,
     title: String,
     description: String,
-    onClick: (() -> Unit)?
+    onClick: (() -> Unit)?,
 ) {
     val cardModifier =
         Modifier
@@ -176,16 +176,16 @@ private fun MainTabCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors =
         CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surface,
         ),
-        modifier = clickableModifier
+        modifier = clickableModifier,
     ) {
         Column(
             modifier =
             Modifier
                 .padding(16.dp)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             // Иконка в кружочке
             Box(
@@ -194,7 +194,7 @@ private fun MainTabCard(
                     .size(48.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(iconBackgroundColor),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 icon()
             }
@@ -205,7 +205,7 @@ private fun MainTabCard(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -214,7 +214,7 @@ private fun MainTabCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    lineHeight = 16.sp
+                    lineHeight = 16.sp,
                 )
             }
         }
@@ -230,26 +230,26 @@ fun PreviewMainTabContent() {
                 title = "Расчет задолженности",
                 description = "Калькулятор для расчета сумм задолженностей и неустоек.",
                 icon = Icons.Default.Calculate,
-                route = AppScreenDestination.DEBT_CALCULATOR
+                route = AppScreenDestination.DEBT_CALCULATOR,
             ),
             AppFeatureVO(
                 title = "Определение подсудности",
                 description = "Помощник для определения подсудности спора.",
                 icon = Icons.Default.AccountBalance,
-                route = AppScreenDestination.JURISDICTION
+                route = AppScreenDestination.JURISDICTION,
             ),
             AppFeatureVO(
                 title = "Текстовые утилиты",
                 description = "Склонение ФИО, определение пола, числа прописью.",
                 icon = Icons.Default.TextFields,
-                route = AppScreenDestination.TEXT_UTILS
-            )
+                route = AppScreenDestination.TEXT_UTILS,
+            ),
         ).toImmutableList()
 
     MainTabContent(
         features = sampleFeatures,
         onNavigate = {},
         updateInfo = null,
-        onUpdateClick = {}
+        onUpdateClick = {},
     )
 }
